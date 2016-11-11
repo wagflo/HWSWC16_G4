@@ -1,0 +1,35 @@
+# # File gsaved with Nlview version 6.3.8  2013-12-19 bk=1.2992 VDI=34 GEI=35
+# 
+preplace inst raytracing.framereader -pg 1 -lvl 1 -y 30
+preplace inst raytracing.altpll -pg 1 -lvl 3 -y 30
+preplace inst raytracing.ci_mul_0 -pg 1 -lvl 3 -y 290
+preplace inst raytracing.sdram -pg 1 -lvl 3 -y 680
+preplace inst raytracing.nios2.clock_bridge -pg 1
+preplace inst raytracing.nios2 -pg 1 -lvl 2 -y 60
+preplace inst raytracing.jtag_uart -pg 1 -lvl 3 -y 480
+preplace inst raytracing.nios2.reset_bridge -pg 1
+preplace inst raytracing.clk_50 -pg 1 -lvl 2 -y 390
+preplace inst raytracing.clock_bridge -pg 1 -lvl 4 -y 450
+preplace inst raytracing.systimer -pg 1 -lvl 3 -y 580
+preplace inst raytracing.ltm -pg 1 -lvl 4 -y 350
+preplace inst raytracing -pg 1 -lvl 1 -y 40 -regy -20
+preplace inst raytracing.onchip_ram -pg 1 -lvl 3 -y 400
+preplace inst raytracing.nios2.cpu -pg 1
+preplace netloc POINT_TO_POINT<net_container>raytracing</net_container>(SLAVE)ltm.din,(MASTER)framereader.avalon_streaming_source) 1 1 3 560 380 NJ 380 NJ
+preplace netloc POINT_TO_POINT<net_container>raytracing</net_container>(MASTER)nios2.custom_instruction_master,(SLAVE)ci_mul_0.ncs_cis0) 1 2 1 NJ
+preplace netloc FAN_OUT<net_container>raytracing</net_container>(SLAVE)jtag_uart.irq,(SLAVE)systimer.irq,(SLAVE)framereader.interrupt_sender,(MASTER)nios2.irq) 1 0 3 260 240 NJ 220 1000
+preplace netloc FAN_OUT<net_container>raytracing</net_container>(MASTER)altpll.c0,(SLAVE)framereader.clock_master,(SLAVE)sdram.clk,(SLAVE)jtag_uart.clk,(SLAVE)nios2.clk,(SLAVE)onchip_ram.clk1,(SLAVE)systimer.clk) 1 0 4 240 180 620 200 1120 280 1360
+preplace netloc INTERCONNECT<net_container>raytracing</net_container>(SLAVE)sdram.s1,(SLAVE)systimer.s1,(SLAVE)framereader.avalon_slave,(SLAVE)jtag_uart.avalon_jtag_slave,(SLAVE)nios2.debug_mem_slave,(MASTER)nios2.instruction_master,(SLAVE)altpll.pll_slave,(SLAVE)onchip_ram.s1,(MASTER)framereader.avalon_master,(MASTER)nios2.data_master) 1 0 3 180 200 600 300 1020
+preplace netloc EXPORT<net_container>raytracing</net_container>(SLAVE)altpll.areset_conduit,(SLAVE)raytracing.altpll_0_areset_conduit) 1 0 3 NJ 260 NJ 240 NJ
+preplace netloc EXPORT<net_container>raytracing</net_container>(MASTER)raytracing.sdram_clk,(MASTER)altpll.c2) 1 3 2 NJ 140 NJ
+preplace netloc EXPORT<net_container>raytracing</net_container>(SLAVE)raytracing.altpll_0_locked_conduit,(SLAVE)altpll.locked_conduit) 1 0 3 NJ 280 NJ 280 NJ
+preplace netloc INTERCONNECT<net_container>raytracing</net_container>(SLAVE)altpll.inclk_interface_reset,(MASTER)nios2.debug_reset_request,(SLAVE)ltm.is_clk_rst_reset,(SLAVE)nios2.reset,(SLAVE)sdram.reset,(SLAVE)framereader.clock_reset_reset,(SLAVE)systimer.reset,(SLAVE)onchip_ram.reset1,(MASTER)clk_50.clk_reset,(SLAVE)jtag_uart.reset,(SLAVE)framereader.clock_master_reset) 1 0 4 220 220 540 260 1080 340 1360
+preplace netloc EXPORT<net_container>raytracing</net_container>(SLAVE)ltm.clocked_video,(SLAVE)raytracing.ltm) 1 0 4 NJ 360 NJ 360 NJ 360 NJ
+preplace netloc FAN_OUT<net_container>raytracing</net_container>(SLAVE)clock_bridge.in_clk,(SLAVE)ltm.is_clk_rst,(MASTER)altpll.c1,(SLAVE)framereader.clock_reset) 1 0 4 200 310 NJ 320 NJ 260 1380
+preplace netloc EXPORT<net_container>raytracing</net_container>(SLAVE)raytracing.reset,(SLAVE)clk_50.clk_in_reset) 1 0 2 NJ 420 NJ
+preplace netloc EXPORT<net_container>raytracing</net_container>(SLAVE)clk_50.clk_in,(SLAVE)raytracing.clk) 1 0 2 NJ 400 NJ
+preplace netloc EXPORT<net_container>raytracing</net_container>(MASTER)raytracing.ltm_clk,(MASTER)clock_bridge.out_clk) 1 4 1 NJ
+preplace netloc POINT_TO_POINT<net_container>raytracing</net_container>(SLAVE)altpll.inclk_interface,(MASTER)clk_50.clk) 1 2 1 1060
+preplace netloc EXPORT<net_container>raytracing</net_container>(SLAVE)sdram.wire,(SLAVE)raytracing.sdram) 1 0 3 NJ 750 NJ 750 NJ
+levelinfo -pg 1 0 150 1630
+levelinfo -hier raytracing 160 290 740 1170 1410 1540

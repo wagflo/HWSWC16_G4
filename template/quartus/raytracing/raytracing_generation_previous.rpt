@@ -1,0 +1,102 @@
+Info: Starting: Create block symbol file (.bsf)
+Info: qsys-generate "C:\Users\Florian\Documents\HW SW Codesign\Main Task\maintask\template\quartus\raytracing.qsys" --block-symbol-file --output-directory="C:\Users\Florian\Documents\HW SW Codesign\Main Task\maintask\template\quartus\raytracing" --family="Cyclone IV E" --part=EP4CE115F29C7
+Progress: Loading quartus/raytracing.qsys
+Progress: Reading input file
+Progress: Adding altpll [altpll 16.0]
+Progress: Parameterizing module altpll
+Progress: Adding ci_div [ci_div 1.0]
+Progress: Parameterizing module ci_div
+Progress: Adding ci_mul [ci_mul 1.0]
+Progress: Parameterizing module ci_mul
+Progress: Adding clk_50 [clock_source 16.0]
+Progress: Parameterizing module clk_50
+Progress: Adding clock_bridge [altera_clock_bridge 16.0]
+Progress: Parameterizing module clock_bridge
+Progress: Adding framereader [alt_vip_vfr 14.0]
+Progress: Parameterizing module framereader
+Progress: Adding jtag_uart [altera_avalon_jtag_uart 16.0]
+Progress: Parameterizing module jtag_uart
+Progress: Adding ltm [alt_vip_itc 14.0]
+Progress: Parameterizing module ltm
+Progress: Adding mm_avalon_sqrt_0 [mm_avalon_sqrt 1.0]
+Progress: Parameterizing module mm_avalon_sqrt_0
+Progress: Adding nios2 [altera_nios2_gen2 16.0]
+Progress: Parameterizing module nios2
+Progress: Adding onchip_ram [altera_avalon_onchip_memory2 16.0]
+Progress: Parameterizing module onchip_ram
+Progress: Adding sdram [altera_avalon_new_sdram_controller 16.0]
+Progress: Parameterizing module sdram
+Progress: Adding systimer [altera_avalon_timer 16.0]
+Progress: Parameterizing module systimer
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Warning: raytracing.framereader: The module properties SIMULATION_MODEL_IN_VERILOG and SIMULATION_MODEL_IN_VHDL can not both be set when using the SIMULATION file property: src_hdl/alt_vipvfr131_vfr.v, src_hdl/alt_vipvfr131_vfr_controller.v, src_hdl/alt_vipvfr131_vfr_control_packet_encoder.v, src_hdl/alt_vipvfr131_prc.v, src_hdl/alt_vipvfr131_prc_core.v, src_hdl/alt_vipvfr131_prc_read_master.v, C:/altera_lite/16.0/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_package.vhd, C:/altera_lite/16.0/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_avalon_mm_bursting_master_fifo.vhd, C:/altera_lite/16.0/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_avalon_mm_master.v, C:/altera_lite/16.0/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_unpack_data.v, C:/altera_lite/16.0/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_avalon_mm_slave.v, C:/altera_lite/16.0/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_stream_output.v, C:/altera_lite/16.0/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_pulling_width_adapter.vhd, C:/altera_lite/16.0/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_general_fifo.vhd, C:/altera_lite/16.0/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_fifo_usedw_calculator.vhd, C:/altera_lite/16.0/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_gray_clock_crosser.vhd, C:/altera_lite/16.0/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_std_logic_vector_delay.vhd, C:/altera_lite/16.0/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_one_bit_delay.vhd, C:/altera_lite/16.0/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_logic_fifo.vhd, C:/altera_lite/16.0/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_ram_fifo.vhd
+Info: raytracing.jtag_uart: JTAG UART IP input clock need to be at least double (2x) the operating frequency of JTAG TCK on board
+Warning: raytracing.altpll: altpll.scandone_conduit must be exported, or connected to a matching conduit.
+Warning: raytracing.altpll: altpll.scandata_conduit must be exported, or connected to a matching conduit.
+Warning: raytracing.altpll: altpll.configupdate_conduit must be exported, or connected to a matching conduit.
+Warning: raytracing.altpll: altpll.scandataout_conduit must be exported, or connected to a matching conduit.
+Warning: raytracing.altpll: altpll.scanclkena_conduit must be exported, or connected to a matching conduit.
+Info: qsys-generate succeeded.
+Info: Finished: Create block symbol file (.bsf)
+Info: 
+Info: Starting: Create HDL design files for synthesis
+Info: qsys-generate "C:\Users\Florian\Documents\HW SW Codesign\Main Task\maintask\template\quartus\raytracing.qsys" --synthesis=VERILOG --output-directory="C:\Users\Florian\Documents\HW SW Codesign\Main Task\maintask\template\quartus\raytracing\synthesis" --family="Cyclone IV E" --part=EP4CE115F29C7
+Progress: Loading quartus/raytracing.qsys
+Progress: Reading input file
+Progress: Adding altpll [altpll 16.0]
+Progress: Parameterizing module altpll
+Progress: Adding ci_div [ci_div 1.0]
+Progress: Parameterizing module ci_div
+Progress: Adding ci_mul [ci_mul 1.0]
+Progress: Parameterizing module ci_mul
+Progress: Adding clk_50 [clock_source 16.0]
+Progress: Parameterizing module clk_50
+Progress: Adding clock_bridge [altera_clock_bridge 16.0]
+Progress: Parameterizing module clock_bridge
+Progress: Adding framereader [alt_vip_vfr 14.0]
+Progress: Parameterizing module framereader
+Progress: Adding jtag_uart [altera_avalon_jtag_uart 16.0]
+Progress: Parameterizing module jtag_uart
+Progress: Adding ltm [alt_vip_itc 14.0]
+Progress: Parameterizing module ltm
+Progress: Adding mm_avalon_sqrt_0 [mm_avalon_sqrt 1.0]
+Progress: Parameterizing module mm_avalon_sqrt_0
+Progress: Adding nios2 [altera_nios2_gen2 16.0]
+Progress: Parameterizing module nios2
+Progress: Adding onchip_ram [altera_avalon_onchip_memory2 16.0]
+Progress: Parameterizing module onchip_ram
+Progress: Adding sdram [altera_avalon_new_sdram_controller 16.0]
+Progress: Parameterizing module sdram
+Progress: Adding systimer [altera_avalon_timer 16.0]
+Progress: Parameterizing module systimer
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Warning: raytracing.framereader: The module properties SIMULATION_MODEL_IN_VERILOG and SIMULATION_MODEL_IN_VHDL can not both be set when using the SIMULATION file property: src_hdl/alt_vipvfr131_vfr.v, src_hdl/alt_vipvfr131_vfr_controller.v, src_hdl/alt_vipvfr131_vfr_control_packet_encoder.v, src_hdl/alt_vipvfr131_prc.v, src_hdl/alt_vipvfr131_prc_core.v, src_hdl/alt_vipvfr131_prc_read_master.v, C:/altera_lite/16.0/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_package.vhd, C:/altera_lite/16.0/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_avalon_mm_bursting_master_fifo.vhd, C:/altera_lite/16.0/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_avalon_mm_master.v, C:/altera_lite/16.0/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_unpack_data.v, C:/altera_lite/16.0/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_avalon_mm_slave.v, C:/altera_lite/16.0/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_stream_output.v, C:/altera_lite/16.0/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_pulling_width_adapter.vhd, C:/altera_lite/16.0/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_general_fifo.vhd, C:/altera_lite/16.0/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_fifo_usedw_calculator.vhd, C:/altera_lite/16.0/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_gray_clock_crosser.vhd, C:/altera_lite/16.0/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_std_logic_vector_delay.vhd, C:/altera_lite/16.0/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_one_bit_delay.vhd, C:/altera_lite/16.0/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_logic_fifo.vhd, C:/altera_lite/16.0/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_ram_fifo.vhd
+Info: raytracing.jtag_uart: JTAG UART IP input clock need to be at least double (2x) the operating frequency of JTAG TCK on board
+Warning: raytracing.altpll: altpll.scandone_conduit must be exported, or connected to a matching conduit.
+Warning: raytracing.altpll: altpll.scandata_conduit must be exported, or connected to a matching conduit.
+Warning: raytracing.altpll: altpll.configupdate_conduit must be exported, or connected to a matching conduit.
+Warning: raytracing.altpll: altpll.scandataout_conduit must be exported, or connected to a matching conduit.
+Warning: raytracing.altpll: altpll.scanclkena_conduit must be exported, or connected to a matching conduit.
+Info: raytracing: Generating raytracing "raytracing" for QUARTUS_SYNTH
+Info: Inserting clock-crossing logic between cmd_demux_001.src2 and cmd_mux_002.sink0
+Info: Inserting clock-crossing logic between cmd_demux_001.src5 and cmd_mux_005.sink0
+Info: Inserting clock-crossing logic between rsp_demux_002.src0 and rsp_mux_001.sink2
+Info: Inserting clock-crossing logic between rsp_demux_005.src0 and rsp_mux_001.sink5
+Warning: raytracing: "No matching role found for nios2_custom_instruction_master_translator:ci_slave:ci_slave_result (result)"
+Warning: raytracing: "No matching role found for nios2_custom_instruction_master_multi_xconnect:ci_slave:ci_slave_ipending (ipending)"
+Warning: raytracing: "No matching role found for nios2_custom_instruction_master_multi_xconnect:ci_slave:ci_slave_estatus (estatus)"
+Info: altpll: Error while generating raytracing_altpll.v : 1 : Illegal port or parameter name scandone Illegal port or parameter name scanclkena Illegal port or parameter name scandataout Illegal port or parameter name configupdate Illegal port or parameter name scandata child process exited abnormally
+Info: altpll: Illegal port or parameter name scandone Illegal port or parameter name scanclkena Illegal port or parameter name scandataout Illegal port or parameter name configupdate Illegal port or parameter name scandata child process exited abnormally     while executing "exec C:/altera_lite/16.0/quartus/bin64/clearbox altpll_avalon device_family=CYCLONEIVE CBX_FILE=raytracing_altpll.v -f cbxcmdln_1478866467202195"     ("eval" body line 1)     invoked from within "eval exec $cbx_cmd "
+Error: altpll: File C:/Users/Florian/AppData/Local/Temp/alt7116_2437131657504564622.dir/0012_sopcgen/raytracing_altpll.v written by generation callback did not contain a module called raytracing_altpll
+Error: altpll: C:\Users\Florian\AppData\Local\Temp\alt7116_2437131657504564622.dir\0012_sopcgen\raytracing_altpll.v (Das System kann die angegebene Datei nicht finden)
+Info: altpll: "raytracing" instantiated altpll "altpll"
+Error: Generation stopped, 21 or more modules remaining
+Info: raytracing: Done "raytracing" with 19 modules, 1 files
+Error: qsys-generate failed with exit code 1: 3 Errors, 9 Warnings
+Info: Finished: Create HDL design files for synthesis
