@@ -1,6 +1,7 @@
 #include "sw_renderer.h"
 #include "display.h"
 #include <stdlib.h>
+#include "../bsp/system.h"
 
 /* Typedefs *******************************************************************/
 typedef struct
@@ -50,9 +51,9 @@ rtSetCamera (vec3_t *lookfrom, vec3_t *lookat, fix16_t vfov)
 		fix16_div (fix16_from_int (FRAME_WIDTH), fix16_from_int (FRAME_HEIGHT));
 	const fix16_t rpd = fix16_div (fix16_pi, fix16_from_int (180));
 
-	fix16_t theta = fix16_mul (vfov, rpd);
+	fix16_t theta = ALT_CI_CI_MUL_0 (vfov, rpd);
 	fix16_t half_height = fix16_tan (theta >> 1); /* theta/2 */
-	fix16_t half_width = fix16_mul (aspect, half_height);
+	fix16_t half_width = ALT_CI_CI_MUL_0 (aspect, half_height);
 
 	camera.origin = *lookfrom;
 
@@ -97,22 +98,19 @@ getClosestSphere (fix16_t *t_min, vec3_t *origin, vec3_t *dir)
 	*t_min = fix16_maximum;
 
 	fix16_t a = vec3Dot (dir, dir);
-	fix16_t time_min_a = fix16_mul(time_min, a);
+	fix16_t time_min_a = ALT_CI_CI_MUL_0(time_min, a);
 	for (uint8_t i = 0; i < scene.num_spheres; ++i)
 	{
 		vec3_t oc;
 		vec3Sub (&oc, origin, &scene.spheres[i].center);
 		fix16_t b = vec3Dot (&oc, dir);
-		fix16_t c = vec3Dot (&oc, &oc) -
-			fix16_mul (scene.spheres[i].radius, scene.spheres[i].radius);
-		fix16_t discr = fix16_mul (b, b) - fix16_mul (a, c);
+		fix16_t c = vec3Dot (&oc, &oc) - ALT_CI_CI_MUL_0 (scene.spheres[i].radius, scene.spheres[i].radius);
+		fix16_t discr = ALT_CI_CI_MUL_0 (b, b) - ALT_CI_CI_MUL_0 (a, c);
 
 		if (discr > 0)
 		{
-			discr = fix16_sqrt (discr);
-			
-			
-			//fix16_t t = fix16_div (-b - discr, a);
+			discr = fix16_sqrt (discr);			
+			//fix16_t t = fix16_div (-b - discr, a); --scaling not necessary for decision
 			fix16_t t = -b - discr;
 			/* check first solution */
 			if (t > time_min_a && t < *t_min)
@@ -121,14 +119,18 @@ getClosestSphere (fix16_t *t_min, vec3_t *origin, vec3_t *dir)
 				nearest_obj = &scene.spheres[i];
 				continue;
 			}
-			/* check second solution */
-			//t = fix16_div (-b + discr, a);
-			t = -b + discr;
-			if (t > time_min_a && t < *t_min)
+			//since discr is positive, -b+discr is ALWAYS than bigger -b-discr
+			//therefore, when -b-discr > time_min_a but -b-discr >= *t_min,
+			//it cannot hold that -b+discr < *t_min
+			//so, calculate -b+discr only in cases where -b-discr <= time_min_a
+			else if(t <= time_min_a)
 			{
-				*t_min = t;
-				nearest_obj = &scene.spheres[i];
-				continue;
+				t = -b + discr;
+				if (t > time_min_a && t < *t_min)
+				{
+					*t_min = t;
+					nearest_obj = &scene.spheres[i];
+				}
 			}
 		}
 	}
@@ -148,7 +150,7 @@ static inline void
 reflect (vec3_t *r, vec3_t *v, vec3_t *n)
 {
 	vec3_t tmp;
-	fix16_t t = fix16_mul (fix16_one << 1, vec3Dot (v, n));
+	fix16_t t = ALT_CI_CI_MUL_0 (fix16_one << 1, vec3Dot (v, n));
 	vec3MulS (&tmp, t, n);
 	vec3Sub (r, v, &tmp);
 }
@@ -175,9 +177,9 @@ rtRenderFrame (void)
 				vec3_t ray_origin = camera.origin;
 				/* set ray direction */
 				fix16_t r = rand () & 0xFFFF; /* random value in [0, 1.0) */
-				fix16_t u = fix16_mul (fix16_from_int (i) + r, f_width_r);
+				fix16_t u = ALT_CI_CI_MUL_0 (fix16_from_int (i) + r, f_width_r);
 				r = rand () & 0xFFFF;
-				fix16_t v = fix16_mul (fix16_from_int (j) + r, f_height_r);
+				fix16_t v = ALT_CI_CI_MUL_0 (fix16_from_int (j) + r, f_height_r);
 				vec3_t ray_dir;
 				getRayDir (&ray_dir, u, v);
 
@@ -226,11 +228,11 @@ rtRenderFrame (void)
 			vec3Sqrt (&col, &col); /* gamma correction */
 			/* pack rgb values into one 32 bit value */
 			fix16_t bit_mask = 255 << 16;
-			col.x[0] = fix16_mul (col.x[0], bit_mask) & bit_mask;
+			col.x[0] = ALT_CI_CI_MUL_0 (col.x[0], bit_mask) & bit_mask;
 			bit_mask = 255 << 8;
-			col.x[1] = fix16_mul (col.x[1], bit_mask) & bit_mask;
+			col.x[1] = ALT_CI_CI_MUL_0 (col.x[1], bit_mask) & bit_mask;
 			bit_mask = 255;
-			col.x[2] = fix16_mul (col.x[2], bit_mask) & bit_mask;
+			col.x[2] = ALT_CI_CI_MUL_0 (col.x[2], bit_mask) & bit_mask;
 			uint32_t rgb = col.x[0] | col.x[1] | col.x[2];
 			displaySetPixel (FRAME_HEIGHT-1-j, i, rgb);
 		}

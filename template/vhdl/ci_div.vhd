@@ -27,7 +27,7 @@ end entity;
 
 
 architecture arch of ci_div is
-component ci_lpm_div PORT
+component lpm_div_gen PORT
 	(
 		aclr		: IN STD_LOGIC ;
 		clock		: IN STD_LOGIC ;
@@ -57,7 +57,7 @@ signal res, num_input, next_num_input : std_logic_vector(47 downto 0);
 signal R, W, E, F, shift_bit, next_done, next_rd, next_wr, next_start, last_start : std_logic;
 signal write_input : std_logic_vector(31 downto 0);
 begin
-ip : ci_lpm_div port map (
+ip : lpm_div_gen port map (
 	aclr => reset,
 	clock => clk,
 	denom => datab,

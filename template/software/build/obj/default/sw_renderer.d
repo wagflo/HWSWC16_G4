@@ -1,6 +1,6 @@
 obj/default/sw_renderer.o: ../src/sw_renderer.c ../src/sw_renderer.h \
  ../src/defs.h ../src/vec3.h ../src/libfixmath/fix16.h ../src/sphere.h \
- ../src/display.h
+ ../src/display.h ../src/../bsp/system.h ../src/../bsp/linker.h
 
 ../src/sw_renderer.h:
 
@@ -13,3 +13,7 @@ obj/default/sw_renderer.o: ../src/sw_renderer.c ../src/sw_renderer.h \
 ../src/sphere.h:
 
 ../src/display.h:
+
+../src/../bsp/system.h:
+
+../src/../bsp/linker.h:
