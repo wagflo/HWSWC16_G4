@@ -71,7 +71,7 @@ ip : lpm_div_gen port map (
 
 fifo : alt_fwft_fifo generic map (
 	DATA_WIDTH => 32,
-	NUM_ELEMENTS => 10)
+	NUM_ELEMENTS => 16)
 port map (
 	aclr => reset,
 	clock => clk,

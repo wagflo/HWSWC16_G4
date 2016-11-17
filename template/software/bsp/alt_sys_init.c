@@ -4,7 +4,7 @@
  * Machine generated for CPU 'nios2' in SOPC Builder design 'raytracing'
  * SOPC Builder design path: ../../quartus/raytracing.sopcinfo
  *
- * Generated: Mon Nov 14 16:09:26 CET 2016
+ * Generated: Thu Nov 17 17:20:34 CET 2016
  */
 
 /*
