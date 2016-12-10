@@ -134,7 +134,7 @@ ACDS_VERSION := 16.0
 
 # This following BUILD_NUMBER comment indicates the build number of the tool 
 # used to generate this makefile. 
-# BUILD_NUMBER: 211
+# BUILD_NUMBER: 222
 
 # Define path to the application ELF. 
 # It may be used by the makefile fragments so is defined before including them. 
@@ -181,7 +181,7 @@ CREATE_LINKER_MAP := 1
 # Common arguments for ALT_CFLAGSs
 APP_CFLAGS_DEFINED_SYMBOLS :=
 APP_CFLAGS_UNDEFINED_SYMBOLS :=
-APP_CFLAGS_OPTIMIZATION := -O2 -std=c99 -fprofile-arcs -ftest-coverage
+APP_CFLAGS_OPTIMIZATION := -O2 -std=c99
 APP_CFLAGS_DEBUG_LEVEL := -g
 APP_CFLAGS_WARNINGS := -Wall
 APP_CFLAGS_USER_FLAGS :=

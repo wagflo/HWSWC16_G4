@@ -1,5 +1,6 @@
 #include "fix16.h"
 #include "int64.h"
+#include "../../bsp/system.h"
 
 
 /* Subtraction and addition with overflow detection.
@@ -67,7 +68,7 @@ fix16_t fix16_ssub(fix16_t a, fix16_t b)
 #if !defined(FIXMATH_NO_64BIT) && !defined(FIXMATH_OPTIMIZE_8BIT)
 fix16_t fix16_mul(fix16_t inArg0, fix16_t inArg1)
 {
-	int64_t product = (int64_t)inArg0 * inArg1;
+	/*int64_t product = (int64_t)inArg0 * inArg1;
 	
 	#ifndef FIXMATH_NO_OVERFLOW
 	// The upper 17 bits should all be the same (the sign).
@@ -101,7 +102,8 @@ fix16_t fix16_mul(fix16_t inArg0, fix16_t inArg1)
 	result += (product & 0x8000) >> 15;
 	
 	return result;
-	#endif
+	#endif*/
+	return ALT_CI_CI_MUL_0(inArg0, inArg1);
 }
 #endif
 

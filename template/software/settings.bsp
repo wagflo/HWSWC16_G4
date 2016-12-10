@@ -2,11 +2,11 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>11.11.2016 15:37:06</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1478875026104</BspGeneratedUnixTimeStamp>
-        <BspGeneratedLocation>bsp\</BspGeneratedLocation>
-        <BspSettingsFile>.\settings.bsp</BspSettingsFile>
-        <SopcDesignFile>..\quartus\raytracing.sopcinfo</SopcDesignFile>
+        <BspGeneratedTimeStamp>Nov 17, 2016 5:20:33 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1479399633538</BspGeneratedUnixTimeStamp>
+        <BspGeneratedLocation>bsp/</BspGeneratedLocation>
+        <BspSettingsFile>./settings.bsp</BspSettingsFile>
+        <SopcDesignFile>../quartus/raytracing.sopcinfo</SopcDesignFile>
         <JdiFile>default</JdiFile>
         <Cpu>nios2</Cpu>
         <SchemaVersion>1.9</SchemaVersion>
