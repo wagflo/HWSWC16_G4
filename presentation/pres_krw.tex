@@ -27,26 +27,31 @@
  
 \section{Profiling}
 \begin{frame} %%Eine Folie
-	\frametitle{Auführungszeiten} %%Folientitel
+	\frametitle{Rendering time} %%Folientitel
   	\begin{itemize}
-		\item am Anfang: $45 \dfrac{sec}{Frame}$
-		\item C-Code Anpassungen: $43 \dfrac{sec}{Frame}$
-		\item fix\_mul16 durch ci\_mul in Hauptfunktion getauscht: $36 \dfrac{sec}{Frame}$
-		\item fix\_mul16 ruft generell ci\_mul auf: $17 \dfrac{sec}{Frame}$
+		\item original code: $45 \dfrac{sec}{Frame}$
+		\item simple C-Code adaptions: $43 \dfrac{sec}{Frame}$
+		\item replaced fix\_mul16 by ci\_mul looped functions: $36 \dfrac{sec}{Frame}$
+		\item fix\_mul16 calls ci\_mul: $17 \dfrac{sec}{Frame}$
 	\end{itemize}
 	$\quad$\\
-	$\rightarrow$ Verlagern von SW auf HW bringt benötigte Geschwindigkeit
+	$\rightarrow$ Transition looped functions from SW to HW to achive target speed
 \end{frame}
 
-\section{Optimierung}
+\section{Optimization}
 \begin{frame} %%Eine Folie
-	\frametitle{Überblick} %%Folientitel
+	\frametitle{Overview} %%Folientitel
 	Lorem ipsum
 \end{frame}
 
-\section{Ausblick}
 \begin{frame} %%Eine Folie
-	\frametitle{Überblick} %%Folientitel
+	\frametitle{Details} %%Folientitel
+	Lorem ipsum
+\end{frame}
+
+\section{Future tasks}
+\begin{frame} %%Eine Folie
+	\frametitle{Details} %%Folientitel
 	Set dolor
 \end{frame}
 
