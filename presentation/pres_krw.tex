@@ -1,0 +1,53 @@
+\documentclass{beamer}
+\usetheme{Berlin}  %% Themenwahl
+\usecolortheme{beaver}
+
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{esvect}
+%\usepackage{mcode}
+ 
+\title{Ray Tracing Optimization}
+\author{Kashofer, Radschek, Wagner}
+\date{\today}
+
+%\section{Foliensection}
+%\begin{frame} %%Eine Folie
+%	\frametitle{Folientitel} %%Folientitel
+%	Das ist eine Dummy-Section
+%\end{frame}
+
+\begin{document}
+\maketitle
+\frame{\tableofcontents[currentsection]}
+ 
+\section{Profiling}
+\begin{frame} %%Eine Folie
+	\frametitle{Auführungszeiten} %%Folientitel
+  	\begin{itemize}
+		\item am Anfang: $45 \dfrac{sec}{Frame}$
+		\item C-Code Anpassungen: $43 \dfrac{sec}{Frame}$
+		\item fix\_mul16 durch ci\_mul in Hauptfunktion getauscht: $36 \dfrac{sec}{Frame}$
+		\item fix\_mul16 ruft generell ci\_mul auf: $17 \dfrac{sec}{Frame}$
+	\end{itemize}
+	$\quad$\\
+	$\rightarrow$ Verlagern von SW auf HW bringt benötigte Geschwindigkeit
+\end{frame}
+
+\section{Optimierung}
+\begin{frame} %%Eine Folie
+	\frametitle{Überblick} %%Folientitel
+	Lorem ipsum
+\end{frame}
+
+\section{Ausblick}
+\begin{frame} %%Eine Folie
+	\frametitle{Überblick} %%Folientitel
+	Set dolor
+\end{frame}
+
+\end{document}
