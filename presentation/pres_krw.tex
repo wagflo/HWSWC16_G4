@@ -34,6 +34,12 @@
 		\item replaced fix\_mul16 by ci\_mul looped functions: $36 \dfrac{sec}{Frame}$
 		\item fix\_mul16 calls ci\_mul: $17 \dfrac{sec}{Frame}$
 	\end{itemize}
+
+\end{frame}
+
+\begin{frame} %%Eine Folie
+	\frametitle{SW code structure} %%Folientitel
+	getClosestSphere is a main function and contains a lot of loops\\
 	$\quad$\\
 	$\rightarrow$ Transition looped functions from SW to HW to achieve target speed
 \end{frame}
@@ -66,20 +72,54 @@
 	Idea: automate entire frame-rendering
 \end{frame}
 
+\begin{frame} %%Eine Folie
+	\frametitle{HW ressouces} %%Folientitel
+	\begin{itemize}
+		\item xyz Logic cells
+		\item abc M9Ks
+		\item uvw DSPs
+	\end{itemize}
+	$\quad$\\
+	$\rightarrow$ Plenty Logic-cells (registers and LUTs), keep number of DSPs and M9Ks low
+\end{frame}
+
 \section{Optimization}
 \begin{frame} %%Eine Folie
 	\frametitle{Overview} %%Folientitel
-	Lorem ipsum
+		\begin{figure}[h]
+		\centering
+		\fbox{\includegraphics[width = 0.6\textwidth]{pics/frontend.png}}
+		\caption{Pipepline 1}
+	\end{figure}
 \end{frame}
-
 \begin{frame} %%Eine Folie
-	\frametitle{Details} %%Folientitel
-	Lorem ipsum
+	\frametitle{Overview} %%Folientitel
+	\begin{figure}[h]
+		\centering
+		\fbox{\includegraphics[width = 0.6\textwidth]{pics/frontend.png}}
+		\caption{Pipepline 1}
+	\end{figure}
+\end{frame}
+\begin{frame} %%Eine Folie
+	\frametitle{Overview} %%Folientitel
+	\begin{figure}[h]
+		\centering
+		\fbox{\includegraphics[width = 0.6\textwidth]{pics/middle.png}}
+		\caption{Pipepline 2}
+	\end{figure}
+\end{frame}
+\begin{frame} %%Eine Folie
+	\frametitle{Overview} %%Folientitel
+	\begin{figure}[h]
+		\centering
+		\fbox{\includegraphics[width = 0.6\textwidth]{pics/backend.png}}
+		\caption{Pipepline 3}
+	\end{figure}
 \end{frame}
 
 \section{Future tasks}
 \begin{frame} %%Eine Folie
-	\frametitle{Details} %%Folientitel
+	\frametitle{Future tasks} %%Folientitel
 	Set dolor
 \end{frame}
 
