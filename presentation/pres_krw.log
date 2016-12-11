@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9.6100 64-bit) (preloaded format=pdflatex 2016.12.10)  10 DEC 2016 14:33
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9.6100 64-bit) (preloaded format=pdflatex 2016.12.10)  11 DEC 2016 18:42
 entering extended mode
 **./pres_krw.tex
 (pres_krw.tex
@@ -1253,24 +1253,24 @@ LaTeX Font Warning: Font shape `OT1/cmss/m/n' in size <4> not available
 ] (pres_krw.toc) [2
 
 ]
-LaTeX Font Info:    Try loading font information for U+msa on input line 39.
+LaTeX Font Info:    Try loading font information for U+msa on input line 38.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 39.
+LaTeX Font Info:    Try loading font information for U+msb on input line 38.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for U+esvect on input line 39.
+LaTeX Font Info:    Try loading font information for U+esvect on input line 38.
 
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\esvect\uesvect.fd"
 File: uesvect.fd 
 )
 LaTeX Font Info:    Try loading font information for OT1+mathkerncmss on input 
-line 39.
+line 38.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\sansmathaccent\ot1mathkerncmss.fd"
 File: ot1mathkerncmss.fd 2013/03/27 Fontinst v1.933 font definitions for OT1/ma
@@ -1282,7 +1282,42 @@ thkerncmss.
 
 ] [5
 
-] [6
+] <pics/frontend.png, id=184, 994.7753pt x 401.02765pt>
+File: pics/frontend.png Graphic file (type png)
+
+<use pics/frontend.png>
+Package pdftex.def Info: pics/frontend.png used on input line 66.
+(pdftex.def)             Requested size: 184.3758pt x 74.32356pt.
+ [6
+
+ <./pics/frontend.png>]
+File: pics/frontend.png Graphic file (type png)
+ <use pics/frontend.png>
+Package pdftex.def Info: pics/frontend.png used on input line 74.
+(pdftex.def)             Requested size: 184.3758pt x 74.32356pt.
+
+[7
+
+] <pics/middle.png, id=245, 955.09764pt x 824.72824pt>
+File: pics/middle.png Graphic file (type png)
+ <use pics/middle.png>
+Package pdftex.def Info: pics/middle.png used on input line 82.
+(pdftex.def)             Requested size: 184.3758pt x 159.20427pt.
+
+Overfull \vbox (6.41133pt too high) detected at line 82
+ []
+
+[8
+
+ <./pics/middle.png>] <pics/backend.png, id=274, 667.43471pt x 528.56294pt>
+File: pics/backend.png Graphic file (type png)
+
+<use pics/backend.png>
+Package pdftex.def Info: pics/backend.png used on input line 90.
+(pdftex.def)             Requested size: 184.3758pt x 146.01257pt.
+ [9
+
+ <./pics/backend.png>] [10
 
 ]
 \tf@nav=\write6
@@ -1294,31 +1329,25 @@ thkerncmss.
 \tf@snm=\write8
 \openout8 = `pres_krw.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 58.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 58.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 98.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 98.
  (pres_krw.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 58.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 58.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 98.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 98.
+Package rerunfilecheck Info: File `pres_krw.out' has not changed.
+(rerunfilecheck)             Checksum: 924607DAE83CAFB2ED22404362F5841D;141.
 
-
-Package rerunfilecheck Warning: File `pres_krw.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `pres_krw.out':
-(rerunfilecheck)             Before: 1A031CA69C83229592FF144E105AB18D;136
-(rerunfilecheck)             After:  924607DAE83CAFB2ED22404362F5841D;141.
 
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 1.0pt have occurred.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 58.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 98.
  ) 
 Here is how much of TeX's memory you used:
- 18461 strings out of 493333
- 346466 string characters out of 3139187
- 420860 words of memory out of 3000000
- 21537 multiletter control sequences out of 15000+200000
+ 18516 strings out of 493333
+ 347391 string characters out of 3139187
+ 419860 words of memory out of 3000000
+ 21580 multiletter control sequences out of 15000+200000
  10950 words of font info for 42 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  56i,15n,55p,423b,585s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -1327,9 +1356,9 @@ ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmss12.pfb><C:/Program Fi
 les/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmss8.pfb><C:/Program Files/MiKTe
 X 2.9/fonts/type1/public/amsfonts/cm/cmssi10.pfb><C:/Program Files/MiKTeX 2.9/f
 onts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on pres_krw.pdf (6 pages, 91160 bytes).
+Output written on pres_krw.pdf (10 pages, 153172 bytes).
 PDF statistics:
- 233 PDF objects out of 1000 (max. 8388607)
- 16 named destinations out of 1000 (max. 500000)
- 67 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 355 PDF objects out of 1000 (max. 8388607)
+ 24 named destinations out of 1000 (max. 500000)
+ 82 words of extra memory for PDF output out of 10000 (max. 10000000)
 
