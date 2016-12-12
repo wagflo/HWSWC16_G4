@@ -66,16 +66,6 @@
 
 \section{Optimization}
 
-\begin{frame} %%Eine Folie
-	\frametitle{HW ressources} %%Folientitel
-	\begin{itemize}
-		\item xyz Logic cells
-		\item abc M9Ks
-		\item uvw DSPs
-	\end{itemize}
-	$\quad$\\
-	$\rightarrow$ Plenty Logic-cells (registers and LUTs), keep number of DSPs and M9Ks low
-\end{frame}
 
 \begin{frame} %%Eine Folie
 	\frametitle{Main Idea}
@@ -85,6 +75,20 @@
 	\item set pipeline parameters (mostly the spheres) at initialisation
 	\end{itemize}
 \end{frame}
+
+\begin{frame} %%Eine Folie
+	\frametitle{Calling the Pipeline} %%Folientitel
+	\begin{itemize}
+		\item Initialisation:\\
+		each environment element has own address, write to it to update (no checks necessary)
+		\item setCamera:\\
+		each part of the camera has own address, write to it to update (read special address to see if write possible)
+		\item startNewFrame:\\
+		no special command necessary
+		\item getResultingPixels:\\
+	\end{itemize}
+\end{frame}
+
 \begin{frame} %%Eine Folie
 	\frametitle{Overview} %%Folientitel
 		\begin{figure}[h]
@@ -169,7 +173,6 @@
 				\item 4x multiplication
 				\item 1x square root
 				\item 50x 32 bit register
-				\item 2x 16 bit register
 				\item clock, enable, stall, reset, ...
 			\end{itemize}
 		\item \textbf{getClosestSphere}
@@ -207,7 +210,7 @@
 				\item 11x add/sub
 				\item 18x multiplication
 				\item 1 comparator
-				\item 500x 32 bit register
+				\item 500x 32 bit register (inclusive overhead, possibly less)
 				\item clock, enable, stall, reset, ...
 			\end{itemize}
 	\end{itemize}
@@ -218,12 +221,13 @@
 	\begin{itemize}
 		\item \textbf{getPixelPosition} 2 cycles
 		\item \textbf{getRayDir} 4 cycles
-		\item \textbf{getClosestSphere (without division)} 32 cycles
+		\item \textbf{getClosestSphere (without division)} 32/33 cycles
 		\item \textbf{reflection (plus division n changing colour)} 50 cycles
 		\item \textbf{padding to multiple of 16} 6 cycles
 		\item \textbf{buffer rays of same pixel} 16 cycles
 		\item \textbf{average pixel} 20 cycles
 	\end{itemize}
+	$\rightarrow$ t
 \end{frame}
 
 
