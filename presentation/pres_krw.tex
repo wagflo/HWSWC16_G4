@@ -86,17 +86,10 @@
 		\item startNewFrame:\\
 		no special command necessary
 		\item getResultingPixels:\\
+		read special addresses
 	\end{itemize}
 \end{frame}
 
-\begin{frame} %%Eine Folie
-	\frametitle{Overview} %%Folientitel
-		\begin{figure}[h]
-		\centering
-		\fbox{\includegraphics[width = 0.6\textwidth]{pics/frontend.png}}
-		\caption{Pipepline 1}
-	\end{figure}
-\end{frame}
 \begin{frame} %%Eine Folie
 	\frametitle{Overview} %%Folientitel
 	\begin{figure}[h]
@@ -122,112 +115,76 @@
 	\end{figure}
 \end{frame}
 
-\section{Usage}
 \begin{frame} %%Eine Folie
-	\frametitle{Calling the Pipeline} %%Folientitel
+	\frametitle{Calculating Initial Ray} %%Folientitel
 	\begin{itemize}
-		\item Initialisation:\\
-		each environment element has own address, write to it to update (no checks necessary)
-		\item setCamera:\\
-		each part of the camera has own address, write to it to update (read special address to see if write possible)
-		\item startNewFrame:\\
-		no special command necessary
+		\item start with (0,0) as soon as all camera elements set
+		\item add random offset within the pixel (in both directions)
+		\item repeat number of samples times per pixel
+		\item calculate the direction of the ray
 	\end{itemize}
 \end{frame}
+
+\begin{frame} %%Eine Folie
+	\frametitle{GetClosestSphere } %%Folientitel
+	\begin{itemize}
+		\item 8 parallel calculations for distance to spheres
+		\item compare them at the end (7 comparators)
+	\end{itemize}
+	\textbf{if more than 8 spheres:}
+	\begin{itemize}
+		\item odd cycles spheres 1-8
+		\item even cycles spheres 9-16
+		\item additional comparison and stage
+	\end{itemize}
+\end{frame}
+
+\begin{frame} %%Eine Folie
+	\frametitle{Reflection} %%Folientitel
+	\begin{itemize}
+		\item start division (for reflection position)
+		\item calculate colour change
+		\item calculate reflection
+		\item normalise by division result
+		\item wait until all rays of one pixel are present (additional stages)
+		\item reflect all rays of a pixel if one needs reflection (VALID bit)
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Calculate Pixel} %%Folientitel
+	\begin{itemize}
+		\item average rays
+		\item gamma correction
+		\item colour packing
+		\item sort by position of pixel
+	\end{itemize}
+\end{frame}
+
 
 \section{Evaluation}
 \begin{frame}
-	\frametitle{Resources (Pipeline 1)}
+	\frametitle{Resources}
 	\begin{itemize}
-		\item \textbf{getPixelPosition}
-			\begin{itemize}
-				\item 2x random
-				\item 2x add
-				\item 10x 32 bit register (4 function, 6 overhead)
-				\item 2x 16 bit register
-				\item clock, enable, stall, reset, ...
-			\end{itemize}
-		\item \textbf{getRayDir}
-			\begin{itemize}
-				\item 6x multiplication
-				\item 9x add/sub
-				\item 51x 32 bit register (15 function, 36 overhead)
-				\item clock, enable, stall, reset, ...
-			\end{itemize}
-		\item \textbf{additional overhead} (added after getRayDir)
-			\begin{itemize}
-				\item valid (1 bit)
-				\item colour (3x 32 bit)
-				\item reflections (3 bit)
-			\end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}
-	\frametitle{Resources (Pipeline 2)}
-	\begin{itemize}
-		\item \textbf{getDistance}
-			\begin{itemize}
-				\item 8x add/sub
-				\item 4x square function
-				\item 4x multiplication
-				\item 1x square root
-				\item 50x 32 bit register
-				\item clock, enable, stall, reset, ...
-			\end{itemize}
-		\item \textbf{getClosestSphere}
-			\begin{itemize}
-				\item 8x getDistance
-				\item 4x square function
-				\item 2x add/sub
-				\item 1 division
-				\item 10x 32 bit register
-				\item clock, enable, stall, reset, ...
-			\end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}
-	\frametitle{Resources (Pipeline 2)}
-	\begin{itemize}
-		\item \textbf{additional overhead} (carried along each stage)
-			\begin{itemize}
-				\item valid (1 bit)
-				\item colour (3x 32 bit)
-				\item position (2x 32 bit)
-				\item reflections (3 bit)
-				\item origin (3x 32bit)
-				\item denominator (a) (32 bit)
-			\end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}
-	\frametitle{Resources (Pipeline 3)}
-	\begin{itemize}
-		\item \textbf{reflection (plus changing colour)}
-			\begin{itemize}
-				\item 11x add/sub
-				\item 18x multiplication
-				\item 1 comparator
-				\item 500x 32 bit register (inclusive overhead, possibly less)
-				\item clock, enable, stall, reset, ...
-			\end{itemize}
+		\item 2x Random
+		\item $\sim$ 90 Add/Sub
+		\item $\sim$ 55 Multiplication
+		\item $\sim$ 40 Square of Input
+		\item 1 Divisions
+		\item 2 Square Roots
+		\item 1fifo
+		\item $\sim$ 1000 registers
 	\end{itemize}
 \end{frame}
 
 \begin{frame}
 	\frametitle{Timing}
 	\begin{itemize}
-		\item \textbf{getPixelPosition} 2 cycles
-		\item \textbf{getRayDir} 4 cycles
-		\item \textbf{getClosestSphere (without division)} 32/33 cycles
-		\item \textbf{reflection (plus division n changing colour)} 50 cycles
-		\item \textbf{padding to multiple of 16} 6 cycles
-		\item \textbf{buffer rays of same pixel} 16 cycles
-		\item \textbf{average pixel} 20 cycles
+		
+		\item \textbf{time lag for each ray} 40 + 96*reflects + samples
+		\item \textbf{pipeline stages} 136 + samples
 	\end{itemize}
-	$\rightarrow$ t
+	$\rightarrow$ with parameters reflects=5, samples=1, objects=5, a throughput of 1/5 pixles per second should be achievable
 \end{frame}
 
 
