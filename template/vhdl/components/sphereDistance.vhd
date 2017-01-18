@@ -106,7 +106,17 @@ COMPONENT lpm_mult
 			result	: OUT STD_LOGIC_VECTOR (63 DOWNTO 0)
 	);
 	END COMPONENT;
- 
+
+COMPONENT ip_sqrt IS
+	PORT
+	(
+		aclr		: IN STD_LOGIC ;
+		clk		: IN STD_LOGIC ;
+		radical		: IN STD_LOGIC_VECTOR (47 DOWNTO 0);
+		q		: OUT STD_LOGIC_VECTOR (23 DOWNTO 0);
+		remainder		: OUT STD_LOGIC_VECTOR (24 DOWNTO 0)
+	);
+END COMPONENT;	
 
 signal next_oc, oc, dir_latch1
 	: std_logic_vector (95 downto 0);
@@ -114,7 +124,13 @@ signal time_min_times_a_latch1, radius2_latch1, b, next_b, next_almost_c, almost
 time_min_times_a_latch2, radius2_latch2, time_min_times_a_latch3, radius2_latch3, time_min_times_a_latch4, radius2_latch4,
 time_min_times_a_latch5, radius2_latch5,
 a_latch1, a_latch2, a_latch3, a_latch4, a_latch5, a_latch6, b_latch1, time_min_times_a_latch6,
-time_min_times_a_latch7, ac, b_sq, discr, time_min_times_a_latch8, next_discr, b_latch2, b_latch3
+time_min_times_a_latch7, ac, b_sq, discr, time_min_times_a_latch8, next_discr, b_latch2, b_latch3, discr_after_sqrt, t1, t2,
+b_latch4, b_latch5, b_latch6, b_latch7, b_latch8, b_latch9, b_latch10, b_latch11, b_latch12, b_latch13, b_latch14, b_latch15, 
+b_latch16, b_latch17, b_latch18, b_latch19,
+time_min_times_a_latch9, time_min_times_a_latch10, time_min_times_a_latch11, time_min_times_a_latch12, time_min_times_a_latch13,
+time_min_times_a_latch14, time_min_times_a_latch15, time_min_times_a_latch16, time_min_times_a_latch17, time_min_times_a_latch18,
+time_min_times_a_latch19, time_min_times_a_latch20, time_min_times_a_latch21, time_min_times_a_latch22, time_min_times_a_latch23,
+time_min_times_a_latch24
 	: std_logic_vector (31 downto 0);
 begin
 sub_oc : vector_sub port map (
@@ -298,5 +314,90 @@ elsif rising_edge(clk) AND clk_en = '1' then
 	b_latch3 <= b_latch2;
 end if;
 end process;
+
+sqrt : ip_sqrt 
+	PORT MAP
+	(
+		aclr => reset,
+		clk => clk,
+		radical(47 downto 16) => discr,
+		radical(15 downto 0) => (OTHERS => '0'),
+		q => discr_after_sqrt,
+		remainder => open
+	);
+END ip_sqrt;
+
+sqr_par : process(clk, clk_en, reset) is begin
+if reset = 1 then
+	time_min_times_a_latch9 <= (OTHERS => '0');
+	time_min_times_a_latch10 <= (OTHERS => '0');
+	time_min_times_a_latch11 <= (OTHERS => '0');
+	time_min_times_a_latch12 <= (OTHERS => '0');
+	time_min_times_a_latch13 <= (OTHERS => '0');
+	time_min_times_a_latch14 <= (OTHERS => '0');
+	time_min_times_a_latch15 <= (OTHERS => '0');
+	time_min_times_a_latch16 <= (OTHERS => '0');
+	time_min_times_a_latch17 <= (OTHERS => '0');
+	time_min_times_a_latch18 <= (OTHERS => '0');
+	time_min_times_a_latch19 <= (OTHERS => '0');
+	time_min_times_a_latch20 <= (OTHERS => '0');
+	time_min_times_a_latch21 <= (OTHERS => '0');
+	time_min_times_a_latch22 <= (OTHERS => '0');
+	time_min_times_a_latch23 <= (OTHERS => '0');
+	time_min_times_a_latch24 <= (OTHERS => '0');
+	b_latch4 <= (OTHERS => '0');
+	b_latch5 <= (OTHERS => '0');
+	b_latch6 <= (OTHERS => '0');
+	b_latch7 <= (OTHERS => '0');
+	b_latch8 <= (OTHERS => '0');
+	b_latch9 <= (OTHERS => '0');
+	b_latch10 <= (OTHERS => '0');
+	b_latch11 <= (OTHERS => '0');
+	b_latch12 <= (OTHERS => '0');
+	b_latch13 <= (OTHERS => '0');
+	b_latch14 <= (OTHERS => '0');
+	b_latch15 <= (OTHERS => '0');
+	b_latch16 <= (OTHERS => '0');
+	b_latch17 <= (OTHERS => '0');
+	b_latch18 <= (OTHERS => '0');
+	b_latch19 <= (OTHERS => '0');
+elsif rising_edge(clk) AND clk_en = '1' then
+	time_min_times_a_latch9 <= time_min_times_a_latch8;
+	time_min_times_a_latch10 <= time_min_times_a_latch9;
+	time_min_times_a_latch11 <= time_min_times_a_latch10;
+	time_min_times_a_latch12 <= time_min_times_a_latch11;
+	time_min_times_a_latch13 <= time_min_times_a_latch12;
+	time_min_times_a_latch14 <= time_min_times_a_latch13;
+	time_min_times_a_latch15 <= time_min_times_a_latch14;
+	time_min_times_a_latch16 <= time_min_times_a_latch15;
+	time_min_times_a_latch17 <= time_min_times_a_latch16;
+	time_min_times_a_latch18 <= time_min_times_a_latch17;
+	time_min_times_a_latch19 <= time_min_times_a_latch18;
+	time_min_times_a_latch20 <= time_min_times_a_latch19;
+	time_min_times_a_latch21 <= time_min_times_a_latch20;
+	time_min_times_a_latch22 <= time_min_times_a_latch21;
+	time_min_times_a_latch23 <= time_min_times_a_latch22;
+	time_min_times_a_latch24 <= time_min_times_a_latch23;
+	b_latch4 <= b_latch3;
+	b_latch5 <= b_latch4;
+	b_latch6 <= b_latch5;
+	b_latch7 <= b_latch6;
+	b_latch8 <= b_latch7;
+	b_latch9 <= b_latch8;
+	b_latch10 <= b_latch9;
+	b_latch11 <= b_latch10;
+	b_latch12 <= b_latch11;
+	b_latch13 <= b_latch12;
+	b_latch14 <= b_latch13
+	b_latch15 <= b_latch14;
+	b_latch16 <= b_latch15;
+	b_latch17 <= b_latch16;
+	b_latch18 <= b_latch17;
+	b_latch19 <= b_latch18;
+end if;
+end process;
+
+
+
 end architecture;
 
