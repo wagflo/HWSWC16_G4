@@ -1,0 +1,26 @@
+/homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/testbenches/latencyTest.vhd {1 {vcom -work work -2002 -explicit -vopt -stats=none /homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/testbenches/latencyTest.vhd
+Model Technology ModelSim SE-64 vcom 10.5c Compiler 2016.07 Jul 20 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Loading package delay_pkg
+-- Compiling entity latencyTest
+-- Compiling architecture arch of latencyTest
+
+} {} {}} /homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/components/delay.vhd {1 {vcom -work work -2002 -explicit -vopt -stats=none /homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/components/delay.vhd
+Model Technology ModelSim SE-64 vcom 10.5c Compiler 2016.07 Jul 20 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Compiling entity delay_element
+-- Compiling architecture beh of delay_element
+
+} {} {}} /homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/components/delay_pkg.vhd {1 {vcom -work work -2002 -explicit -vopt -stats=none /homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/components/delay_pkg.vhd
+Model Technology ModelSim SE-64 vcom 10.5c Compiler 2016.07 Jul 20 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Compiling package delay_pkg
+
+} {} {}}
