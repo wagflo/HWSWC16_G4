@@ -7,6 +7,10 @@ use IEEE.math_real.all;
 library lpm;
 use lpm.lpm_components.all;
 
+LIBRARY altera_mf;
+USE altera_mf.all;
+
+
 entity vector_square is
 generic(INPUT_WIDTH : NATURAL := 32;
 OUTPUT_WIDTH : NATURAL := 32);

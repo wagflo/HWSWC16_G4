@@ -5,6 +5,9 @@ use ieee.numeric_std.all;
 library lpm;
 use lpm.lpm_components.all;
 
+LIBRARY altera_mf;
+USE altera_mf.all;
+
 entity sphereDistance is
   port
     (
@@ -143,7 +146,6 @@ COMPONENT altsqrt
 	);
 	PORT (
 			aclr	: IN STD_LOGIC ;
-			clken	: IN STD_LOGIC ;
 			clk	: IN STD_LOGIC ;
 			radical	: IN STD_LOGIC_VECTOR (47 DOWNTO 0);
 			q	: OUT STD_LOGIC_VECTOR (23 DOWNTO 0);
@@ -177,14 +179,14 @@ b_c28, b_c27, b_c26, b_c25, b_c24, b_c23, b_c22, b_c21, b_c20, b_c19, b_c18, b_c
 b_c12, b_c11, b_c10, b_c9, b_c8, b_c7, b_c6, b, 
 a_c6, a_c5, a_c4,	a_c3, a_c2, a_c1,
 radius2_c5, radius2_c4, radius2_c3, radius2_c2, radius2_c1,
-almost_c, c, b2, ac, discr, discr_after, t1_cycle30, t2_cycle30, t1, t2
+almost_c, c, b2, ac, discr, discr_after, t1_cycle30, t2_cycle30, t1, t2, t_inputb
 	: std_logic_vector(31 downto 0);
 signal valid_cycle30,	valid_cycle29, valid_cycle28, valid_cycle27, valid_cycle26, valid_cycle25, valid_cycle24,
 valid_cycle23, valid_cycle22, valid_cycle21, valid_cycle20, valid_cycle19, valid_cycle18, valid_cycle17,
 valid_cycle16, valid_cycle15, valid_cycle14, valid, t1_valid, t2_valid, t2_smaller
 : std_logic;
 signal subwire0_b2, subwire0_ac : std_logic_vector(63 downto 0);
-signal sub_wire0_discr_after : std_logic_vector(47 downto 0);
+signal sub_wire0_discr_after : std_logic_vector(23 downto 0);
 begin
 
 b2(31) <= subwire0_b2(63);
@@ -193,6 +195,7 @@ ac(31) <= subwire0_ac(63);
 ac(30 downto 0) <= subwire0_ac(46 downto 16);
 discr_after(31 downto 24) <= (OTHERS => '0');
 discr_after(23 downto 0) <= sub_wire0_discr_after(23 downto 0);
+t_inputb <= std_logic_vector(signed(NOT(b_c28)) + 1);
 
 sub_oc_c1 : vector_add_sub
 generic map(DATA_WIDTH => 32)
@@ -278,7 +281,7 @@ square_b_c7to8 : altsquare
 
 mul_ac_c7to8 : lpm_mult GENERIC MAP (
 		lpm_hint => "MAXIMIZE_SPEED=9",
-		lpm_pipeline => 1,
+		lpm_pipeline => 2,
 		lpm_representation => "SIGNED",
 		lpm_type => "LPM_MULT",
 		lpm_widtha => 32,
@@ -341,7 +344,6 @@ sqrt_c13to28 : ALTSQRT
 	)
 	PORT MAP (
 		aclr => reset,
-		clken => clk_en,
 		clk => clk,
 		radical(47 downto 16) => discr,
 		radical(15 downto 0) => (OTHERS => '0'),
@@ -362,7 +364,7 @@ t1_c29 : lpm_add_sub GENERIC MAP (
 		clken	=> clk_en, 
 		add_sub => '0',
 		clock => clk,
-		dataa => std_logic_vector(signed(not(b_c28)) + 1),
+		dataa => t_inputb,
 		datab => discr_after,
 		result => t1
 	);
@@ -380,7 +382,7 @@ t2_c29 : lpm_add_sub GENERIC MAP (
 		clken	=> clk_en, 
 		add_sub => '1',
 		clock => clk,
-		dataa => std_logic_vector(signed(not(b_c28)) + 1),
+		dataa => t_inputb,
 		datab => discr_after,
 		result => t2
 	);
