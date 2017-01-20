@@ -1,5 +1,9 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all; 
+
+library lpm;
+use lpm.lpm_components.all;
 
 entity sphereDistance is
   port
@@ -10,7 +14,6 @@ entity sphereDistance is
 
       start : in std_logic;
 
- 	  --i_in		: in std_logic_vector(3 downto 0);
 
       origin    : in std_logic_vector(95 downto 0);
       dir       : in std_logic_vector(95 downto 0);
@@ -20,72 +23,95 @@ entity sphereDistance is
       center    : in std_logic_vector(95 downto 0);
       radius2   : in std_logic_vector(31 downto 0);
 
-	   time_min_times_a : in std_logic_vector(31 downto 0);
+	   t_min_a : in std_logic_vector(31 downto 0);
 
 	   t			: out std_logic_vector(31 downto 0);
-	   --i_out		: out std_logic_vector(3 downto 0);
-	   done		: out std_logic
+		
+	   t_valid		: out std_logic
 
       );
 end entity;
 
 architecture arch of sphereDistance is
 
-component vector_sub is 
+component vector_add_sub is 
+GENERIC(DATA_WIDTH : NATURAL := 32);
 port (
-	x1, y1, z1 : in std_logic_vector(31 downto 0);
-	x2, y2, z2 : in std_logic_vector(31 downto 0);
+	x1, y1, z1 : in std_logic_vector(DATA_WIDTH-1 downto 0);
+	x2, y2, z2 : in std_logic_vector(DATA_WIDTH-1 downto 0);
+	add_sub, reset, clk, clk_en : in std_logic;
 	
-	x, y, z : out std_logic_vector(31 downto 0)
-);
-end component;
+	x, y, z : out std_logic_vector(DATA_WIDTH-1 downto 0)
+); end component;
 
 component vector_dot is 
+generic (INPUT_WIDTH : NATURAL := 32;
+OUTPUT_WIDTH : NATURAL := 32);
 port (
 	clk : in std_logic;
 	clk_en : in std_logic;
 	reset : in std_logic;
 	
-	x_1, y_1, z_1 : in std_logic_vector(31 downto 0);
+	x_1, y_1, z_1 : in std_logic_vector(INPUT_WIDTH - 1 downto 0);
 	
-	x_2, y_2, z_2 : in std_logic_vector(31 downto 0);
+	x_2, y_2, z_2 : in std_logic_vector(INPUT_WIDTH - 1 downto 0);
 	
-	result : out std_logic_vector (31 downto 0)
+	result : out std_logic_vector (OUTPUT_WIDTH - 1 downto 0)
 );
+
 end component;
 
 component vector_square is
-
+generic(INPUT_WIDTH : NATURAL := 32;
+OUTPUT_WIDTH : NATURAL := 32);
 port (
 	clk : in std_logic;
 	clk_en : in std_logic;
 	reset : in std_logic;
 	
-	x, y, z : in std_logic_vector(31 downto 0);
+	x, y, z : in std_logic_vector(INPUT_WIDTH-1 downto 0);
 	
-	result : out std_logic_vector (31 downto 0)
+	result : out std_logic_vector (OUTPUT_WIDTH-1 downto 0)
 );
+
 end component;
 
-component sub is
-PORT
-	(
-		dataa		: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
-		datab		: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
-		result		: OUT STD_LOGIC_VECTOR (31 DOWNTO 0)
+COMPONENT lpm_add_sub
+	GENERIC (
+		lpm_direction		: STRING;
+		lpm_hint		: STRING;
+		lpm_pipeline		: NATURAL;
+		lpm_representation		: STRING;
+		lpm_type		: STRING;
+		lpm_width		: NATURAL
 	);
-end component;
+	PORT (
+			aclr 		: IN STD_LOGIC;
+			clken		: IN STD_LOGIC;
+			add_sub	: IN STD_LOGIC ;
+			clock	: IN STD_LOGIC ;
+			dataa	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+			datab	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+			result	: OUT STD_LOGIC_VECTOR (31 DOWNTO 0)
+	);
+	END COMPONENT;
 
-COMPONENT square IS
-	PORT
-	(
-		aclr		: IN STD_LOGIC ;
-		clock		: IN STD_LOGIC ;
-		dataa		: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
-		ena		: IN STD_LOGIC ;
-		result		: OUT STD_LOGIC_VECTOR (63 DOWNTO 0)
+	COMPONENT altsquare
+	GENERIC (
+		data_width		: NATURAL;
+		lpm_type		: STRING;
+		pipeline		: NATURAL;
+		representation		: STRING;
+		result_width		: NATURAL
 	);
-END COMPONENT;
+	PORT (
+			aclr	: IN STD_LOGIC ;
+			clock	: IN STD_LOGIC ;
+			data	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+			ena	: IN STD_LOGIC ;
+			result	: OUT STD_LOGIC_VECTOR (63 DOWNTO 0)
+	);
+	END COMPONENT;
 
 COMPONENT lpm_mult
 	GENERIC (
@@ -107,33 +133,70 @@ COMPONENT lpm_mult
 	);
 	END COMPONENT;
 
-COMPONENT ip_sqrt IS
-	PORT
-	(
-		aclr		: IN STD_LOGIC ;
-		clk		: IN STD_LOGIC ;
-		radical		: IN STD_LOGIC_VECTOR (47 DOWNTO 0);
-		q		: OUT STD_LOGIC_VECTOR (23 DOWNTO 0);
-		remainder		: OUT STD_LOGIC_VECTOR (24 DOWNTO 0)
+COMPONENT altsqrt
+	GENERIC (
+		pipeline		: NATURAL;
+		q_port_width		: NATURAL;
+		r_port_width		: NATURAL;
+		width		: NATURAL;
+		lpm_type		: STRING
 	);
-END COMPONENT;	
-
-signal next_oc, oc, dir_latch1
-	: std_logic_vector (95 downto 0);
-signal time_min_times_a_latch1, radius2_latch1, b, next_b, next_almost_c, almost_c, next_c, c,
-time_min_times_a_latch2, radius2_latch2, time_min_times_a_latch3, radius2_latch3, time_min_times_a_latch4, radius2_latch4,
-time_min_times_a_latch5, radius2_latch5,
-a_latch1, a_latch2, a_latch3, a_latch4, a_latch5, a_latch6, b_latch1, time_min_times_a_latch6,
-time_min_times_a_latch7, ac, b_sq, discr, time_min_times_a_latch8, next_discr, b_latch2, b_latch3, discr_after_sqrt, t1, t2,
-b_latch4, b_latch5, b_latch6, b_latch7, b_latch8, b_latch9, b_latch10, b_latch11, b_latch12, b_latch13, b_latch14, b_latch15, 
-b_latch16, b_latch17, b_latch18, b_latch19,
-time_min_times_a_latch9, time_min_times_a_latch10, time_min_times_a_latch11, time_min_times_a_latch12, time_min_times_a_latch13,
-time_min_times_a_latch14, time_min_times_a_latch15, time_min_times_a_latch16, time_min_times_a_latch17, time_min_times_a_latch18,
-time_min_times_a_latch19, time_min_times_a_latch20, time_min_times_a_latch21, time_min_times_a_latch22, time_min_times_a_latch23,
-time_min_times_a_latch24
-	: std_logic_vector (31 downto 0);
+	PORT (
+			aclr	: IN STD_LOGIC ;
+			clken	: IN STD_LOGIC ;
+			clk	: IN STD_LOGIC ;
+			radical	: IN STD_LOGIC_VECTOR (47 DOWNTO 0);
+			q	: OUT STD_LOGIC_VECTOR (23 DOWNTO 0);
+			remainder	: OUT STD_LOGIC_VECTOR (24 DOWNTO 0)
+	);
+	END COMPONENT;
+	
+COMPONENT lpm_compare
+	GENERIC (
+		lpm_hint		: STRING;
+		lpm_pipeline		: NATURAL;
+		lpm_representation		: STRING;
+		lpm_type		: STRING;
+		lpm_width		: NATURAL
+	);
+	PORT (
+			aclr	: IN STD_LOGIC ;
+			clken	: IN STD_LOGIC ;
+			clock	: IN STD_LOGIC ;
+			dataa	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+			datab	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+			agb	: OUT STD_LOGIC 
+	);
+	END COMPONENT;
+signal dir_cycle1, oc : std_logic_vector(95 downto 0);
+signal t2_c30, t1_c30, t_min_a_c29,	t_min_a_c28, t_min_a_c27,	t_min_a_c26, t_min_a_c25,	t_min_a_c24, t_min_a_c23,
+t_min_a_c22, t_min_a_c21, t_min_a_c20, t_min_a_c19, t_min_a_c18, t_min_a_c17, t_min_a_c16, t_min_a_c15,
+t_min_a_c14, t_min_a_c13, t_min_a_c12, t_min_a_c11, t_min_a_c10, t_min_a_c9, t_min_a_c8, t_min_a_c7,
+t_min_a_c6, t_min_a_c5, t_min_a_c4, t_min_a_c3, t_min_a_c2, t_min_a_c1,
+b_c28, b_c27, b_c26, b_c25, b_c24, b_c23, b_c22, b_c21, b_c20, b_c19, b_c18, b_c17, b_c16, b_c15, b_c14, b_c13,
+b_c12, b_c11, b_c10, b_c9, b_c8, b_c7, b_c6, b, 
+a_c6, a_c5, a_c4,	a_c3, a_c2, a_c1,
+radius2_c5, radius2_c4, radius2_c3, radius2_c2, radius2_c1,
+almost_c, c, b2, ac, discr, discr_after, t1_cycle30, t2_cycle30, t1, t2
+	: std_logic_vector(31 downto 0);
+signal valid_cycle30,	valid_cycle29, valid_cycle28, valid_cycle27, valid_cycle26, valid_cycle25, valid_cycle24,
+valid_cycle23, valid_cycle22, valid_cycle21, valid_cycle20, valid_cycle19, valid_cycle18, valid_cycle17,
+valid_cycle16, valid_cycle15, valid_cycle14, valid, t1_valid, t2_valid, t2_smaller
+: std_logic;
+signal subwire0_b2, subwire0_ac : std_logic_vector(63 downto 0);
+signal sub_wire0_discr_after : std_logic_vector(47 downto 0);
 begin
-sub_oc : vector_sub port map (
+
+b2(31) <= subwire0_b2(63);
+b2(30 downto 0) <= subwire0_b2(46 downto 16);
+ac(31) <= subwire0_ac(63);
+ac(30 downto 0) <= subwire0_ac(46 downto 16);
+discr_after(31 downto 24) <= (OTHERS => '0');
+discr_after(23 downto 0) <= sub_wire0_discr_after(23 downto 0);
+
+sub_oc_c1 : vector_add_sub
+generic map(DATA_WIDTH => 32)
+port map (
 	x1 => origin(95 downto 64),
 	y1 => origin(63 downto 32),
 	z1 => origin(31 downto 0),
@@ -142,28 +205,17 @@ sub_oc : vector_sub port map (
 	y2 => center(63 downto 32),
 	z2 => center(31 downto 0),
 	
-	x => next_oc(95 downto 64),
-	y => next_oc(63 downto 32),
-	z => next_oc(31 downto 0)
+	x => oc(95 downto 64),
+	y => oc(63 downto 32),
+	z => oc(31 downto 0),
+	clk => clk,
+	clk_en => clk_en,
+	reset => reset,
+	add_sub => '0'
 );
-oc_update : process (next_oc, time_min_times_a, radius2, dir, a, clk, clk_en, reset) is
-begin
-if reset = '1' then
-	oc <= (OTHERS => '0');
-	time_min_times_a_latch1 <= (OTHERS => '0');
-	radius2_latch1 <= (OTHERS => '0');
-	dir_latch1 <= (OTHERS => '0');
-	a_latch1 <= (OTHERS => '0');
-elsif rising_edge(clk) AND clk_en = '1' then
-	time_min_times_a_latch1 <= time_min_times_a;
-	radius2_latch1 <= radius2;
-	dir_latch1 <= dir;
-	oc <= next_oc;
-	a_latch1 <= a;
-end if;
-end process;
 
-vecdot_b : vector_dot port map(
+
+vecdot_b_c2to5 : vector_dot port map(
 	clk => clk,
 	clk_en => clk_en,
 	reset => reset,
@@ -172,13 +224,13 @@ vecdot_b : vector_dot port map(
 	y_1 => oc(63 downto 32),
 	z_1 => oc(31 downto 0),
 	
-	x_2 => dir_latch1(95 downto 64),
-	y_2 => dir_latch1(63 downto 32),
-	z_2 => dir_latch1(31 downto 0),
+	x_2 => dir_cycle1(95 downto 64),
+	y_2 => dir_cycle1(63 downto 32),
+	z_2 => dir_cycle1(31 downto 0),
 	
 	result => b
 );
-vecsquare_c : vector_square port map (
+vecsquare_c_c2to5 : vector_square port map (
 	clk => clk,
 	clk_en => clk_en,
 	reset => reset,
@@ -189,82 +241,42 @@ vecsquare_c : vector_square port map (
 	result => almost_c
 );
 
-vecsquare_par_odd : process (time_min_times_a_latch2, radius2_latch2, radius2_latch4, 
-time_min_times_a_latch4, a_latch2, a_latch4, clk, reset, clk_en)
-is
-begin
-if reset = '1' then
-	time_min_times_a_latch3 <= (OTHERS => '0');
-	radius2_latch3 <= (OTHERS => '0');
-	a_latch3 <= (OTHERS => '0');
-	time_min_times_a_latch5 <= (OTHERS => '0');
-	radius2_latch5 <= (OTHERS => '0');
-	a_latch5 <= (OTHERS => '0');
-elsif clk_en = '1' AND rising_edge(clk) then
-	time_min_times_a_latch3 <= time_min_times_a_latch2;
-	radius2_latch3 <= radius2_latch2;
-	a_latch3 <= a_latch2;
-	time_min_times_a_latch5 <= time_min_times_a_latch4;
-	radius2_latch5 <= radius2_latch4;
-	a_latch5 <= a_latch4;
-end if;
-end process;
+c_sub_c6 : LPM_ADD_SUB
+	GENERIC MAP (
+		lpm_direction => "UNUSED",
+		lpm_hint => "ONE_INPUT_IS_CONSTANT=NO,CIN_USED=NO",
+		lpm_pipeline => 1,
+		lpm_representation => "SIGNED",
+		lpm_type => "LPM_ADD_SUB",
+		lpm_width => 32
+	)
+	PORT MAP (
+		aclr	=> reset,
+		clken	=> clk_en, 
+		add_sub => '0',
+		clock => clk,
+		dataa => almost_c,
+		datab => radius2_c5,
+		result => c
+	);
 
-vecsquare_par_even : process (time_min_times_a_latch1, radius2_latch1, dir_latch1 , 
-time_min_times_a_latch3, radius2_latch3,  clk, reset, clk_en,
-a_latch1, a_latch3)
-is
-begin
-if reset = '1' then
-	time_min_times_a_latch2 <= (OTHERS => '0');
-	radius2_latch2 <= (OTHERS => '0');
-	a_latch2 <= (OTHERS => '0');
-	time_min_times_a_latch4 <= (OTHERS => '0');
-	radius2_latch4 <= (OTHERS => '0');
-	a_latch4 <= (OTHERS => '0');
-elsif clk_en = '1' AND rising_edge(clk) then
-	time_min_times_a_latch2 <= time_min_times_a_latch1;
-	radius2_latch2 <= radius2_latch1;
-	a_latch2 <= a_latch1;
-	time_min_times_a_latch4 <= time_min_times_a_latch3;
-	radius2_latch4 <= radius2_latch3;
-	a_latch4 <= a_latch3;
-end if;
-end process;
+square_b_c7to8 : altsquare
+	GENERIC MAP (
+		data_width => 32,
+		lpm_type => "ALTSQUARE",
+		pipeline => 2,
+		representation => "SIGNED",
+		result_width => 64
+	)
+	PORT MAP (
+		aclr => reset,
+		clock => clk,
+		data => b_c6,
+		ena => clk_en,
+		result => subwire0_b2
+	);
 
-c_sub : sub port map (
-	dataa => almost_c,
-	datab => radius2_latch5,
-	result => next_c
-);
-
-c_sub_cal : process (reset, clk, clk_en, a_latch5, time_min_times_a_latch5, next_c, b) is
-begin
-	if reset = '1' then
-		a_latch6 <= (OTHERS => '0');
-		time_min_times_a_latch6 <= (OTHERS => '0');
-		c <= (OTHERS => '0');
-		b_latch1 <= (OTHERS => '0');
-	elsif rising_edge(clk) AND clk_en = '1' then
-		a_latch6 <= a_latch5;
-		time_min_times_a_latch5 <= time_min_times_a_latch5;
-		c <= next_c;
-		b_latch1 <= b;
-	end if;
-end process;
-
-square_b : square port map (
-	aclr => reset,
-	clock => clk,
-	dataa => b_latch1,
-	ena => clk_en,
-	result(63) => b_sq(31),
-	result(62 downto 47) => open,
-	result(46 downto 16) => b_sq(30 downto 0),
-	result(15 downto 0) => open
-);
-
-mul_ac : lpm_mult GENERIC MAP (
+mul_ac_c7to8 : lpm_mult GENERIC MAP (
 		lpm_hint => "MAXIMIZE_SPEED=9",
 		lpm_pipeline => 1,
 		lpm_representation => "SIGNED",
@@ -277,127 +289,270 @@ mul_ac : lpm_mult GENERIC MAP (
 		aclr => reset,
 		clken => clk_en,
 		clock => clk,
-		dataa => a_latch6,
+		dataa => a_c6,
 		datab => c,
-		result(63) => ac(31),
-		result(62 downto 47) => open,
-		result(46 downto 16) => ac(30 downto 0),
-		result(15 downto 0) => open
+		result => subwire0_ac
 	);
 
-	
-mul_ac_par : process (clk, clk_en, reset, time_min_times_a_latch6, b_latch1) is begin
+discr_c12 : lpm_add_sub
+GENERIC MAP (
+		lpm_direction => "UNUSED",
+		lpm_hint => "ONE_INPUT_IS_CONSTANT=NO,CIN_USED=NO",
+		lpm_pipeline => 1,
+		lpm_representation => "SIGNED",
+		lpm_type => "LPM_ADD_SUB",
+		lpm_width => 32
+	)
+	PORT MAP (
+		aclr	=> reset,
+		clken	=> clk_en, 
+		add_sub => '0',
+		clock => clk,
+		dataa => b2,
+		datab => ac,
+		result => discr
+	);
 
-if reset = '1' then 
-	time_min_times_a_latch7 <= (OTHERS => '0');
-	b_latch2 <= (OTHERS => '0');
-elsif rising_edge(clk) and clk_en = '1' then
-	time_min_times_a_latch7 <= time_min_times_a_latch6;
-	b_latch2 <= b_latch1;
-end if;
-end process;
-
-ac_b_sq_sub : sub port map (
-	dataa => b_sq,
-	datab => ac,
-	result => next_discr
-);
-
-ac_b2_sub_par : process (next_discr, time_min_times_a_latch7, b_latch2, reset, clk, clk_en) is begin
-if reset = '1' then
-	discr <= (OTHERS => '0');
-	time_min_times_a_latch8 <= (OTHERS => '0');
-	b_latch3 <= (OTHERS => '0');
-elsif rising_edge(clk) AND clk_en = '1' then
-	discr <= next_discr;
-	time_min_times_a_latch8 <= time_min_times_a_latch7;
-	b_latch3 <= b_latch2;
-end if;
-end process;
-
-sqrt : ip_sqrt 
-	PORT MAP
-	(
+discr_g0_c13 : LPM_COMPARE 
+	GENERIC MAP (
+		lpm_hint => "ONE_INPUT_IS_CONSTANT=YES",
+		lpm_pipeline => 1,
+		lpm_representation => "SIGNED",
+		lpm_type => "LPM_COMPARE",
+		lpm_width => 32
+	)
+	PORT MAP (
 		aclr => reset,
+		clken => clk_en,
+		clock => clk,
+		dataa => discr,
+		datab => (OTHERS => '0'),
+		agb => valid
+	);
+	
+	
+sqrt_c13to28 : ALTSQRT
+	GENERIC MAP (
+		pipeline => 16,
+		q_port_width => 24,
+		r_port_width => 25,
+		width => 48,
+		lpm_type => "ALTSQRT"
+	)
+	PORT MAP (
+		aclr => reset,
+		clken => clk_en,
 		clk => clk,
 		radical(47 downto 16) => discr,
 		radical(15 downto 0) => (OTHERS => '0'),
-		q => discr_after_sqrt,
+		q => sub_wire0_discr_after,
 		remainder => open
 	);
-END ip_sqrt;
+	
+t1_c29 : lpm_add_sub GENERIC MAP (
+		lpm_direction => "UNUSED",
+		lpm_hint => "ONE_INPUT_IS_CONSTANT=NO,CIN_USED=NO",
+		lpm_pipeline => 1,
+		lpm_representation => "SIGNED",
+		lpm_type => "LPM_ADD_SUB",
+		lpm_width => 32
+	)
+	PORT MAP (
+		aclr	=> reset,
+		clken	=> clk_en, 
+		add_sub => '0',
+		clock => clk,
+		dataa => std_logic_vector(signed(not(b_c28)) + 1),
+		datab => discr_after,
+		result => t1
+	);
 
-sqr_par : process(clk, clk_en, reset) is begin
-if reset = 1 then
-	time_min_times_a_latch9 <= (OTHERS => '0');
-	time_min_times_a_latch10 <= (OTHERS => '0');
-	time_min_times_a_latch11 <= (OTHERS => '0');
-	time_min_times_a_latch12 <= (OTHERS => '0');
-	time_min_times_a_latch13 <= (OTHERS => '0');
-	time_min_times_a_latch14 <= (OTHERS => '0');
-	time_min_times_a_latch15 <= (OTHERS => '0');
-	time_min_times_a_latch16 <= (OTHERS => '0');
-	time_min_times_a_latch17 <= (OTHERS => '0');
-	time_min_times_a_latch18 <= (OTHERS => '0');
-	time_min_times_a_latch19 <= (OTHERS => '0');
-	time_min_times_a_latch20 <= (OTHERS => '0');
-	time_min_times_a_latch21 <= (OTHERS => '0');
-	time_min_times_a_latch22 <= (OTHERS => '0');
-	time_min_times_a_latch23 <= (OTHERS => '0');
-	time_min_times_a_latch24 <= (OTHERS => '0');
-	b_latch4 <= (OTHERS => '0');
-	b_latch5 <= (OTHERS => '0');
-	b_latch6 <= (OTHERS => '0');
-	b_latch7 <= (OTHERS => '0');
-	b_latch8 <= (OTHERS => '0');
-	b_latch9 <= (OTHERS => '0');
-	b_latch10 <= (OTHERS => '0');
-	b_latch11 <= (OTHERS => '0');
-	b_latch12 <= (OTHERS => '0');
-	b_latch13 <= (OTHERS => '0');
-	b_latch14 <= (OTHERS => '0');
-	b_latch15 <= (OTHERS => '0');
-	b_latch16 <= (OTHERS => '0');
-	b_latch17 <= (OTHERS => '0');
-	b_latch18 <= (OTHERS => '0');
-	b_latch19 <= (OTHERS => '0');
-elsif rising_edge(clk) AND clk_en = '1' then
-	time_min_times_a_latch9 <= time_min_times_a_latch8;
-	time_min_times_a_latch10 <= time_min_times_a_latch9;
-	time_min_times_a_latch11 <= time_min_times_a_latch10;
-	time_min_times_a_latch12 <= time_min_times_a_latch11;
-	time_min_times_a_latch13 <= time_min_times_a_latch12;
-	time_min_times_a_latch14 <= time_min_times_a_latch13;
-	time_min_times_a_latch15 <= time_min_times_a_latch14;
-	time_min_times_a_latch16 <= time_min_times_a_latch15;
-	time_min_times_a_latch17 <= time_min_times_a_latch16;
-	time_min_times_a_latch18 <= time_min_times_a_latch17;
-	time_min_times_a_latch19 <= time_min_times_a_latch18;
-	time_min_times_a_latch20 <= time_min_times_a_latch19;
-	time_min_times_a_latch21 <= time_min_times_a_latch20;
-	time_min_times_a_latch22 <= time_min_times_a_latch21;
-	time_min_times_a_latch23 <= time_min_times_a_latch22;
-	time_min_times_a_latch24 <= time_min_times_a_latch23;
-	b_latch4 <= b_latch3;
-	b_latch5 <= b_latch4;
-	b_latch6 <= b_latch5;
-	b_latch7 <= b_latch6;
-	b_latch8 <= b_latch7;
-	b_latch9 <= b_latch8;
-	b_latch10 <= b_latch9;
-	b_latch11 <= b_latch10;
-	b_latch12 <= b_latch11;
-	b_latch13 <= b_latch12;
-	b_latch14 <= b_latch13
-	b_latch15 <= b_latch14;
-	b_latch16 <= b_latch15;
-	b_latch17 <= b_latch16;
-	b_latch18 <= b_latch17;
-	b_latch19 <= b_latch18;
+t2_c29 : lpm_add_sub GENERIC MAP (
+		lpm_direction => "UNUSED",
+		lpm_hint => "ONE_INPUT_IS_CONSTANT=NO,CIN_USED=NO",
+		lpm_pipeline => 1,
+		lpm_representation => "SIGNED",
+		lpm_type => "LPM_ADD_SUB",
+		lpm_width => 32
+	)
+	PORT MAP (
+		aclr	=> reset,
+		clken	=> clk_en, 
+		add_sub => '1',
+		clock => clk,
+		dataa => std_logic_vector(signed(not(b_c28)) + 1),
+		datab => discr_after,
+		result => t2
+	);
+t1_g_timemin_c30 : LPM_COMPARE 
+	GENERIC MAP (
+		lpm_hint => "ONE_INPUT_IS_CONSTANT=NO",
+		lpm_pipeline => 1,
+		lpm_representation => "SIGNED",
+		lpm_type => "LPM_COMPARE",
+		lpm_width => 32
+	)
+	PORT MAP (
+		aclr => reset,
+		clken => clk_en,
+		clock => clk,
+		dataa => t1,
+		datab => t_min_a_c29,
+		agb => t1_valid
+	);
+t2_g_timemin_c30: LPM_COMPARE 
+	GENERIC MAP (
+		lpm_hint => "ONE_INPUT_IS_CONSTANT=NO",
+		lpm_pipeline => 1,
+		lpm_representation => "SIGNED",
+		lpm_type => "LPM_COMPARE",
+		lpm_width => 32
+	)
+	PORT MAP (
+		aclr => reset,
+		clken => clk_en,
+		clock => clk,
+		dataa => t2,
+		datab => t_min_a_c29,
+		agb => t2_valid
+	);
+
+t1_g_t2_c30 :LPM_COMPARE 
+	GENERIC MAP (
+		lpm_hint => "ONE_INPUT_IS_CONSTANT=NO",
+		lpm_pipeline => 1,
+		lpm_representation => "SIGNED",
+		lpm_type => "LPM_COMPARE",
+		lpm_width => 32
+	)
+	PORT MAP (
+		aclr => reset,
+		clken => clk_en,
+		clock => clk,
+		dataa => t1,
+		datab => t2,
+		agb => t2_smaller
+	);
+
+
+output : process(t1_valid, t2_valid, valid_cycle30, t2_smaller, t1_cycle30, t2_cycle30) is begin
+if valid_cycle30 = '1' then
+	if t1_valid = '1' AND t2_valid = '1' then
+		if t2_smaller = '0' then
+			t_valid <= '1';
+			t <= t1_cycle30;
+		else
+			t_valid <= '1';
+			t <= t2_c30;
+		end if;
+	elsif t1_valid = '1' then
+		t_valid <= '1';
+		t <= t1_cycle30;
+	elsif t2_valid = '1' then
+		t_valid <= '1';
+		t <= t2_c30;
+	else 
+		t_valid <= '0';
+		t <= (OTHERS => '0');
+	end if;
+else
+	t_valid <= '0';
+	t <= (OTHERS => '0');
+end if;
+end process;
+
+shift : process(clk_en, clk, reset) is begin
+if reset = '1' then
+elsif clk_en = '1' AND rising_edge(clk) then
+	t2_c30 <= t2;
+	t1_c30 <= t1;
+	t_min_a_c29 <= t_min_a_c28;
+	t_min_a_c28 <= t_min_a_c27;
+	t_min_a_c27 <= t_min_a_c26;
+	t_min_a_c26 <= t_min_a_c25;
+	t_min_a_c25 <= t_min_a_c24;
+	t_min_a_c24 <= t_min_a_c23;
+	t_min_a_c23 <= t_min_a_c22;
+	t_min_a_c22 <= t_min_a_c21;
+	t_min_a_c21 <= t_min_a_c20;
+	t_min_a_c20 <= t_min_a_c19;
+	t_min_a_c19 <= t_min_a_c18;
+	t_min_a_c18 <= t_min_a_c17;
+	t_min_a_c17 <= t_min_a_c16;
+	t_min_a_c16 <= t_min_a_c15;
+	t_min_a_c15 <= t_min_a_c14;
+	t_min_a_c14 <= t_min_a_c13;
+	t_min_a_c13 <= t_min_a_c12;
+	t_min_a_c12 <= t_min_a_c11;
+	t_min_a_c11 <= t_min_a_c10;
+	t_min_a_c10 <= t_min_a_c9;
+	t_min_a_c9 <= t_min_a_c8;
+	t_min_a_c8 <= t_min_a_c7;
+	t_min_a_c7 <= t_min_a_c6;
+	t_min_a_c6 <= t_min_a_c5;
+	t_min_a_c5 <= t_min_a_c4;
+	t_min_a_c4 <= t_min_a_c3;
+	t_min_a_c3 <= t_min_a_c2;
+	t_min_a_c2 <= t_min_a_c1;
+	t_min_a_c1 <= t_min_a;
+	b_c28 <= b_c27;
+	b_c27 <= b_c26;
+	b_c26 <= b_c25;
+	b_c25 <= b_c24;
+	b_c24 <= b_c23;
+	b_c23 <= b_c22;
+	b_c22 <= b_c21;
+	b_c21 <= b_c20;
+	b_c20 <= b_c19;
+	b_c19 <= b_c18;
+	b_c18 <= b_c17;
+	b_c17 <= b_c16;
+	b_c16 <= b_c15;
+	b_c15 <= b_c14;
+	b_c14 <= b_c13;
+	b_c13 <= b_c12;
+	b_c12 <= b_c11;
+	b_c11 <= b_c10;
+	b_c10 <= b_c9;
+	b_c9 <= b_c8;
+	b_c8 <= b_c7;
+	b_c7 <= b_c6;
+	b_c6 <= b;
+	a_c6 <= a_c5;
+	a_c5 <= a_c4;
+	a_c4 <= a_c3;
+	a_c3 <= a_c2;
+	a_c2 <= a_c1;
+	a_c1 <= a;
+	radius2_c5 <= radius2_c4;
+	radius2_c4 <= radius2_c3;
+	radius2_c3 <= radius2_c2;
+	radius2_c2 <= radius2_c1;
+	radius2_c1 <= radius2;
+	dir_cycle1 <= dir;
+	valid_cycle30 <= valid_cycle29;
+	valid_cycle29 <= valid_cycle28;
+	valid_cycle28 <= valid_cycle27;
+	valid_cycle27 <= valid_cycle26;
+	valid_cycle26 <= valid_cycle25;
+	valid_cycle25 <= valid_cycle24;
+	valid_cycle24 <= valid_cycle23;
+	valid_cycle23 <= valid_cycle22;
+	valid_cycle22 <= valid_cycle21;
+	valid_cycle21 <= valid_cycle20;
+	valid_cycle20 <= valid_cycle19;
+	valid_cycle19 <= valid_cycle18;
+	valid_cycle18 <= valid_cycle17;
+	valid_cycle17 <= valid_cycle16;
+	valid_cycle16 <= valid_cycle15;
+	valid_cycle15 <= valid_cycle14;
+	valid_cycle14 <= valid;
+	t1_cycle30 <= t1;
+	t2_cycle30 <= t2;
 end if;
 end process;
 
 
-
+	
 end architecture;
 
