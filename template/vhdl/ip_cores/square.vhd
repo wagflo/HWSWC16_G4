@@ -43,10 +43,8 @@ USE altera_mf.all;
 ENTITY square IS
 	PORT
 	(
-		aclr		: IN STD_LOGIC ;
 		clock		: IN STD_LOGIC ;
 		dataa		: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
-		ena		: IN STD_LOGIC ;
 		result		: OUT STD_LOGIC_VECTOR (63 DOWNTO 0)
 	);
 END square;
@@ -67,10 +65,8 @@ ARCHITECTURE SYN OF square IS
 		result_width		: NATURAL
 	);
 	PORT (
-			aclr	: IN STD_LOGIC ;
 			clock	: IN STD_LOGIC ;
 			data	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
-			ena	: IN STD_LOGIC ;
 			result	: OUT STD_LOGIC_VECTOR (63 DOWNTO 0)
 	);
 	END COMPONENT;
@@ -82,15 +78,13 @@ BEGIN
 	GENERIC MAP (
 		data_width => 32,
 		lpm_type => "ALTSQUARE",
-		pipeline => 1,
+		pipeline => 2,
 		representation => "SIGNED",
 		result_width => 64
 	)
 	PORT MAP (
-		aclr => aclr,
 		clock => clock,
 		data => dataa,
-		ena => ena,
 		result => sub_wire0
 	);
 
@@ -105,34 +99,30 @@ END SYN;
 -- Retrieval info: PRIVATE: B_isConstant NUMERIC "0"
 -- Retrieval info: PRIVATE: ConstantB NUMERIC "0"
 -- Retrieval info: PRIVATE: INTENDED_DEVICE_FAMILY STRING "Cyclone IV E"
--- Retrieval info: PRIVATE: LPM_PIPELINE NUMERIC "1"
+-- Retrieval info: PRIVATE: LPM_PIPELINE NUMERIC "2"
 -- Retrieval info: PRIVATE: Latency NUMERIC "1"
 -- Retrieval info: PRIVATE: SYNTH_WRAPPER_GEN_POSTFIX STRING "0"
 -- Retrieval info: PRIVATE: SignedMult NUMERIC "1"
 -- Retrieval info: PRIVATE: USE_MULT NUMERIC "0"
 -- Retrieval info: PRIVATE: ValidConstant NUMERIC "0"
 -- Retrieval info: PRIVATE: WidthA NUMERIC "32"
--- Retrieval info: PRIVATE: WidthB NUMERIC "8"
+-- Retrieval info: PRIVATE: WidthB NUMERIC "32"
 -- Retrieval info: PRIVATE: WidthP NUMERIC "64"
--- Retrieval info: PRIVATE: aclr NUMERIC "1"
--- Retrieval info: PRIVATE: clken NUMERIC "1"
+-- Retrieval info: PRIVATE: aclr NUMERIC "0"
+-- Retrieval info: PRIVATE: clken NUMERIC "0"
 -- Retrieval info: PRIVATE: new_diagram STRING "1"
 -- Retrieval info: PRIVATE: optimize NUMERIC "0"
 -- Retrieval info: LIBRARY: altera_mf altera_mf.altera_mf_components.all
 -- Retrieval info: CONSTANT: DATA_WIDTH NUMERIC "32"
 -- Retrieval info: CONSTANT: LPM_TYPE STRING "ALTSQUARE"
--- Retrieval info: CONSTANT: PIPELINE NUMERIC "1"
+-- Retrieval info: CONSTANT: PIPELINE NUMERIC "2"
 -- Retrieval info: CONSTANT: REPRESENTATION STRING "SIGNED"
 -- Retrieval info: CONSTANT: RESULT_WIDTH NUMERIC "64"
--- Retrieval info: USED_PORT: aclr 0 0 0 0 INPUT NODEFVAL "aclr"
 -- Retrieval info: USED_PORT: clock 0 0 0 0 INPUT NODEFVAL "clock"
 -- Retrieval info: USED_PORT: dataa 0 0 32 0 INPUT NODEFVAL "dataa[31..0]"
--- Retrieval info: USED_PORT: ena 0 0 0 0 INPUT NODEFVAL "ena"
 -- Retrieval info: USED_PORT: result 0 0 64 0 OUTPUT NODEFVAL "result[63..0]"
--- Retrieval info: CONNECT: @aclr 0 0 0 0 aclr 0 0 0 0
 -- Retrieval info: CONNECT: @clock 0 0 0 0 clock 0 0 0 0
 -- Retrieval info: CONNECT: @data 0 0 32 0 dataa 0 0 32 0
--- Retrieval info: CONNECT: @ena 0 0 0 0 ena 0 0 0 0
 -- Retrieval info: CONNECT: result 0 0 64 0 @result 0 0 64 0
 -- Retrieval info: GEN_FILE: TYPE_NORMAL square.vhd TRUE
 -- Retrieval info: GEN_FILE: TYPE_NORMAL square.inc FALSE
