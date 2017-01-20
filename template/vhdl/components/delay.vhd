@@ -28,12 +28,14 @@ begin
 
 	IF1 : if DEPTH > 0 AND WIDTH > 0 generate -- sonst mit generate
 
-	--	-- echtes delay
+	-- real delay
 	store(WIDTH*(DEPTH +1) - 1 downto WIDTH*DEPTH) <= source;
 	dest <= store(WIDTH-1 DOWNTO 0);
 
 	sync : process(clk, reset, clken) is begin
 		if reset = '1' then
+
+			store(WIDTH*DEPTH - 1 DOWNTO 0) <= (others => '0');
 		elsif rising_edge(clk) AND clken =  '1' then
 			store(WIDTH*DEPTH - 1 DOWNTO 0) <= store(WIDTH*(DEPTH +1) - 1 DOWNTO WIDTH);
 		end if;
