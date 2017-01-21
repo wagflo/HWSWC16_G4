@@ -3,9 +3,22 @@ use ieee.std_logic_1164.all;
 
 package operations_pkg is 
 
+  type vector is record
+
+    x, y, z : std_logic_vector(31 DOWNTO 0);  
+
+  end record;
+
+  function tovector(input : std_logic_vector(95 downto 0)) return vector;
+
   component vecMulS is
 
     port (
+
+      clk : in std_logic;
+      clk_en : in std_logic;
+      reset : in std_logic;
+
       x, y, z 	: in std_logic_vector(31 DOWNTO 0);
 	
       scalar 	: in std_logic_vector(31 DOWNTO 0);
@@ -71,3 +84,18 @@ package operations_pkg is
 
 
 end package;
+
+package body operations_pkg is
+function tovector(input : std_logic_vector(95 downto 0)) return vector is
+
+variable result : vector;
+
+begin
+  result.x := input(95 downto 64);
+  result.y := input(63 downto 32);
+  result.z := input(31 downto  0);
+
+  return result;
+end tovector;
+
+end package body;

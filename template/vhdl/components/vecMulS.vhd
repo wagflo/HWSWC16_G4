@@ -9,11 +9,15 @@ use lpm.lpm_components.all;
 entity vecMulS is
 
 PORT (
+    clk : in std_logic;
+	clk_en : in std_logic;
+	reset : in std_logic;
+
 	x, y, z : in std_logic_vector(31 DOWNTO 0);
 	
 	scalar : in std_logic_vector(31 DOWNTO 0);
 	
-	x_res, y_res, z_res : out std_logic_vector(31 DOWNTO 0);
+	x_res, y_res, z_res : out std_logic_vector(31 DOWNTO 0)
 	
 );
 
@@ -41,6 +45,8 @@ COMPONENT lpm_mult
 	);
 	END COMPONENT;
 
+signal dummy1, dummy2, dummy3 : std_logic_vector(31 downto 0);
+
 begin
 
 x_mul : lpm_mult GENERIC MAP (
@@ -59,9 +65,9 @@ x_mul : lpm_mult GENERIC MAP (
 		dataa => x,
 		datab => scalar,
 		result(63) => x_res(31),
-		result(62 downto 47) => open,
+		result(62 downto 47) => dummy1(31 downto 16),
 		result(46 downto 16) => x_res(30 downto 0),
-		result(15 downto 0) => open
+		result(15 downto 0) => dummy1(15 downto 0)
 	);
 y_mul : lpm_mult GENERIC MAP (
 		lpm_hint => "MAXIMIZE_SPEED=9",
@@ -79,9 +85,9 @@ y_mul : lpm_mult GENERIC MAP (
 		dataa => y,
 		datab => scalar,
 		result(63) => y_res(31),
-		result(62 downto 47) => open,
+		result(62 downto 47) => dummy2(31 downto 16),
 		result(46 downto 16) => y_res(30 downto 0),
-		result(15 downto 0) => open
+		result(15 downto 0) => dummy2(15 downto 0)
 	);
 z_mul : lpm_mult GENERIC MAP (
 		lpm_hint => "MAXIMIZE_SPEED=9",
@@ -99,9 +105,9 @@ z_mul : lpm_mult GENERIC MAP (
 		dataa => z,
 		datab => scalar,
 		result(63) => z_res(31),
-		result(62 downto 47) => open,
+		result(62 downto 47) => dummy3(31 downto 16),
 		result(46 downto 16) => z_res(30 downto 0),
-		result(15 downto 0) => open
+		result(15 downto 0) => dummy3(15 downto 0)
 	);
 
 end architecture;
