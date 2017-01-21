@@ -8,17 +8,15 @@ use lpm.lpm_components.all;
 
 entity vecMulS is
 
-PORT (
-    clk : in std_logic;
-	clk_en : in std_logic;
-	reset : in std_logic;
+GENERIC (INPUT_WIDTH : NATURAL := 32; OUTPUT_WIDTH : NATURAL := 32);
 
-	x, y, z : in std_logic_vector(31 DOWNTO 0);
+PORT (
+	x, y, z : in std_logic_vector(INPUT_WIDTH-1 DOWNTO 0);
+	scalar : in std_logic_vector(INPUT_WIDTH-1 DOWNTO 0);
 	
-	scalar : in std_logic_vector(31 DOWNTO 0);
-	
-	x_res, y_res, z_res : out std_logic_vector(31 DOWNTO 0)
-	
+	x_res, y_res, z_res : out std_logic_vector(OUTPUT_WIDTH-1 DOWNTO 0);
+
+	clk, clk_en, reset : in std_logic	
 );
 
 end vecMulS;
@@ -39,24 +37,33 @@ COMPONENT lpm_mult
 			aclr	: IN STD_LOGIC ;
 			clken	: IN STD_LOGIC ;
 			clock	: IN STD_LOGIC ;
-			dataa	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
-			datab	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
-			result	: OUT STD_LOGIC_VECTOR (63 DOWNTO 0)
+			dataa	: IN STD_LOGIC_VECTOR (INPUT_WIDTH-1 DOWNTO 0);
+			datab	: IN STD_LOGIC_VECTOR (INPUT_WIDTH-1 DOWNTO 0);
+			result	: OUT STD_LOGIC_VECTOR (INPUT_WIDTH*2-1 DOWNTO 0)
 	);
 	END COMPONENT;
+signal subwire1, subwire0, subwire2 : std_logic_vector(INPUT_WIDTH*2-1 downto 0);
 
-signal dummy1, dummy2, dummy3 : std_logic_vector(31 downto 0);
+constant MULT_OPEN_1 : NATURAL := 2*INPUT_WIDTH - 1 - (2*INPUT_WIDTH - OUTPUT_WIDTH)/2;
+constant MULT_OPEN_2 : NATURAL := (2*INPUT_WIDTH - OUTPUT_WIDTH)/2;
 
 begin
+
+x_res(OUTPUT_WIDTH-1) <= subwire0(INPUT_WIDTH*2-1);
+x_res(OUTPUT_WIDTH-2 DOWNTO 0) <= subwire0(MULT_OPEN_1-1 DOWNTO MULT_OPEN_2);
+y_res(OUTPUT_WIDTH-1) <= subwire1(INPUT_WIDTH*2-1);
+y_res(OUTPUT_WIDTH-2 DOWNTO 0) <= subwire1(MULT_OPEN_1-1 DOWNTO MULT_OPEN_2);
+z_res(OUTPUT_WIDTH-1) <= subwire2(INPUT_WIDTH*2-1);
+z_res(OUTPUT_WIDTH-2 DOWNTO 0) <= subwire2(MULT_OPEN_1-1 DOWNTO MULT_OPEN_2);
 
 x_mul : lpm_mult GENERIC MAP (
 		lpm_hint => "MAXIMIZE_SPEED=9",
 		lpm_pipeline => 1,
 		lpm_representation => "SIGNED",
 		lpm_type => "LPM_MULT",
-		lpm_widtha => 32,
-		lpm_widthb => 32,
-		lpm_widthp => 64
+		lpm_widtha => INPUT_WIDTH,
+		lpm_widthb => INPUT_WIDTH,
+		lpm_widthp => INPUT_WIDTH*2
 	)
 	PORT MAP (
 		aclr => reset,
@@ -64,19 +71,16 @@ x_mul : lpm_mult GENERIC MAP (
 		clock => clk,
 		dataa => x,
 		datab => scalar,
-		result(63) => x_res(31),
-		result(62 downto 47) => dummy1(31 downto 16),
-		result(46 downto 16) => x_res(30 downto 0),
-		result(15 downto 0) => dummy1(15 downto 0)
+		result => subwire0
 	);
 y_mul : lpm_mult GENERIC MAP (
 		lpm_hint => "MAXIMIZE_SPEED=9",
 		lpm_pipeline => 1,
 		lpm_representation => "SIGNED",
 		lpm_type => "LPM_MULT",
-		lpm_widtha => 32,
-		lpm_widthb => 32,
-		lpm_widthp => 64
+		lpm_widtha => INPUT_WIDTH,
+		lpm_widthb => INPUT_WIDTH,
+		lpm_widthp => INPUT_WIDTH*2
 	)
 	PORT MAP (
 		aclr => reset,
@@ -84,19 +88,16 @@ y_mul : lpm_mult GENERIC MAP (
 		clock => clk,
 		dataa => y,
 		datab => scalar,
-		result(63) => y_res(31),
-		result(62 downto 47) => dummy2(31 downto 16),
-		result(46 downto 16) => y_res(30 downto 0),
-		result(15 downto 0) => dummy2(15 downto 0)
+		result => subwire1
 	);
 z_mul : lpm_mult GENERIC MAP (
 		lpm_hint => "MAXIMIZE_SPEED=9",
 		lpm_pipeline => 1,
 		lpm_representation => "SIGNED",
 		lpm_type => "LPM_MULT",
-		lpm_widtha => 32,
-		lpm_widthb => 32,
-		lpm_widthp => 64
+		lpm_widtha => INPUT_WIDTH,
+		lpm_widthb => INPUT_WIDTH,
+		lpm_widthp => INPUT_WIDTH*2
 	)
 	PORT MAP (
 		aclr => reset,
@@ -104,10 +105,7 @@ z_mul : lpm_mult GENERIC MAP (
 		clock => clk,
 		dataa => z,
 		datab => scalar,
-		result(63) => z_res(31),
-		result(62 downto 47) => dummy3(31 downto 16),
-		result(46 downto 16) => z_res(30 downto 0),
-		result(15 downto 0) => dummy3(15 downto 0)
+		result => subwire2
 	);
 
 end architecture;

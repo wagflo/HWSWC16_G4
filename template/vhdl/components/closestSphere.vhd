@@ -1,13 +1,18 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
+use work.delay_pkg.all;
+
+library lpm;
+use lpm.lpm_components.all; 
+
 entity closestSphere is
   port
     (
       clk   : in std_logic;
-      res_n : in std_logic;
-		
-		clk_en : in std_logic;
+      reset : in std_logic;
+      
+      clk_en : in std_logic;
 
       start	: in std_logic;
 
@@ -62,11 +67,14 @@ entity closestSphere is
       center_16  : in std_logic_vector(95 downto 0);
       radius2_16 : in std_logic_vector(31 downto 0);
 		
-	  num_spheres : in std_logic_vector(3 downto 0);
+	second_round : in std_logic;
+
+	spheres : in std_logic_vector(15 downto 0);
 
 	  t			: out std_logic_vector(31 downto 0);
 	  i_out		: out std_logic_vector(3 downto 0);
-	  done		: out std_logic);
+	  done		: out std_logic;
+	  valid_t 	: out std_logic);
 
 end entity;
 
@@ -137,7 +145,28 @@ COMPONENT lpm_compare
 	);
 	END COMPONENT;
 
-	
+COMPONENT lpm_divide
+	GENERIC (
+		lpm_drepresentation		: STRING;
+		lpm_hint		: STRING;
+		lpm_nrepresentation		: STRING;
+		lpm_pipeline		: NATURAL;
+		lpm_type		: STRING;
+		lpm_widthd		: NATURAL;
+		lpm_widthn		: NATURAL
+	);
+	PORT (
+			aclr	: IN STD_LOGIC ;
+			clken	: IN STD_LOGIC ;
+			clock	: IN STD_LOGIC ;
+			denom	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+			numer	: IN STD_LOGIC_VECTOR (47 DOWNTO 0);
+			quotient	: OUT STD_LOGIC_VECTOR (47 DOWNTO 0);
+			remain	: OUT STD_LOGIC_VECTOR (31 DOWNTO 0)
+	);
+	END COMPONENT;
+
+
 component vector_square is
 generic(INPUT_WIDTH : NATURAL := 32;
 OUTPUT_WIDTH : NATURAL := 32);
@@ -151,28 +180,65 @@ port (
 	result : out std_logic_vector (OUTPUT_WIDTH-1 downto 0)
 );
 end component;
-signal second_round : std_logic;
+signal sub_wire0_oneovera : std_logic_vector(47 downto 0);
 
-signal origin_c1, origin_c2, origin_c3, origin_c4, origin_c5, origin_c6,
-dir_c1, dir_c2, dir_c3, dir_c4, dir_c5, dir_c6,
+signal origin_c6, dir_c6,
 center_in1, center_in2, center_in3, center_in4, center_in5, center_in6, center_in7, center_in8
 	: std_logic_vector(95 downto 0);
-signal a_c5, a_c6, t_min_a,
-rad2_in1, rad2_in2, rad2_in3, rad2_in4, rad2_in5, rad2_in6, rad2_in7, rad2_in8
+signal a_c6, t_min_a,
+rad2_in1, rad2_in2, rad2_in3, rad2_in4, rad2_in5, rad2_in6, rad2_in7, rad2_in8,
+a, one_over_a,
+t1, t2, t3, t4, t5, t6, t7, t8, t12, t34, t56, t78, t1234, t5678, t12345678,
+t1_c34, t2_c34, t3_c34, t4_c34, t5_c34, t6_c34, t7_c34, t8_c34,
+t12_c35, t34_c35, t56_c35, t78_c35, t1234_c36, t5678_c36, t_old, t12345678_c37,
+t_int, t_int_c52
 : std_logic_vector(31 downto 0);
-signal subwire0_a_t_min : std_logic_vector(63 downto 0);
-signal start_shift : std_logic_vector(6 downto 0);
-signal cycle_even : std_logic := '1';
+signal subwire0_a_t_min, subwire0_t_out : std_logic_vector(63 downto 0);
+signal start_shift : std_logic_vector(54 downto 0);
+signal cycle_even : std_logic := '0';
+
+signal t1_valid, t2_valid, t3_valid, t4_valid, t5_valid, t6_valid, t7_valid, t8_valid,
+t2_smaller, t4_smaller, t6_smaller, t8_smaller, t34_smaller, t78_smaller, t5678_smaller,
+t12_valid, t34_valid, t56_valid, t78_valid,
+t1234_valid, t5678_valid, t12345678_valid,
+t1_valid_c34, t2_valid_c34, t3_valid_c34, t4_valid_c34, t5_valid_c34, t6_valid_c34, t7_valid_c34, t8_valid_c34,
+t12_valid_c35, t34_valid_c35, t56_valid_c35, t78_valid_c35,
+t1234_valid_c36, t5678_valid_c36, t12345678_valid_c37, t_old_valid, t_int_valid, t_old_smaller,
+smaller_numbers, start1, start2, start3, start4, start5, start6, start7, start8, t_int_valid_c54
+: std_logic;
+
+signal t12_sp, t34_sp, t56_sp, t78_sp, t1234_sp, t5678_sp, t12345678_sp,
+t12_sp_c35, t34_sp_c35, t56_sp_c35, t78_sp_c35, t1234_sp_c36, t5678_sp_c36, t12345678_sp_c37, t_old_sp
+	: std_logic_vector(2 DOWNTO 0);
+
+signal t_int_sp, t_int_sp_c54 : std_logic_vector(3 DOWNTO 0);
 
 constant TIME_MIN : std_logic_vector(31 downto 0) := x"0000199A";
 
 begin
 
-second_round <= num_spheres(3) OR num_spheres(2);
+
+center_in1 <= center_1 when (NOT(second_round) OR cycle_even) = '1' else center_9;
+center_in2 <= center_2 when (NOT(second_round) OR cycle_even) = '1' else center_10;
+center_in3 <= center_3 when (NOT(second_round) OR cycle_even) = '1' else center_11;
+center_in4 <= center_4 when (NOT(second_round) OR cycle_even) = '1' else center_12;
+center_in5 <= center_5 when (NOT(second_round) OR cycle_even) = '1' else center_13;
+center_in6 <= center_6 when (NOT(second_round) OR cycle_even) = '1' else center_14;
+center_in7 <= center_7 when (NOT(second_round) OR cycle_even) = '1' else center_15;
+center_in8 <= center_8 when (NOT(second_round) OR cycle_even) = '1' else center_16;
+
+rad2_in1 <= radius2_1 when (NOT(second_round) OR cycle_even) = '1' else radius2_9;
+rad2_in2 <= radius2_2 when (NOT(second_round) OR cycle_even) = '1' else radius2_10;
+rad2_in3 <= radius2_3 when (NOT(second_round) OR cycle_even) = '1' else radius2_11;
+rad2_in4 <= radius2_4 when (NOT(second_round) OR cycle_even) = '1' else radius2_12;
+rad2_in5 <= radius2_5 when (NOT(second_round) OR cycle_even) = '1' else radius2_13;
+rad2_in6 <= radius2_6 when (NOT(second_round) OR cycle_even) = '1' else radius2_14;
+rad2_in7 <= radius2_7 when (NOT(second_round) OR cycle_even) = '1' else radius2_15;
+rad2_in8 <= radius2_8 when (NOT(second_round) OR cycle_even) = '1' else radius2_16;
 
 t_min_a(31) <= subwire0_a_t_min(63);
 t_min_a(30 downto 0) <= subwire0_a_t_min(46 downto 16);
-start_shift(6) <= start;
+start_shift(54) <= (start AND clk_en) AND NOT(reset);
 
 a_calc_c1t4 : vector_square port map (
 	clk => clk,
@@ -185,8 +251,32 @@ a_calc_c1t4 : vector_square port map (
 	result => a
 );
 
-a_t_min_clac_c5t6 : lpm_mult GENERIC MAP (
-		lpm_hint => "MAXIMIZE_SPEED=9, ONE_INPUT_IS_CONSTANT=YES",
+one_over_a(31)    <= sub_wire0_oneovera(47);
+one_over_a(30 DOWNTO 0) <= sub_wire0_oneovera(30 DOWNTO 0);
+
+
+one_over_a_c5t52 : LPM_DIVIDE
+	GENERIC MAP (
+		lpm_drepresentation => "SIGNED",
+		lpm_hint => "ONE_INPUT_IS_CONSTANT=YES, LPM_REMAINDERPOSITIVE=TRUE",
+		lpm_nrepresentation => "SIGNED",
+		lpm_pipeline => 48,
+		lpm_type => "LPM_DIVIDE",
+		lpm_widthd => 32,
+		lpm_widthn => 48
+	)
+	PORT MAP (
+		aclr => reset,
+		clken => clk_en,
+		clock => clk,
+		denom => a,
+		numer => X"000100000000",
+		quotient => sub_wire0_oneovera,
+		remain => open
+	);
+
+a_t_min_calc_c5t6 : lpm_mult GENERIC MAP (
+		lpm_hint => "ONE_INPUT_IS_CONSTANT=YES",
 		lpm_pipeline => 2,
 		lpm_representation => "SIGNED",
 		lpm_type => "LPM_MULT",
@@ -195,16 +285,31 @@ a_t_min_clac_c5t6 : lpm_mult GENERIC MAP (
 		lpm_widthp => 64
 	)
 	PORT MAP (
-		aclr => res_n,
+		aclr => reset,
 		clken => clk_en,
 		clock => clk,
 		dataa => a,
 		datab => TIME_MIN,
 		result => subwire0_a_t_min
 	);
-	
-comp1_c7t36 : sphereDistance port map(
-	clk => clk, reset => res_n, clk_en => clk_en, start => start_shift(0),
+
+origin_delay : delay_element generic map(WIDTH => 96, DEPTH => 6)
+port map (clk => clk, reset => reset, clken => clk_en, source => origin, dest => origin_c6
+);
+
+dir_delay : delay_element generic map(WIDTH => 96, DEPTH => 6)
+port map (clk => clk, reset => reset, clken => clk_en, source => dir, dest => dir_c6
+);
+
+a_delay : delay_element generic map(WIDTH => 32, DEPTH => 2)
+port map (clk => clk, reset => reset, clken => clk_en, source => a, dest => a_c6
+);
+
+smaller_numbers <= cycle_even OR NOT(second_round);
+start1 <= start_shift(49) AND ((smaller_numbers AND spheres(0)) OR spheres(8));
+comp1_c7t33 : sphereDistance port map(
+	clk => clk, reset => reset, clk_en => clk_en, 
+	start => start1,
 	origin  => origin_c6,
    dir => dir_c6,
 	a => a_c6,
@@ -214,8 +319,10 @@ comp1_c7t36 : sphereDistance port map(
 	t => t1,
 	t_valid => t1_valid
 );
-comp2_c7t36 : sphereDistance port map(
-	clk => clk, reset => res_n, clk_en => clk_en, start => start_shift(0),
+start2 <= start_shift(49) AND ((smaller_numbers AND spheres(1)) OR spheres(9));
+comp2_c7t33 : sphereDistance port map(
+	clk => clk, reset => reset, clk_en => clk_en,
+	start => start2,
 	origin  => origin_c6,
    dir => dir_c6,
 	a => a_c6,
@@ -225,8 +332,10 @@ comp2_c7t36 : sphereDistance port map(
 	t => t2,
 	t_valid => t2_valid
 );
-comp3_c7t36 : sphereDistance port map(
-	clk => clk, reset => res_n, clk_en => clk_en, start => start_shift(0),
+start3 <= start_shift(49) AND ((smaller_numbers AND spheres(2)) OR spheres(10));
+comp3_c7t33 : sphereDistance port map(
+	clk => clk, reset => reset, clk_en => clk_en, 
+	start => start3,
 	origin  => origin_c6,
    dir => dir_c6,
 	a => a_c6,
@@ -236,8 +345,10 @@ comp3_c7t36 : sphereDistance port map(
 	t => t3,
 	t_valid => t3_valid
 );
-comp4_c7t36 : sphereDistance port map(
-	clk => clk, reset => res_n, clk_en => clk_en, start => start_shift(0),
+start4 <= start_shift(49) AND ((smaller_numbers AND spheres(3)) OR spheres(11));
+comp4_c7t33 : sphereDistance port map(
+	clk => clk, reset => reset, clk_en => clk_en, 
+	start => start4,
 	origin  => origin_c6,
    dir => dir_c6,
 	a => a_c6,
@@ -247,8 +358,10 @@ comp4_c7t36 : sphereDistance port map(
 	t => t4,
 	t_valid => t4_valid
 );
-comp5_c7t36 : sphereDistance port map(
-	clk => clk, reset => reset, clk_en => clk_en, start => start_shift(0),
+start5 <= start_shift(49) AND ((smaller_numbers AND spheres(4)) OR spheres(12));
+comp5_c7t33 : sphereDistance port map(
+	clk => clk, reset => reset, clk_en => clk_en, 
+	start => start,
 	origin  => origin_c6,
    dir => dir_c6,
 	a => a_c6,
@@ -258,8 +371,10 @@ comp5_c7t36 : sphereDistance port map(
 	t => t5,
 	t_valid => t5_valid
 );
-comp6_c7t36 : sphereDistance port map(
-	clk => clk, reset => reset, clk_en => clk_en, start => start_shift(0),
+start6 <= start_shift(49) AND ((smaller_numbers AND spheres(5)) OR spheres(13));
+comp6_c7t33 : sphereDistance port map(
+	clk => clk, reset => reset, clk_en => clk_en, 
+	start => start6,
 	origin  => origin_c6,
    dir => dir_c6,
 	a => a_c6,
@@ -269,8 +384,10 @@ comp6_c7t36 : sphereDistance port map(
 	t => t6,
 	t_valid => t6_valid
 );
-comp7_c7t36 : sphereDistance port map(
-	clk => clk, reset => reset, clk_en => clk_en, start => start_shift(0),
+start7 <= start_shift(49) AND ((smaller_numbers AND spheres(6)) OR spheres(14));
+comp7_c7t33 : sphereDistance port map(
+	clk => clk, reset => reset, clk_en => clk_en, 
+	start => start7,
 	origin  => origin_c6,
    dir => dir_c6,
 	a => a_c6,
@@ -280,8 +397,10 @@ comp7_c7t36 : sphereDistance port map(
 	t => t7,
 	t_valid => t7_valid
 );
-comp8_c7t36 : sphereDistance port map(
-	clk => clk, reset => res_n, clk_en => clk_en, start => start_shift(0),
+start8 <= start_shift(49) AND ((smaller_numbers AND spheres(7)) OR spheres(15));
+comp8_c7t33 : sphereDistance port map(
+	clk => clk, reset => reset, clk_en => clk_en,
+	start => start8,
 	origin  => origin_c6,
    dir => dir_c6,
 	a => a_c6,
@@ -292,7 +411,7 @@ comp8_c7t36 : sphereDistance port map(
 	t_valid => t8_valid
 );
 
-compare1t2_c37 : LPM_COMPARE 
+compare1t2_c34 : LPM_COMPARE 
 	GENERIC MAP (
 		lpm_hint => "ONE_INPUT_IS_CONSTANT=NO",
 		lpm_pipeline => 1,
@@ -301,14 +420,14 @@ compare1t2_c37 : LPM_COMPARE
 		lpm_width => 32
 	)
 	PORT MAP (
-		aclr => res_n,
+		aclr => reset,
 		clken => clk_en,
 		clock => clk,
 		dataa => t1,
 		datab => t2,
 		agb => t2_smaller
 	);
-compare3t4_c37 : LPM_COMPARE 
+compare3t4_c34 : LPM_COMPARE 
 	GENERIC MAP (
 		lpm_hint => "ONE_INPUT_IS_CONSTANT=NO",
 		lpm_pipeline => 1,
@@ -317,14 +436,14 @@ compare3t4_c37 : LPM_COMPARE
 		lpm_width => 32
 	)
 	PORT MAP (
-		aclr => res_n,
+		aclr => reset,
 		clken => clk_en,
 		clock => clk,
 		dataa => t3,
 		datab => t4,
 		agb => t4_smaller
 	);
-compare5t6_c37 : LPM_COMPARE 
+compare5t6_c34 : LPM_COMPARE 
 	GENERIC MAP (
 		lpm_hint => "ONE_INPUT_IS_CONSTANT=NO",
 		lpm_pipeline => 1,
@@ -333,14 +452,14 @@ compare5t6_c37 : LPM_COMPARE
 		lpm_width => 32
 	)
 	PORT MAP (
-		aclr => res_n,
+		aclr => reset,
 		clken => clk_en,
 		clock => clk,
 		dataa => t5,
 		datab => t6,
 		agb => t6_smaller
 	);
-compare7t8_c37 : LPM_COMPARE 
+compare7t8_c34 : LPM_COMPARE 
 	GENERIC MAP (
 		lpm_hint => "ONE_INPUT_IS_CONSTANT=NO",
 		lpm_pipeline => 1,
@@ -349,14 +468,17 @@ compare7t8_c37 : LPM_COMPARE
 		lpm_width => 32
 	)
 	PORT MAP (
-		aclr => res_n,
+		aclr => reset,
 		clken => clk_en,
 		clock => clk,
 		dataa => t7,
 		datab => t8,
 		agb => t8_smaller
 	);
-compare12t34_c38 : LPM_COMPARE 
+
+
+
+compare12t34_c35 : LPM_COMPARE 
 	GENERIC MAP (
 		lpm_hint => "ONE_INPUT_IS_CONSTANT=NO",
 		lpm_pipeline => 1,
@@ -372,7 +494,7 @@ compare12t34_c38 : LPM_COMPARE
 		datab => t34,
 		agb => t34_smaller
 	);
-compare56t78_c38 : LPM_COMPARE 
+compare56t78_c35 : LPM_COMPARE 
 	GENERIC MAP (
 		lpm_hint => "ONE_INPUT_IS_CONSTANT=NO",
 		lpm_pipeline => 1,
@@ -388,7 +510,7 @@ compare56t78_c38 : LPM_COMPARE
 		datab => t78,
 		agb => t78_smaller
 	);
-compare12345678_c39 : LPM_COMPARE 
+compare12345678_c36 : LPM_COMPARE 
 	GENERIC MAP (
 		lpm_hint => "ONE_INPUT_IS_CONSTANT=NO",
 		lpm_pipeline => 1,
@@ -404,92 +526,226 @@ compare12345678_c39 : LPM_COMPARE
 		datab => t5678,
 		agb => t5678_smaller
 	);
-	
+compare_old_c37 : LPM_COMPARE 
+	GENERIC MAP (
+		lpm_hint => "ONE_INPUT_IS_CONSTANT=NO",
+		lpm_pipeline => 1,
+		lpm_representation => "SIGNED",
+		lpm_type => "LPM_COMPARE",
+		lpm_width => 32
+	)
+	PORT MAP (
+		aclr => reset,
+		clken => clk_en,
+		clock => clk,
+		dataa => t12345678,
+		datab => t_old,
+		agb => t_old_smaller
+	);
+delay_t1 : delay_element generic map(WIDTH => 33, DEPTH => 1) port map (
+clk => clk, clken => clk_en, reset => reset, 
+source(32) => t1_valid, 
+source(31 downto 0) => t12,
+dest(32) => t1_valid_c34,
+dest(31 downto 0) => t1_c34
+);
+delay_t2 : delay_element generic map(WIDTH => 33, DEPTH => 1) port map (
+clk => clk, clken => clk_en, reset => reset, 
+source(32) => t2_valid, 
+source(31 downto 0) => t2,
+dest(32) => t2_valid_c34,
+dest(31 downto 0) => t2_c34
+);
+t12_valid <= t1_valid_c34 OR t2_valid_c34;
+t12 <= t2_c34 when (t2_valid_c34 AND (t2_smaller OR NOT(t1_valid_c34))) = '1' else t1_c34;
+t12_sp <= "001" when (t2_valid_c34 AND (t2_smaller OR NOT(t1_valid_c34))) = '1' else "000";
 
-t_min_first_level : process(t1_1, t2_1,t3_1,t4_1,t5_1,t6_1,t7_1,t8_1,
-	t1_valid_1,t2_valid_1,t3_valid_1,t4_valid_1,t5_valid_1, t6_valid_1, t7_valid_1, t8_valid_1,
-	t2_smaller, t4_smaller, t6_smaller, t8_smaller) is begin
-	
-	if t1_valid = '1' AND t2_valid = '1' then
-		t12_valid <= '1';
-		if t2_smaller = '1' then
-			t12 <= t2_1;
-		else
-			t12 <= t1_1;
-		end if;
-	elsif t1_valid = '1' then
-		t12_valid <= '1';
-		t12 <= t1_1;
-	elsif t2_valid = '1' then
-		t12_valid <= '1';
-		t12 <= t2_1;
-	else
-		t12_valid <= '0';
-		t12 <= (OTHERS => '0');
-	end if;
-	
-	if t3_valid = '1' AND t4_valid = '1' then
-		t34_valid <= '1';
-		if t4_smaller = '1' then
-			t34 <= t4_1;
-		else
-			t34 <= t3_1;
-		end if;
-	elsif t3_valid = '1' then
-		t34_valid <= '1';
-		t34 <= t3_1;
-	elsif t4_valid = '1' then
-		t34_valid <= '1';
-		t34 <= t4_1;
-	else
-		t34_valid <= '0';
-		t34 <= (OTHERS => '0');
-	end if;
-	
-	if t5_valid = '1' AND t6_valid = '1' then
-		t56_valid <= '1';
-		if t6_smaller = '1' then
-			t56 <= t6_1;
-		else
-			t56 <= t5_1;
-		end if;
-	elsif t5_valid = '1' then
-		t56_valid <= '1';
-		t56 <= t5_1;
-	elsif t6_valid = '1' then
-		t56_valid <= '1';
-		t56 <= t6_1;
-	else
-		t56_valid <= '0';
-		t56 <= (OTHERS => '0');
-	end if;
-	
-	if t7_valid = '1' AND t8_valid = '1' then
-		t78_valid <= '1';
-		if t8_smaller = '1' then
-			t78 <= t8_1;
-		else
-			t78 <= t7_1;
-		end if;
-	elsif t7_valid = '1' then
-		t78_valid <= '1';
-		t78 <= t7_1;
-	elsif t8_valid = '1' then
-		t78_valid <= '1';
-		t78 <= t8_1;
-	else
-		t78_valid <= '0';
-		t78 <= (OTHERS => '0');
-	end if;
-end process;
-	
+delay_t3 : delay_element generic map(WIDTH => 33, DEPTH => 1) port map (
+clk => clk, clken => clk_en, reset => reset, 
+source(32) => t3_valid, 
+source(31 downto 0) => t3,
+dest(32) => t3_valid_c34,
+dest(31 downto 0) => t3_c34
+);
+delay_t4 : delay_element generic map(WIDTH => 33, DEPTH => 1) port map (
+clk => clk, clken => clk_en, reset => reset, 
+source(32) => t4_valid, 
+source(31 downto 0) => t4,
+dest(32) => t4_valid_c34,
+dest(31 downto 0) => t4_c34
+);
+t34_valid <= t3_valid_c34 OR t4_valid_c34;
+t34 <= t4_c34 when (t4_valid_c34 AND (t4_smaller OR NOT(t3_valid_c34))) = '1' else t3_c34;
+t34_sp <= "011" when (t4_valid_c34 AND (t4_smaller OR NOT(t3_valid_c34))) = '1' else "010";
+
+delay_t5 : delay_element generic map(WIDTH => 33, DEPTH => 1) port map (
+clk => clk, clken => clk_en, reset => reset, 
+source(32) => t5_valid, 
+source(31 downto 0) => t5,
+dest(32) => t5_valid_c34,
+dest(31 downto 0) => t5_c34
+);
+delay_t6 : delay_element generic map(WIDTH => 33, DEPTH => 1) port map (
+clk => clk, clken => clk_en, reset => reset, 
+source(32) => t6_valid, 
+source(31 downto 0) => t6,
+dest(32) => t6_valid_c34,
+dest(31 downto 0) => t6_c34
+);
+t56_valid <= t5_valid_c34 OR t6_valid_c34;
+t56 <= t6_c34 when (t6_valid_c34 AND (t6_smaller OR NOT(t5_valid_c34))) = '1' else t5_c34;
+t56_sp <= "101" when (t6_valid_c34 AND (t6_smaller OR NOT(t5_valid_c34))) = '1' else "100";
+
+delay_t7 : delay_element generic map(WIDTH => 33, DEPTH => 1) port map (
+clk => clk, clken => clk_en, reset => reset, 
+source(32) => t7_valid, 
+source(31 downto 0) => t7,
+dest(32) => t7_valid_c34,
+dest(31 downto 0) => t7_c34
+);
+delay_t8 : delay_element generic map(WIDTH => 33, DEPTH => 1) port map (
+clk => clk, clken => clk_en, reset => reset, 
+source(32) => t8_valid, 
+source(31 downto 0) => t8,
+dest(32) => t8_valid_c34,
+dest(31 downto 0) => t8_c34
+);
+t78_valid <= t7_valid_c34 OR t8_valid_c34;
+t78 <= t8_c34 when (t8_valid_c34 AND (t8_smaller OR NOT(t7_valid_c34))) = '1' else t7_c34;
+t78_sp <= "111" when (t8_valid_c34 AND (t8_smaller OR NOT(t7_valid_c34))) = '1' else "110";
+
+delay_t12 : delay_element generic map(WIDTH => 36, DEPTH => 1) port map (
+clk => clk, clken => clk_en, reset => reset, 
+source(35 downto 33) => t12_sp,
+source(32) => t12_valid, 
+source(31 downto 0) => t12,
+dest(32) => t12_valid_c35,
+dest(31 downto 0) => t12_c35,
+dest(35 downto 33) => t12_sp_c35
+);
+delay_t34 : delay_element generic map(WIDTH => 36, DEPTH => 1) port map (
+clk => clk, clken => clk_en, reset => reset, 
+source(35 downto 33) => t34_sp,
+source(32) => t34_valid, 
+source(31 downto 0) => t34,
+dest(32) => t34_valid_c35,
+dest(31 downto 0) => t34_c35,
+dest(35 downto 33) => t34_sp_c35
+);
+t1234_valid <= t12_valid_c35 OR t34_valid_c35;
+t1234 <= t34_c35 when (t34_valid_c35 AND (t34_smaller OR NOT(t12_valid_c35))) = '1' else t12_c35;
+t1234_sp <= t34_sp_c35 when (t34_valid_c35 AND (t34_smaller OR NOT(t12_valid_c35))) = '1' else t12_sp_c35;
+
+delay_t56 : delay_element generic map(WIDTH => 36, DEPTH => 1) port map (
+clk => clk, clken => clk_en, reset => reset, 
+source(35 downto 33) => t56_sp,
+source(32) => t56_valid, 
+source(31 downto 0) => t12,
+dest(32) => t56_valid_c35,
+dest(31 downto 0) => t56_c35,
+dest(35 downto 33) => t56_sp_c35
+);
+delay_t78 : delay_element generic map(WIDTH => 36, DEPTH => 1) port map (
+clk => clk, clken => clk_en, reset => reset, 
+source(35 downto 33) => t78_sp,
+source(32) => t78_valid, 
+source(31 downto 0) => t78,
+dest(32) => t78_valid_c35,
+dest(31 downto 0) => t78_c35,
+dest(35 downto 33) => t78_sp_c35
+);
+t5678_valid <= t56_valid_c35 OR t78_valid_c35;
+t5678 <= t78_c35 when (t78_valid_c35 AND (t78_smaller OR NOT(t56_valid_c35))) = '1' else t56_c35;
+t5678_sp <= t78_sp_c35 when (t78_valid_c35 AND (t78_smaller OR NOT(t56_valid_c35))) = '1' else t56_sp_c35;
+
+delay_t1234 : delay_element generic map(WIDTH => 36, DEPTH => 1) port map (
+clk => clk, clken => clk_en, reset => reset, 
+source(35 downto 33) => t1234_sp,
+source(32) => t1234_valid, 
+source(31 downto 0) => t1234,
+dest(32) => t1234_valid_c36,
+dest(31 downto 0) => t1234_c36,
+dest(35 downto 33) => t1234_sp_c36
+);
+delay_t5678 : delay_element generic map(WIDTH => 36, DEPTH => 1) port map (
+clk => clk, clken => clk_en, reset => reset, 
+source(35 downto 33) => t5678_sp,
+source(32) => t5678_valid, 
+source(31 downto 0) => t5678,
+dest(32) => t5678_valid_c36,
+dest(31 downto 0) => t5678_c36,
+dest(35 downto 33) => t5678_sp_c36
+);
+t12345678_valid <= t1234_valid_c36 OR t5678_valid_c36;
+t12345678 <= t5678_c36 when (t5678_valid_c36 AND (t5678_smaller OR NOT(t1234_valid_c36))) = '1' else t1234_c36;
+t12345678_sp <= t5678_sp_c36 when (t5678_valid_c36 AND (t5678_smaller OR NOT(t1234_valid_c36))) = '1' else t1234_sp_c36;
+
+delay_t12345678 : delay_element generic map(WIDTH => 36, DEPTH => 1) port map (
+clk => clk, clken => clk_en, reset => reset, 
+source(35 downto 33) => t12345678_sp,
+source(32) => t12345678_valid, 
+source(31 downto 0) => t12345678,
+dest(32) => t12345678_valid_c37,
+dest(31 downto 0) => t12345678_c37,
+dest(35 downto 33) => t12345678_sp_c37
+);
+t_int_valid <= t12345678_valid_c37 OR (t_old_valid AND second_round AND cycle_even);
+t_int <= t_old when (t_old_valid AND t_old_smaller AND second_round AND cycle_even) = '1' else t12345678_c37;
+t_int_sp <= (3 => second_round AND NOT(cycle_even), 2 => t_old_sp(2), 1 => t_old_sp(1), 0 => t_old_sp(0))
+	when (t_old_valid AND t_old_smaller AND second_round AND cycle_even) = '1' 
+	else (3 => second_round AND cycle_even, 2 => t12345678_sp_c37(2), 1 => t12345678_sp_c37(1), 0 => t12345678_sp_c37(0));
+
 shift : process(clk, clk_en, reset) is begin
 if reset = '1' then
-	start_shift(5 downto 0) <= (OTHERS => '0');
-elsif rising_edge(clk) AND clk_en = '1' then
-	start_shift(5 downto 0) <= start_shift(6 downto 1);
+	start_shift(53 downto 0) <= (OTHERS => '0');
+	cycle_even <= '0';
+	t_old <= (OTHERS => '0');
+	t_old_valid <= '0';
+	t_old_sp <= (OTHERS => '0');
+elsif (rising_edge(clk) AND clk_en = '1') then
+	start_shift(53 downto 0) <= start_shift(54 downto 1);
+	cycle_even <= NOT(cycle_even);
+	t_old <= t12345678_c37;
+	t_old_valid <= t12345678_valid_c37;
+	t_old_sp <= t12345678_sp_c37;
 end if;
 end process;
+
+t_int_delay : delay_element generic map(WIDTH => 32, DEPTH => 15)
+port map( clk => clk, clken => clk_en, reset => reset, source => t_int, dest => t_int_c52
+);
+
+t_int_longer_delay : delay_element generic map(WIDTH => 5, DEPTH => 17)
+port map( clk => clk, clken => clk_en, reset => reset, 
+source(0) => t_int_valid,
+source(4 downto 1) => t_int_sp,
+dest(0) => t_int_valid_c54,
+dest(4 downto 1) => t_int_sp_c54
+);
+
+final_mult : lpm_mult GENERIC MAP (
+		lpm_hint => "MAXIMIZE_SPEED=9, ONE_INPUT_IS_CONSTANT=NO",
+		lpm_pipeline => 2,
+		lpm_representation => "SIGNED",
+		lpm_type => "LPM_MULT",
+		lpm_widtha => 32,
+		lpm_widthb => 32,
+		lpm_widthp => 64
+	)
+	PORT MAP (
+		aclr => reset,
+		clken => clk_en,
+		clock => clk,
+		dataa => t_int_c52,
+		datab => one_over_a,
+		result => subwire0_t_out
+	);
+
+t(31) <= subwire0_t_out(63);
+t(30 DOWNTO 0) <= subwire0_t_out(46 DOWNTO 16);
+done <= (NOT(second_round) OR NOT(cycle_even)) AND start_shift(0);
+i_out <= t_int_sp_c54;
+valid_t <= t_int_valid_c54;
 
 end architecture;
 
