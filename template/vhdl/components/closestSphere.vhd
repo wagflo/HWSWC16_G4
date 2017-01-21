@@ -150,7 +150,7 @@ port (
 	
 	result : out std_logic_vector (OUTPUT_WIDTH-1 downto 0)
 );
-
+end component;
 signal second_round : std_logic;
 
 signal origin_c1, origin_c2, origin_c3, origin_c4, origin_c5, origin_c6,
@@ -195,7 +195,7 @@ a_t_min_clac_c5t6 : lpm_mult GENERIC MAP (
 		lpm_widthp => 64
 	)
 	PORT MAP (
-		aclr => reset,
+		aclr => res_n,
 		clken => clk_en,
 		clock => clk,
 		dataa => a,
@@ -204,7 +204,7 @@ a_t_min_clac_c5t6 : lpm_mult GENERIC MAP (
 	);
 	
 comp1_c7t36 : sphereDistance port map(
-	clk => clk, reset => reset, clk_en => clk_en, start => start_shift(0),
+	clk => clk, reset => res_n, clk_en => clk_en, start => start_shift(0),
 	origin  => origin_c6,
    dir => dir_c6,
 	a => a_c6,
@@ -215,7 +215,7 @@ comp1_c7t36 : sphereDistance port map(
 	t_valid => t1_valid
 );
 comp2_c7t36 : sphereDistance port map(
-	clk => clk, reset => reset, clk_en => clk_en, start => start_shift(0),
+	clk => clk, reset => res_n, clk_en => clk_en, start => start_shift(0),
 	origin  => origin_c6,
    dir => dir_c6,
 	a => a_c6,
@@ -226,7 +226,7 @@ comp2_c7t36 : sphereDistance port map(
 	t_valid => t2_valid
 );
 comp3_c7t36 : sphereDistance port map(
-	clk => clk, reset => reset, clk_en => clk_en, start => start_shift(0),
+	clk => clk, reset => res_n, clk_en => clk_en, start => start_shift(0),
 	origin  => origin_c6,
    dir => dir_c6,
 	a => a_c6,
@@ -237,7 +237,7 @@ comp3_c7t36 : sphereDistance port map(
 	t_valid => t3_valid
 );
 comp4_c7t36 : sphereDistance port map(
-	clk => clk, reset => reset, clk_en => clk_en, start => start_shift(0),
+	clk => clk, reset => res_n, clk_en => clk_en, start => start_shift(0),
 	origin  => origin_c6,
    dir => dir_c6,
 	a => a_c6,
@@ -281,7 +281,7 @@ comp7_c7t36 : sphereDistance port map(
 	t_valid => t7_valid
 );
 comp8_c7t36 : sphereDistance port map(
-	clk => clk, reset => reset, clk_en => clk_en, start => start_shift(0),
+	clk => clk, reset => res_n, clk_en => clk_en, start => start_shift(0),
 	origin  => origin_c6,
    dir => dir_c6,
 	a => a_c6,
@@ -301,7 +301,7 @@ compare1t2_c37 : LPM_COMPARE
 		lpm_width => 32
 	)
 	PORT MAP (
-		aclr => reset,
+		aclr => res_n,
 		clken => clk_en,
 		clock => clk,
 		dataa => t1,
@@ -317,7 +317,7 @@ compare3t4_c37 : LPM_COMPARE
 		lpm_width => 32
 	)
 	PORT MAP (
-		aclr => reset,
+		aclr => res_n,
 		clken => clk_en,
 		clock => clk,
 		dataa => t3,
@@ -333,7 +333,7 @@ compare5t6_c37 : LPM_COMPARE
 		lpm_width => 32
 	)
 	PORT MAP (
-		aclr => reset,
+		aclr => res_n,
 		clken => clk_en,
 		clock => clk,
 		dataa => t5,
@@ -349,7 +349,7 @@ compare7t8_c37 : LPM_COMPARE
 		lpm_width => 32
 	)
 	PORT MAP (
-		aclr => reset,
+		aclr => res_n,
 		clken => clk_en,
 		clock => clk,
 		dataa => t7,

@@ -8,6 +8,8 @@ use lpm.lpm_components.all;
 LIBRARY altera_mf;
 USE altera_mf.all;
 
+USE work.delay_pkg.all;
+
 entity sphereDistance is
   port
     (
@@ -78,6 +80,7 @@ port (
 );
 
 end component;
+
 
 COMPONENT lpm_add_sub
 	GENERIC (
@@ -171,22 +174,18 @@ COMPONENT lpm_compare
 	);
 	END COMPONENT;
 signal dir_cycle1, oc : std_logic_vector(95 downto 0);
-signal t2_c30, t1_c30, t_min_a_c29,	t_min_a_c28, t_min_a_c27,	t_min_a_c26, t_min_a_c25,	t_min_a_c24, t_min_a_c23,
-t_min_a_c22, t_min_a_c21, t_min_a_c20, t_min_a_c19, t_min_a_c18, t_min_a_c17, t_min_a_c16, t_min_a_c15,
-t_min_a_c14, t_min_a_c13, t_min_a_c12, t_min_a_c11, t_min_a_c10, t_min_a_c9, t_min_a_c8, t_min_a_c7,
-t_min_a_c6, t_min_a_c5, t_min_a_c4, t_min_a_c3, t_min_a_c2, t_min_a_c1,
-b_c28, b_c27, b_c26, b_c25, b_c24, b_c23, b_c22, b_c21, b_c20, b_c19, b_c18, b_c17, b_c16, b_c15, b_c14, b_c13,
-b_c12, b_c11, b_c10, b_c9, b_c8, b_c7, b_c6, b, 
-a_c6, a_c5, a_c4,	a_c3, a_c2, a_c1,
-radius2_c5, radius2_c4, radius2_c3, radius2_c2, radius2_c1,
+signal t2_c30, t1_c30, t_min_a_c29,	
+b_c28, b_c6, b, 
+a_c6, 
+radius2_c5,
 almost_c, c, b2, ac, discr, discr_after, t1_cycle30, t2_cycle30, t1, t2, t_inputb
 	: std_logic_vector(31 downto 0);
-signal valid_cycle30,	valid_cycle29, valid_cycle28, valid_cycle27, valid_cycle26, valid_cycle25, valid_cycle24,
-valid_cycle23, valid_cycle22, valid_cycle21, valid_cycle20, valid_cycle19, valid_cycle18, valid_cycle17,
-valid_cycle16, valid_cycle15, valid_cycle14, valid, t1_valid, t2_valid, t2_smaller
+signal valid_cycle30, valid, t1_valid, t2_valid, t2_smaller
 : std_logic;
 signal subwire0_b2, subwire0_ac : std_logic_vector(63 downto 0);
 signal sub_wire0_discr_after : std_logic_vector(23 downto 0);
+
+signal start_shift : std_logic_vector(29 downto 0);
 begin
 
 b2(31) <= subwire0_b2(63);
@@ -196,6 +195,7 @@ ac(30 downto 0) <= subwire0_ac(46 downto 16);
 discr_after(31 downto 24) <= (OTHERS => '0');
 discr_after(23 downto 0) <= sub_wire0_discr_after(23 downto 0);
 t_inputb <= std_logic_vector(signed(NOT(b_c28)) + 1);
+start_shift(29) <= NOT(reset) AND start;
 
 sub_oc_c1 : vector_add_sub
 generic map(DATA_WIDTH => 32)
@@ -217,6 +217,40 @@ port map (
 	add_sub => '0'
 );
 
+delay_t_min_a : delay_element generic map(WIDTH => 32, DEPTH => 29)
+port map( clk => clk, clk_en => clk_en, reset => reset, source => t_min_a, dest => t_min_a_c29
+);
+
+delay_dir : delay_element generic map(WIDTH => 96, DEPTH => 1)
+port map( clk => clk, clk_en => clk_en, reset => reset, src => dir, dest => dir_cycle1s
+);
+
+delay_radius2 : delay_element generic map(WIDTH => 32, DEPTH => 5)
+port map(clk => clk, clk_en => clk_en, reset => reset, src => radius2, dest => radius2_c5
+);
+
+delay_b_first : delay_element generic map(WIDTH => 32, DEPTH => 1)
+port map (clk => clk, clk_en => clk_en, reset => reset, src => b, dest => b_c6
+);
+
+delay_b_first : delay_element generic map(WIDTH => 32, DEPTH => 1)
+port map (clk => clk, clk_en => clk_en, reset => reset, src => b, dest => b_c6
+);
+
+delay_b_second : delay_element generic map (WIDTH => 32, DEPTH => 22)
+port map ( clk => clk, clk_en => clk_en, reset => reset, src => b_c6, dest => b_c28);
+
+delay_a : delay_element generic map (WIDTH => 32, DEPTH => 6)
+port map(clk => clk, clk_en => clk_en, reset => reset, src => a, dest => a_c6);
+
+delay_t1 : delay_element generic map (WIDTH => 32, DEPTH => 1)
+port map(clk => clk, clk_en => clk_en, reset => reset, src => t1, dest => t1_cycle30);
+
+delay_t2 : delay_element generic map (WIDTH => 32, DEPTH => 1)
+port map(clk => clk, clk_en => clk_en, reset => reset, src => t2, dest => t2_cycle30);
+
+delay_valid : delay_element generic map (WIDTH => 1, DEPTH => 17)
+port map(clk => clk, clk_en => clk_en , reset => reset, src=>valid, dest => valid_cycle30);
 
 vecdot_b_c2to5 : vector_dot port map(
 	clk => clk,
@@ -437,8 +471,8 @@ t1_g_t2_c30 :LPM_COMPARE
 	);
 
 
-output : process(t1_valid, t2_valid, valid_cycle30, t2_smaller, t1_cycle30, t2_cycle30) is begin
-if valid_cycle30 = '1' then
+output : process(t1_valid, t2_valid, valid_cycle30, t2_smaller, t1_cycle30, t2_cycle30, start_shift(0)) is begin
+if valid_cycle30 = '1' AND start_shift(0) = '1' then
 	if t1_valid = '1' AND t2_valid = '1' then
 		if t2_smaller = '0' then
 			t_valid <= '1';
@@ -465,93 +499,10 @@ end process;
 
 shift : process(clk_en, clk, reset) is begin
 if reset = '1' then
+	start_shift (28 downto 0) <= (OTHERS=>'0');
 elsif clk_en = '1' AND rising_edge(clk) then
-	t2_c30 <= t2;
-	t1_c30 <= t1;
-	t_min_a_c29 <= t_min_a_c28;
-	t_min_a_c28 <= t_min_a_c27;
-	t_min_a_c27 <= t_min_a_c26;
-	t_min_a_c26 <= t_min_a_c25;
-	t_min_a_c25 <= t_min_a_c24;
-	t_min_a_c24 <= t_min_a_c23;
-	t_min_a_c23 <= t_min_a_c22;
-	t_min_a_c22 <= t_min_a_c21;
-	t_min_a_c21 <= t_min_a_c20;
-	t_min_a_c20 <= t_min_a_c19;
-	t_min_a_c19 <= t_min_a_c18;
-	t_min_a_c18 <= t_min_a_c17;
-	t_min_a_c17 <= t_min_a_c16;
-	t_min_a_c16 <= t_min_a_c15;
-	t_min_a_c15 <= t_min_a_c14;
-	t_min_a_c14 <= t_min_a_c13;
-	t_min_a_c13 <= t_min_a_c12;
-	t_min_a_c12 <= t_min_a_c11;
-	t_min_a_c11 <= t_min_a_c10;
-	t_min_a_c10 <= t_min_a_c9;
-	t_min_a_c9 <= t_min_a_c8;
-	t_min_a_c8 <= t_min_a_c7;
-	t_min_a_c7 <= t_min_a_c6;
-	t_min_a_c6 <= t_min_a_c5;
-	t_min_a_c5 <= t_min_a_c4;
-	t_min_a_c4 <= t_min_a_c3;
-	t_min_a_c3 <= t_min_a_c2;
-	t_min_a_c2 <= t_min_a_c1;
-	t_min_a_c1 <= t_min_a;
-	b_c28 <= b_c27;
-	b_c27 <= b_c26;
-	b_c26 <= b_c25;
-	b_c25 <= b_c24;
-	b_c24 <= b_c23;
-	b_c23 <= b_c22;
-	b_c22 <= b_c21;
-	b_c21 <= b_c20;
-	b_c20 <= b_c19;
-	b_c19 <= b_c18;
-	b_c18 <= b_c17;
-	b_c17 <= b_c16;
-	b_c16 <= b_c15;
-	b_c15 <= b_c14;
-	b_c14 <= b_c13;
-	b_c13 <= b_c12;
-	b_c12 <= b_c11;
-	b_c11 <= b_c10;
-	b_c10 <= b_c9;
-	b_c9 <= b_c8;
-	b_c8 <= b_c7;
-	b_c7 <= b_c6;
-	b_c6 <= b;
-	a_c6 <= a_c5;
-	a_c5 <= a_c4;
-	a_c4 <= a_c3;
-	a_c3 <= a_c2;
-	a_c2 <= a_c1;
-	a_c1 <= a;
-	radius2_c5 <= radius2_c4;
-	radius2_c4 <= radius2_c3;
-	radius2_c3 <= radius2_c2;
-	radius2_c2 <= radius2_c1;
-	radius2_c1 <= radius2;
-	dir_cycle1 <= dir;
-	valid_cycle30 <= valid_cycle29;
-	valid_cycle29 <= valid_cycle28;
-	valid_cycle28 <= valid_cycle27;
-	valid_cycle27 <= valid_cycle26;
-	valid_cycle26 <= valid_cycle25;
-	valid_cycle25 <= valid_cycle24;
-	valid_cycle24 <= valid_cycle23;
-	valid_cycle23 <= valid_cycle22;
-	valid_cycle22 <= valid_cycle21;
-	valid_cycle21 <= valid_cycle20;
-	valid_cycle20 <= valid_cycle19;
-	valid_cycle19 <= valid_cycle18;
-	valid_cycle18 <= valid_cycle17;
-	valid_cycle17 <= valid_cycle16;
-	valid_cycle16 <= valid_cycle15;
-	valid_cycle15 <= valid_cycle14;
-	valid_cycle14 <= valid;
-	t1_cycle30 <= t1;
-	t2_cycle30 <= t2;
-end if;
+	start_shift (28 downto 0) <= start_shift(29 downto 1);
+ end if;
 end process;
 
 

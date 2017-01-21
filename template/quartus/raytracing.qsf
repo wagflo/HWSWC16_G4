@@ -200,6 +200,8 @@ set_global_assignment -name TIMEQUEST_MULTICORNER_ANALYSIS ON
 set_global_assignment -name SMART_RECOMPILE ON
 set_global_assignment -name PROJECT_IP_REGENERATION_POLICY ALWAYS_REGENERATE_IP
 set_global_assignment -name OPTIMIZATION_MODE BALANCED
+set_global_assignment -name VHDL_FILE ../vhdl/components/delay.vhd
+set_global_assignment -name VHDL_FILE ../vhdl/components/delay_pkg.vhd
 set_global_assignment -name VHDL_FILE ../vhdl/components/closestSphere.vhd
 set_global_assignment -name VHDL_FILE ../vhdl/components/vector_add_sub.vhd
 set_global_assignment -name VHDL_FILE ../vhdl/components/vector_square.vhd
