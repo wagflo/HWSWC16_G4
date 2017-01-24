@@ -56,6 +56,7 @@ signal results_ready : std_logic_vector(47 downto 0) := (OTHERS => '0');
 signal res, num_input, next_num_input : std_logic_vector(47 downto 0);
 signal R, W, E, F, shift_bit, next_done, next_rd, next_wr, next_start, last_start : std_logic;
 signal write_input : std_logic_vector(31 downto 0);
+signal wayne : std_logic_vector(15 downto 0);
 begin
 ip : lpm_div_gen port map (
 	aclr => reset,
@@ -65,7 +66,7 @@ ip : lpm_div_gen port map (
     numer(15 downto 0) => (Others => '0'),
 	quotient(47 downto 47) => write_input(31 downto 31),
     quotient(30 downto 0) => write_input(30 downto 0),
-    quotient (46 downto 31) => open,
+    quotient (46 downto 31) => wayne,
 	remain => open
 );
 

@@ -13,8 +13,8 @@ architecture arch of latencyTest is
 signal clk : std_logic := '0';
 signal res : std_logic := '1';
 signal s,t : std_logic_vector (31 downto 0) := x"00000000";
-signal v1, v2 : std_logic_vector(95 downto 0) := X"000100000001000000010000";
-signal v3, v4 : std_logic_vector(95 downto 0) := X"000100000001000000010000";
+constant v1, v2 : std_logic_vector(95 downto 0) := X"000100000001000000010000";
+constant v3, v4 : std_logic_vector(95 downto 0) := X"000100000001000000010000";
 signal result : vector;
 
 

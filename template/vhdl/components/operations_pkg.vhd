@@ -11,6 +11,30 @@ package operations_pkg is
 
   function tovector(input : std_logic_vector(95 downto 0)) return vector;
 
+  type sphere is record
+	center : vector;
+	radius : std_logic_vector(32 downto 0);
+	radius2 : std_logic_vector(32 downto 0);
+  end record;
+
+  type sphere_array is array (15 downto 0) of sphere;
+
+  type frame_info is record
+	all_info : std_logic;
+	camera_origin : vector;
+	addition_base : vector;
+	addition_hor : vector;
+	addition_ver : vector;
+	frame_no : std_logic_vector(1 downto 0);
+  end record;
+
+  type frame_array is array(1 downto 0) of frame_info;
+
+  type scene is record
+	num_spheres, num_reflects, num_samples : std_logic_vector(7 downto 0);
+	spheres : sphere_array;
+  end record;
+
   component vecMulS is
 
     port (

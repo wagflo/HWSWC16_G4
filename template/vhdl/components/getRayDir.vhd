@@ -9,6 +9,7 @@ entity getRayDir is
     clk 	: in std_logic;
     clken 	: in std_logic;
     reset 	: in std_logic;
+    start 	: in std_logic := '1';
 
     s, t 					: in std_logic_vector(31 downto 0);
     camera_horizontal, camera_vertical 		: in vector;
@@ -24,8 +25,8 @@ architecture beh of getRayDir is
 signal scaled_horiz_next, scaled_vert_next, scaled_both_next, point_in_plane_next : vector;
 signal scaled_horiz, scaled_vert, scaled_both, point_in_plane : vector;
 
-     signal zero : std_logic_vector(95 downto 0) := (others => '0');
-     signal zerovec : vector := tovector(zero);
+     constant zero : std_logic_vector(95 downto 0) := (others => '0');
+     constant zerovec : vector := tovector(zero);
 
 
 begin
@@ -43,9 +44,9 @@ begin
 
     scalar => s,
 
-    x_res => scaled_horiz_next.x,
-    y_res => scaled_horiz_next.y,
-    z_res => scaled_horiz_next.z
+    x_res => scaled_horiz.x,
+    y_res => scaled_horiz.y,
+    z_res => scaled_horiz.z
 
   );
 
@@ -62,9 +63,9 @@ begin
 
     scalar => t,
 
-    x_res => scaled_vert_next.x,
-    y_res => scaled_vert_next.y,
-    z_res => scaled_vert_next.z
+    x_res => scaled_vert.x,
+    y_res => scaled_vert.y,
+    z_res => scaled_vert.z
 
   );
 
@@ -84,9 +85,9 @@ begin
     clk => clk,
     clk_en => clken,
 	
-    x => scaled_both_next.x,
-    y => scaled_both_next.y,
-    z => scaled_both_next.z
+    x => scaled_both.x,
+    y => scaled_both.y,
+    z => scaled_both.z
 
   );
 
@@ -146,12 +147,6 @@ begin
        scaled_horiz <= zerovec;
        scaled_vert <= zerovec;       
        scaled_both <= zerovec;
-
-     elsif rising_edge(clk) and clken = '1' then
-
-       scaled_horiz <= scaled_horiz_next;
-       scaled_vert <= scaled_vert_next;
-       scaled_both <= scaled_both_next;
 
      end if;
    end process;
