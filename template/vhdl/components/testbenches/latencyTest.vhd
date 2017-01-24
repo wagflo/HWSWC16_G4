@@ -18,6 +18,10 @@ constant v3, v4 : std_logic_vector(95 downto 0) := X"000100000001000000010000";
 signal result : vector;
 
 
+constant three : std_logic_vector(31 downto 0) := x"00030000";
+constant five : std_logic_vector(31 downto 0) := x"00050000";
+
+
 
 begin
 
@@ -43,12 +47,10 @@ res <= '0' after 25 ns;
 
 data : process(clk) is 
 begin
-if falling_edge(clk) then
-	s <= std_logic_vector(signed(s) + X"3");
-	t <= std_logic_vector(signed(t) + X"5");
+if rising_edge(clk) then
+	s <= std_logic_vector(signed(s) + signed(three));
+	t <= std_logic_vector(signed(t) + signed(five));
 end if;
 end process;
-
-assert clk = '1';
 
 end architecture;

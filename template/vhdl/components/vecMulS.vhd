@@ -58,7 +58,7 @@ z_res(OUTPUT_WIDTH-2 DOWNTO 0) <= subwire2(MULT_OPEN_1-1 DOWNTO MULT_OPEN_2);
 
 x_mul : lpm_mult GENERIC MAP (
 		lpm_hint => "MAXIMIZE_SPEED=9",
-		lpm_pipeline => 1,
+		lpm_pipeline => 2,
 		lpm_representation => "SIGNED",
 		lpm_type => "LPM_MULT",
 		lpm_widtha => INPUT_WIDTH,
@@ -75,7 +75,7 @@ x_mul : lpm_mult GENERIC MAP (
 	);
 y_mul : lpm_mult GENERIC MAP (
 		lpm_hint => "MAXIMIZE_SPEED=9",
-		lpm_pipeline => 1,
+		lpm_pipeline => 2,
 		lpm_representation => "SIGNED",
 		lpm_type => "LPM_MULT",
 		lpm_widtha => INPUT_WIDTH,
@@ -92,7 +92,7 @@ y_mul : lpm_mult GENERIC MAP (
 	);
 z_mul : lpm_mult GENERIC MAP (
 		lpm_hint => "MAXIMIZE_SPEED=9",
-		lpm_pipeline => 1,
+		lpm_pipeline => 2,
 		lpm_representation => "SIGNED",
 		lpm_type => "LPM_MULT",
 		lpm_widtha => INPUT_WIDTH,

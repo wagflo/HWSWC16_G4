@@ -22,7 +22,6 @@ end entity;
 
 architecture beh of getRayDir is
 
-signal scaled_horiz_next, scaled_vert_next, scaled_both_next, point_in_plane_next : vector;
 signal scaled_horiz, scaled_vert, scaled_both, point_in_plane : vector;
 
      constant zero : std_logic_vector(95 downto 0) := (others => '0');
@@ -134,22 +133,6 @@ begin
     z => result.z
 
   );
-
-   sync : process (clk, clken, reset)
-
-
-
-     begin
-     
-
-     if reset = '1' then
-
-       scaled_horiz <= zerovec;
-       scaled_vert <= zerovec;       
-       scaled_both <= zerovec;
-
-     end if;
-   end process;
 
 
 end architecture;
