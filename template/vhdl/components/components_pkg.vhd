@@ -5,6 +5,26 @@ use work.operations_pkg.all;
 
 package components_pkg is
 
+
+
+component anyRefl is
+  port
+  (
+    clk 	: in std_logic;
+    reset 	: in std_logic;
+   
+    -- kein clock enable, nehme valid
+
+    validRay 	: in std_logic;
+    startBundle : in std_logic;
+
+    valid_t	: in std_logic;
+    t 		: in std_logic_vector(31 downto 0);
+    
+    isReflected : out std_logic
+  );
+end component;
+
 component getRayDirOpt is
 
 port(

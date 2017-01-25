@@ -35,8 +35,8 @@ constant initial_frame : frame_info := (all_info => '0',
 	addition_ver => zero_vector,
 	frame_no => (OTHERS => '0'));
 
-signal sc : scene;
-signal frames : frame_array := (OTHERS => initial_frame);
+signal sc, sc_next : scene;
+signal frames, frames_next : frame_array := (OTHERS => initial_frame);
 
 constant can_write : std_logic_vector(31 downto 0) := X"00000000";
 constant finish_frame : std_logic_vector(3 downto 0) := X"F";
@@ -60,10 +60,12 @@ signal t, elem, coord, sphere : std_logic_vector(3 downto 0);
 signal number_filled : natural := 0;
 signal number_filled_v : std_logic_vector(1 downto 0);
 
-signal can_feed, start_rdo, done_rdo : std_logic;
+signal can_feed, start_rdo, start_rdo_next, done_rdo : std_logic;
 
 signal result_rdo : vector;
 signal position_rdo : std_logic_vector(21 downto 0);
+
+signal sph_demux : std_logic_vector(15 downto 0) := "0000000000011111";
 
 signal start_sphere, valid, done : std_logic;
 
@@ -75,6 +77,22 @@ begin
 next_readdata(31 downto 1) <= (OTHERS => '0');
 next_readdata(0) <= frames(0).all_info AND frames(1).all_info;
 number_filled_v <= (1 => frames(0).all_info AND frames(1).all_info, 0 => frames(0).all_info XOR frames(1).all_info);
+sph_demux(15) <= (sc.num_spheres(3) AND sc.num_spheres(2) AND sc.num_spheres(1) AND sc.num_spheres(0));
+sph_demux(14) <= (sc.num_spheres(3) AND sc.num_spheres(2) AND sc.num_spheres(1));
+sph_demux(13) <= (sc.num_spheres(3) AND sc.num_spheres(2) AND (sc.num_spheres(0) OR sc.num_spheres(1)));
+sph_demux(12) <= (sc.num_spheres(3) AND sc.num_spheres(2));
+sph_demux(11) <= (sc.num_spheres(3) AND (sc.num_spheres(2) OR (sc.num_spheres(1) AND sc.num_spheres(0))));
+sph_demux(10) <= (sc.num_spheres(3) AND (sc.num_spheres(2) OR sc.num_spheres(1)));
+sph_demux(9) <= (sc.num_spheres(3) AND (sc.num_spheres(2) OR sc.num_spheres(1) OR sc.num_spheres(0)));
+sph_demux(8) <= sc.num_spheres(3);
+sph_demux(7) <= sc.num_spheres(3) OR (sc.num_spheres(2) AND sc.num_spheres(1) AND sc.num_spheres(0));
+sph_demux(6) <= sc.num_spheres(3) OR (sc.num_spheres(2) AND sc.num_spheres(1));
+sph_demux(5) <= sc.num_spheres(3) OR (sc.num_spheres(2) AND (sc.num_spheres(0) OR sc.num_spheres(1)));
+sph_demux(4) <= sc.num_spheres(3) OR (sc.num_spheres(2));
+sph_demux(3) <= sc.num_spheres(3) OR (sc.num_spheres(2) OR (sc.num_spheres(1) AND sc.num_spheres(0)));
+sph_demux(2) <= sc.num_spheres(3) OR (sc.num_spheres(2) OR sc.num_spheres(1));
+sph_demux(1) <= sc.num_spheres(3) OR (sc.num_spheres(2) OR sc.num_spheres(1) OR sc.num_spheres(0));
+sph_demux(0) <= '1';
 
 syn : process(res_n, clk) is begin
 	if res_n = '1' then 
@@ -84,6 +102,8 @@ syn : process(res_n, clk) is begin
 	elsif rising_edge(clk) then
 		readdata <= next_readdata;
 		number_filled <= natural(to_integer(unsigned(number_filled_v)));
+		frames <= frames_next;
+		start_rdo <= start_rdo_next;
 	end if;
 end process;
 
@@ -91,6 +111,8 @@ t <= address(31 downto 28);
 sphere <= address(11 downto 8);
 elem <= address(7 downto 4);
 coord <= address(3 downto 0);
+
+can_feed <= frames(0).all_info AND NOT(sc.num_spheres(3));
 
 rdo : getRayDirOpt port map (
     clk => clk,
@@ -120,42 +142,42 @@ gcs : closestSphere port map (
 	reset => res_n,
 	clk_en => '1',
 	start => start_sphere,
-	origin => X"000000000000000000000000",
-	dir => X"000000000001000000000000",
-	center_1 => X"000000000005000000000000",
-	radius2_1 => X"00040000",
-	center_2 => X"000000000005000000000000",
-	radius2_2 => X"00040000",
-	radius2_3 => X"00040000",
-	center_3 => X"000000000005000000000000",
-	radius2_4 => X"00040000",
-	center_4 => X"000000000005000000000000",
-	radius2_5 => X"00040000",
-	center_5 => X"000000000005000000000000",
-	radius2_6 => X"00040000",
-	center_6 => X"000000000005000000000000",
-	radius2_7 => X"00040000",
-	center_7 => X"000000000005000000000000",
-	radius2_8 => X"00040000",
-	center_8 => X"000000000005000000000000",
-	radius2_9 => X"00040000",
-	center_9 => X"000000000005000000000000",
-	radius2_10 => X"00040000",
-	center_10 => X"000000000005000000000000",
-	radius2_11 => X"00040000",
-	center_11 => X"000000000005000000000000",
-	radius2_12 => X"00040000",
-	center_12 => X"000000000005000000000000",
-	radius2_13 => X"00040000",
-	center_13 => X"000000000005000000000000",
-	radius2_14 => X"00040000",
-	center_14 => X"000000000005000000000000",
-	radius2_15 => X"00040000",
-	center_15 => X"000000000005000000000000",
-	radius2_16 => X"00040000",
-	center_16 => X"000000000005000000000000",
-	second_round => '0',
-	spheres => "0000000000000001",
+	origin => to_std_logic(frames(0).camera_origin),
+	dir => to_std_logic(result_rdo),
+	center_1 => to_std_logic(sc.spheres(0).center),
+	radius2_1 => sc.spheres(0).radius2,
+	center_2 => to_std_logic(sc.spheres(1).center),
+	radius2_2 => sc.spheres(1).radius2,
+	radius2_3 => sc.spheres(2).radius2,
+	center_3 => to_std_logic(sc.spheres(2).center),
+	radius2_4 => sc.spheres(3).radius2,
+	center_4 => to_std_logic(sc.spheres(3).center),
+	radius2_5 => sc.spheres(4).radius2,
+	center_5 => to_std_logic(sc.spheres(4).center),
+	radius2_6 => sc.spheres(5).radius2,
+	center_6 => to_std_logic(sc.spheres(5).center),
+	radius2_7 => sc.spheres(6).radius2,
+	center_7 => to_std_logic(sc.spheres(6).center),
+	radius2_8 => sc.spheres(7).radius2,
+	center_8 => to_std_logic(sc.spheres(7).center),
+	radius2_9 => sc.spheres(8).radius2,
+	center_9 => to_std_logic(sc.spheres(8).center),
+	radius2_10 => sc.spheres(9).radius2,
+	center_10 => to_std_logic(sc.spheres(9).center),
+	radius2_11 => sc.spheres(10).radius2,
+	center_11 => to_std_logic(sc.spheres(10).center),
+	radius2_12 => sc.spheres(11).radius2,
+	center_12 => to_std_logic(sc.spheres(11).center),
+	radius2_13 => sc.spheres(12).radius2,
+	center_13 => to_std_logic(sc.spheres(12).center),
+	radius2_14 => sc.spheres(13).radius2,
+	center_14 => to_std_logic(sc.spheres(13).center),
+	radius2_15 => sc.spheres(14).radius2,
+	center_15 => to_std_logic(sc.spheres(14).center),
+	radius2_16 => sc.spheres(15).radius2,
+	center_16 => to_std_logic(sc.spheres(15).center),
+	second_round => sc.num_spheres(3),
+	spheres => sph_demux,
 	t => distance,
 	i_out => i,
 	done => done,
@@ -167,66 +189,72 @@ if write = '1' then
 --write
 	if t = finish_frame then
 		--finish_frame
-		frames(number_filled).all_info <= '1';
+		frames_next(number_filled).all_info <= '1';
+		start_rdo_next <= '1';
 	elsif t = change_spheres then
 		--change a param of a sphere
 		if elem = radius then
-			sc.spheres(to_integer(unsigned(sphere))).radius <= writedata;
+			sc_next.spheres(to_integer(unsigned(sphere))).radius <= writedata;
 		elsif elem = radius2 then
-			sc.spheres(to_integer(unsigned(sphere))).radius2 <= writedata;
+			sc_next.spheres(to_integer(unsigned(sphere))).radius2 <= writedata;
 		elsif elem = center then
 			if coord = x then
-				sc.spheres(to_integer(unsigned(sphere))).center.x <= writedata;
+				sc_next.spheres(to_integer(unsigned(sphere))).center.x <= writedata;
 			elsif coord = y then
-				sc.spheres(to_integer(unsigned(sphere))).center.y <= writedata;
+				sc_next.spheres(to_integer(unsigned(sphere))).center.y <= writedata;
 			elsif coord = z then
-				sc.spheres(to_integer(unsigned(sphere))).center.z <= writedata;
+				sc_next.spheres(to_integer(unsigned(sphere))).center.z <= writedata;
 			end if;
 		end if;
 	elsif t = change_general then
 		--change the gerneral parameters
-		sc.num_spheres <= writedata(31 downto 24);
-		sc.num_reflects <= writedata(23 downto 16);
-		sc.num_samples_i <= writedata(15 downto 8);
-		sc.num_samples_j <= writedata(7 downto 0);
+		sc_next.num_spheres <= writedata(31 downto 24);
+		sc_next.num_reflects <= writedata(23 downto 16);
+		sc_next.num_samples_i <= writedata(15 downto 8);
+		sc_next.num_samples_j <= writedata(7 downto 0);
 	elsif t = change_frame then
 		--set a param in the camera position
 		if elem = camera_origin then
 			if coord = x then
-				frames(number_filled).camera_origin.x <= writedata;
+				frames_next(number_filled).camera_origin.x <= writedata;
 			elsif coord = y then
-				frames(number_filled).camera_origin.y <= writedata;
+				frames_next(number_filled).camera_origin.y <= writedata;
 			elsif coord = z then
-				frames(number_filled).camera_origin.z <= writedata;
+				frames_next(number_filled).camera_origin.z <= writedata;
 			end if;
 		elsif elem = addition_base then
 			if coord = x then
-				frames(number_filled).addition_base.x <= writedata;
+				frames_next(number_filled).addition_base.x <= writedata;
 			elsif coord = y then
-				frames(number_filled).addition_base.y <= writedata;
+				frames_next(number_filled).addition_base.y <= writedata;
 			elsif coord = z then
-				frames(number_filled).addition_base.z <= writedata;
+				frames_next(number_filled).addition_base.z <= writedata;
 			end if;
 		elsif elem = addition_hor then
 			if coord = x then
-				frames(number_filled).addition_hor.x <= writedata;
+				frames_next(number_filled).addition_hor.x <= writedata;
 			elsif coord = y then
-				frames(number_filled).addition_hor.y <= writedata;
+				frames_next(number_filled).addition_hor.y <= writedata;
 			elsif coord = z then
-				frames(number_filled).addition_hor.z <= writedata;
+				frames_next(number_filled).addition_hor.z <= writedata;
 			end if;
 		elsif elem = addition_ver then
 			if coord = x then
-				frames(number_filled).addition_ver.x <= writedata;
+				frames_next(number_filled).addition_ver.x <= writedata;
 			elsif coord = y then
-				frames(number_filled).addition_ver.y <= writedata;
+				frames_next(number_filled).addition_ver.y <= writedata;
 			elsif coord = z then
-				frames(number_filled).addition_ver.z <= writedata;
+				frames_next(number_filled).addition_ver.z <= writedata;
 			end if;
 		elsif elem = frame_no then
-			frames(number_filled).frame_no <= writedata(1 downto 0);
+			frames_next(number_filled).frame_no <= writedata(1 downto 0);
 		end if;
 	end if;
+elsif done_rdo = '1' then
+	frames_next(0) <= frames(1);
+	frames_next(1) <= initial_frame;
+else 
+	start_rdo_next <= '0';
 end if;
 end process;
 

@@ -11,6 +11,8 @@ package operations_pkg is
 
   function tovector(input : std_logic_vector(95 downto 0)) return vector;
 
+  function to_std_logic(input : vector) return std_logic_vector;
+
   type sphere is record
 	center : vector;
 	radius : std_logic_vector(31 downto 0);
@@ -122,4 +124,14 @@ begin
   return result;
 end tovector;
 
+function to_std_logic(input : vector) return std_logic_vector is
+variable result : std_logic_vector(95 downto 0);
+
+begin
+	result(95 downto 64) := input.x;
+	result(63 downto 32) := input.y;
+	result(31 downto 0) := input.z;
+	
+	return result;
+end to_std_logic;
 end package body;
