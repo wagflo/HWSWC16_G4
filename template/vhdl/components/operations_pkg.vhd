@@ -13,8 +13,8 @@ package operations_pkg is
 
   type sphere is record
 	center : vector;
-	radius : std_logic_vector(32 downto 0);
-	radius2 : std_logic_vector(32 downto 0);
+	radius : std_logic_vector(31 downto 0);
+	radius2 : std_logic_vector(31 downto 0);
   end record;
 
   type sphere_array is array (15 downto 0) of sphere;
@@ -31,7 +31,7 @@ package operations_pkg is
   type frame_array is array(1 downto 0) of frame_info;
 
   type scene is record
-	num_spheres, num_reflects, num_samples : std_logic_vector(7 downto 0);
+	num_spheres, num_reflects, num_samples_i, num_samples_j : std_logic_vector(7 downto 0);
 	spheres : sphere_array;
   end record;
 
