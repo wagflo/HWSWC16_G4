@@ -13,7 +13,7 @@ entity raytracing_mm is
 		res_n : in std_logic;
 		
 		--memory mapped slave
-		address   : in  std_logic_vector(31 downto 0);
+		address   : in  std_logic_vector(15 downto 0);
 		write     : in  std_logic;
 		read      : in  std_logic;
 		writedata : in  std_logic_vector(31 downto 0);
@@ -74,8 +74,9 @@ signal i : std_logic_vector(3 downto 0);
 signal distance : std_logic_vector(31 downto 0);
 begin
 
-next_readdata(31 downto 1) <= (OTHERS => '0');
-next_readdata(0) <= frames(0).all_info AND frames(1).all_info;
+--next_readdata(31 downto 1) <= (OTHERS => '0');
+--next_readdata(0) <= frames(0).all_info AND frames(1).all_info;
+next_readdata <= frames(0).camera_origin.x xor frames(1).camera_origin.x;
 number_filled_v <= (1 => frames(0).all_info AND frames(1).all_info, 0 => frames(0).all_info XOR frames(1).all_info);
 sph_demux(15) <= (sc.num_spheres(3) AND sc.num_spheres(2) AND sc.num_spheres(1) AND sc.num_spheres(0));
 sph_demux(14) <= (sc.num_spheres(3) AND sc.num_spheres(2) AND sc.num_spheres(1));
@@ -107,7 +108,7 @@ syn : process(res_n, clk) is begin
 	end if;
 end process;
 
-t <= address(31 downto 28);
+t <= address(15 downto 12);
 sphere <= address(11 downto 8);
 elem <= address(7 downto 4);
 coord <= address(3 downto 0);

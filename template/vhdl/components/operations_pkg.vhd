@@ -9,9 +9,21 @@ package operations_pkg is
 
   end record;
 
+ -- type scalar is array(31 downto 0) of std_logic_vector;
+
+  type scalar is std_logic_vector;
+
+  type vectorArray is array(15 downto 0) of vector;
+  type scalarArray is array(15 downto 0) of scalar;
+
+
   function tovector(input : std_logic_vector(95 downto 0)) return vector;
 
   function to_std_logic(input : vector) return std_logic_vector;
+
+  function toscalar(input : std_logic_vector(31 downto 0)) return scalar;
+
+  function to_std_logic(input : scalar) return std_logic_vector;
 
   type sphere is record
 	center : vector;
@@ -36,6 +48,24 @@ package operations_pkg is
 	num_spheres, num_reflects, num_samples_i, num_samples_j : std_logic_vector(7 downto 0);
 	spheres : sphere_array;
   end record;
+
+
+
+  component mul is
+
+  generic (INPUT_WIDTH : NATURAL := 32; OUTPUT_WIDTH : NATURAL := 32);
+
+  port (
+	a : in std_logic_vector(INPUT_WIDTH-1 DOWNTO 0);
+	b : in std_logic_vector(INPUT_WIDTH-1 DOWNTO 0);
+	
+	res : out std_logic_vector(OUTPUT_WIDTH-1 DOWNTO 0);
+
+	clk, clk_en, reset : in std_logic	
+  );
+
+  end component mul;
+
 
   component vecMulS is
 
@@ -134,4 +164,27 @@ begin
 	
 	return result;
 end to_std_logic;
+
+function toscalar(input : std_logic_vector(31 downto 0)) return scalar is
+
+variable result : scalar;
+
+begin
+
+  result := input(31 downto  0);
+
+  return result;
+end tovector;
+
+function to_std_logic(input : vector) return std_logic_vector is
+variable result : std_logic_vector(31 downto 0);
+
+begin
+
+	result(31 downto 0) := input;
+	
+	return result;
+end to_std_logic;
+
+
 end package body;
