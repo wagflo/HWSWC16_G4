@@ -11,7 +11,11 @@ package operations_pkg is
 
  -- type scalar is array(31 downto 0) of std_logic_vector;
 
-  type scalar is std_logic_vector;
+  type scalar is record 
+
+    x : std_logic_vector(31 DOWNTO 0);
+
+  end record;
 
   type vectorArray is array(15 downto 0) of vector;
   type scalarArray is array(15 downto 0) of scalar;
@@ -167,23 +171,24 @@ end to_std_logic;
 
 function toscalar(input : std_logic_vector(31 downto 0)) return scalar is
 
-variable result : scalar;
+  variable result : scalar;
 
 begin
 
-  result := input(31 downto  0);
+  result.x := input(31 downto  0);
 
   return result;
-end tovector;
+end toscalar;
 
-function to_std_logic(input : vector) return std_logic_vector is
-variable result : std_logic_vector(31 downto 0);
+function to_std_logic(input : scalar) return std_logic_vector is
+
+  variable result : std_logic_vector(31 downto 0);
 
 begin
 
-	result(31 downto 0) := input;
+  result(31 downto 0) := input.x;
 	
-	return result;
+  return result;
 end to_std_logic;
 
 
