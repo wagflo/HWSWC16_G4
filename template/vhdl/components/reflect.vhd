@@ -65,7 +65,7 @@ architecture beh of reflect is
   signal sphere_i_for_center, sphere_i_for_one_over_r : std_logic_vector(3 downto 0);
   signal valid_t_for_center, valid_t_for_one_over_r : std_logic;
   --signal valid_t_vec, valid_refl_vec : std_logic_vector(0 downto 0);
-  signal dot_prod : std_logic_vector(32 downto 0); -- one more because of factor 2
+  signal dot_prod_res, dot_prod_input : std_logic_vector(31 downto 0) := x"0000_0000"; -- one more because of factor 2
   signal origin_delayed_std_logic, new_origin_std_logic : std_logic_vector(95 downto 0);
   signal origin_delayed: vector;
   signal scaled_dir_std_logic_delay_4, scaled_dir_std_logic_delay_10 : std_logic_vector(95 downto 0);
@@ -83,18 +83,18 @@ begin
   delay_sphere_i_for_center: delay_element generic map(WIDTH => 5, DEPTH => 3) 
   port map (
     clk => clk, clken => clk_en, reset => reset, 
-    source(5 downto 1) => sphere_i,
+    source(4 downto 1) => sphere_i,
     source(0) => valid_t,
-    dest(5 downto 1) => sphere_i_for_center,
+    dest(4 downto 1) => sphere_i_for_center,
     dest(0) => valid_t_for_center
   );
 
   delay_sphere_i_for_one_over_r: delay_element generic map(WIDTH => 5, DEPTH => 1) 
   port map (
     clk => clk, clken => clk_en, reset => reset, 
-    source(5 downto 1) => sphere_i_for_center,
+    source(4 downto 1) => sphere_i_for_center,
     source(0) => valid_t_for_center,
-    dest(5 downto 1) => sphere_i_for_one_over_r,
+    dest(4 downto 1) => sphere_i_for_one_over_r,
     dest(0) => valid_t_for_one_over_r
   );
 
@@ -108,7 +108,7 @@ begin
   index_for_center     <= natural(to_integer(unsigned(sphere_i_for_center)));
   index_for_one_over_r <= natural(to_integer(unsigned(sphere_i_for_one_over_r)));
 
-  async : process(centers, one_over_rs) -- OK, obwohl hintereinander?
+  async : process(centers, one_over_rs, index_for_center, index_for_one_over_r) -- OK, obwohl hintereinander?
 
   begin
 
@@ -130,8 +130,8 @@ begin
   begin
 
     if reset = '1' then 
-      new_origin <= (others => "0");
-      new_direction <= (others => "0");
+      new_origin <= tovector(vector_zero);
+      new_direction <= tovector(vector_zero);
       valid_refl <= '0';
     elsif rising_edge(clk) and clk_en = '1' then
       new_origin <= new_origin_next;
@@ -288,8 +288,10 @@ begin
     y_2 => unit_normal_vec_delayed.y,
     z_2 => unit_normal_vec_delayed.z,
 
-    result => dot_prod(32 downto 1)
+    result => dot_prod_res--(32 downto 1)
   );
+
+  dot_prod_input <= dot_prod_res(31 downto 1) & '0';
 
   scaleNormalVec : vecMulS
   port map(
@@ -302,7 +304,7 @@ begin
     y => unit_normal_vec.y,
     z => unit_normal_vec.z,
 
-    scalar => dot_prod(31 downto 0),
+    scalar => dot_prod_input, --(31 downto 1),
 
     x_res => scaled_normal_vec.x,
     y_res => scaled_normal_vec.y,

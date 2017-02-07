@@ -21,6 +21,15 @@ signal origin, direction : vector;
 signal new_origin, new_direction : vector;
 signal valid_refl : std_logic;
 
+signal scalar_zero_std : std_logic_vector(31 downto 0) := x"00000000";
+signal vector_zero_std : std_logic_vector(95 downto 0) := scalar_zero_std & scalar_zero_std & scalar_zero_std;
+
+signal scalar_zero : scalar := toscalar(scalar_zero_std);
+signal vector_zero : vector := tovector(vector_zero_std);
+
+signal one_over_rs : scalarArray := (others => scalar_zero);
+signal centers 	: vectorArray 	 := (others => vector_zero);
+
 --constant three : std_logic_vector(31 downto 0) := x"00030000";
 --constant five : std_logic_vector(31 downto 0) := x"00050000";
 
@@ -29,20 +38,19 @@ signal valid_refl : std_logic;
 begin
 
 refl : reflect
---generic map (WIDTH => 32, DEPTH => 2)
 port map ( 
 
   clk => clk, 
-  clken => '1', 
+  clk_en => '1', 
   reset => res, 
 
-  valid_t => valid_t_input,
+  valid_t => valid_t,
   t => t,
 
   sphere_i => sphere_i,
 
-  one_over_rs : scalarArray,
-  centers     : vectorArray,
+  one_over_rs => one_over_rs,
+  centers     => centers,
 
   origin => origin,
   direction => direction,
@@ -57,12 +65,81 @@ clk <= not clk after 10 ns;
 
 res <= '0' after 25 ns;
 
-data : process(clk) is 
+init : process
+variable tempvec1, tempvec2, tempvec3 : vector;
+variable tempscalar1, tempscalar2, tempscalar3 : scalar;
+
+variable stdscalar1, stdscalar2, stdscalar3 : std_logic_vector(31 downto 0);
+
+
 begin
-if rising_edge(clk) then
-	--s <= std_logic_vector(signed(s) + signed(three));
---	t <= std_logic_vector(signed(t) + signed(five));
-end if;
+
+
+stdscalar1 := x"00070000";
+tempvec1 := tovector(stdscalar1 & scalar_zero_std & scalar_zero_std);
+
+stdscalar1 := x"000A0000";
+stdscalar2 := x"FFFF0000";
+tempvec2 := tovector(stdscalar1 & stdscalar2 & scalar_zero_std);
+
+stdscalar1 := x"000E0000";
+stdscalar2 := x"FFFF0000";
+tempvec3 := tovector(stdscalar1 & stdscalar2 & scalar_zero_std);
+
+centers <= (0 => tempvec1, 1 => tempvec2, 2 => tempvec3, others => vector_zero);
+
+
+
+stdscalar1 := x"00010000";
+stdscalar2 := x"0000B505";
+tempscalar1 := toscalar(stdscalar1);
+tempscalar2 := toscalar(stdscalar2);
+
+one_over_rs <= (0 => tempscalar1, 1 => tempscalar2, 2 => tempscalar1, others => scalar_zero);
+
+direction <= tovector(stdscalar1 & scalar_zero_std & scalar_zero_std);
+
+origin <= tovector(stdscalar1 & scalar_zero_std & scalar_zero_std);
+
+wait for 1sec;
+
 end process;
+
+
+data : process
+begin
+
+wait for 110 ns;
+
+t <= x"00050000";
+sphere_i <= x"0";
+
+wait for 80 ns;
+
+t <= x"00080000";
+sphere_i <= x"1";
+wait for 80 ns;
+
+t <= x"000D0000";
+sphere_i <= x"2";
+end process;
+
+toggle_valid : process
+begin
+
+wait for 110 ns;
+
+valid_t <= not valid_t after 20 ns;
+
+end process;
+
+assert new_origin = vector_zero;
+assert new_direction = vector_zero;
+assert valid_refl = '1';
+
+
+
+
+
 
 end architecture;
