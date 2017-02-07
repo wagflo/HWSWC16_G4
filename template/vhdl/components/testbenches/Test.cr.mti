@@ -1,15 +1,5 @@
-/homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/components/Mul.vhd {1 {vcom -work work -2002 -explicit -vopt -stats=none /homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/components/Mul.vhd
-Model Technology ModelSim SE-64 vcom 10.5c Compiler 2016.07 Jul 20 2016
--- Loading package STANDARD
--- Loading package TEXTIO
--- Loading package std_logic_1164
--- Loading package NUMERIC_STD
--- Loading package LPM_COMPONENTS
--- Compiling entity mul
--- Compiling architecture arch of mul
-
-} {} {}} /homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/components/colorUpdate.vhd {2 {vcom -work work -2002 -explicit -vopt -stats=none /homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/components/colorUpdate.vhd
-Model Technology ModelSim SE-64 vcom 10.5c Compiler 2016.07 Jul 20 2016
+/homes/a0426419/Desktop/HWSWC16_G4/template/vhdl/components/colorUpdate.vhd {2 {vcom -work work -2002 -explicit -vopt -stats=none /homes/a0426419/Desktop/HWSWC16_G4/template/vhdl/components/colorUpdate.vhd
+Model Technology ModelSim SE-64 vcom 10.4c Compiler 2015.07 Jul 19 2015
 -- Loading package STANDARD
 -- Loading package TEXTIO
 -- Loading package std_logic_1164
@@ -17,61 +7,68 @@ Model Technology ModelSim SE-64 vcom 10.5c Compiler 2016.07 Jul 20 2016
 -- Loading package operations_pkg
 -- Compiling entity colorUpdate
 -- Compiling architecture beh of colorUpdate
-** Warning: /homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/components/colorUpdate.vhd(88): (vcom-1090) Possible infinite loop: Process contains no WAIT statement.
-** Warning: /homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/components/colorUpdate.vhd(103): (vcom-1090) Possible infinite loop: Process contains no WAIT statement.
-** Warning: /homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/components/colorUpdate.vhd(80): (vcom-1272) Length of record element "x" is 32; length of array is 1.
-** Warning: /homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/components/colorUpdate.vhd(80): (vcom-1272) Length of record element "y" is 32; length of array is 1.
-** Warning: /homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/components/colorUpdate.vhd(80): (vcom-1272) Length of record element "z" is 32; length of array is 1.
-** Warning: /homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/components/colorUpdate.vhd(101): (vcom-1272) Length of record element "x" is 32; length of array is 1.
-** Warning: /homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/components/colorUpdate.vhd(101): (vcom-1272) Length of record element "y" is 32; length of array is 1.
-** Warning: /homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/components/colorUpdate.vhd(101): (vcom-1272) Length of record element "z" is 32; length of array is 1.
+** Warning: /homes/a0426419/Desktop/HWSWC16_G4/template/vhdl/components/colorUpdate.vhd(88): (vcom-1090) Possible infinite loop: Process contains no WAIT statement.
+** Warning: /homes/a0426419/Desktop/HWSWC16_G4/template/vhdl/components/colorUpdate.vhd(103): (vcom-1090) Possible infinite loop: Process contains no WAIT statement.
+** Warning: /homes/a0426419/Desktop/HWSWC16_G4/template/vhdl/components/colorUpdate.vhd(80): (vcom-1272) Length of record element "x" is 32; length of array is 1.
+** Warning: /homes/a0426419/Desktop/HWSWC16_G4/template/vhdl/components/colorUpdate.vhd(80): (vcom-1272) Length of record element "y" is 32; length of array is 1.
+** Warning: /homes/a0426419/Desktop/HWSWC16_G4/template/vhdl/components/colorUpdate.vhd(80): (vcom-1272) Length of record element "z" is 32; length of array is 1.
+** Warning: /homes/a0426419/Desktop/HWSWC16_G4/template/vhdl/components/colorUpdate.vhd(101): (vcom-1272) Length of record element "x" is 32; length of array is 1.
+** Warning: /homes/a0426419/Desktop/HWSWC16_G4/template/vhdl/components/colorUpdate.vhd(101): (vcom-1272) Length of record element "y" is 32; length of array is 1.
+** Warning: /homes/a0426419/Desktop/HWSWC16_G4/template/vhdl/components/colorUpdate.vhd(101): (vcom-1272) Length of record element "z" is 32; length of array is 1.
 
-} {} {}} /homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/components/components_pkg.vhd {1 {vcom -work work -2002 -explicit -vopt -stats=none /homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/components/components_pkg.vhd
-Model Technology ModelSim SE-64 vcom 10.5c Compiler 2016.07 Jul 20 2016
+} {} {}} /homes/a0426419/Desktop/HWSWC16_G4/template/vhdl/components/components_pkg.vhd {1 {vcom -work work -2002 -explicit -vopt -stats=none /homes/a0426419/Desktop/HWSWC16_G4/template/vhdl/components/components_pkg.vhd
+Model Technology ModelSim SE-64 vcom 10.4c Compiler 2015.07 Jul 19 2015
 -- Loading package STANDARD
 -- Loading package TEXTIO
 -- Loading package std_logic_1164
 -- Loading package operations_pkg
 -- Compiling package components_pkg
 
-} {} {}} /homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/components/testbenches/reflectTest.vhd {0 {vcom -work work -2002 -explicit -vopt -stats=none /homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/components/testbenches/reflectTest.vhd
-Model Technology ModelSim SE-64 vcom 10.5c Compiler 2016.07 Jul 20 2016
--- Loading package STANDARD
--- Loading package TEXTIO
--- Loading package std_logic_1164
--- Loading package NUMERIC_STD
-** Error: (vcom-13) Recompile work.getraydir_pkg because work.operations_pkg has changed.
-** Error (suppressible): /homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/components/testbenches/reflectTest.vhd(4): (vcom-1195) Cannot find expanded name "work.getRayDir_pkg".
-** Error: /homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/components/testbenches/reflectTest.vhd(4): Unknown expanded name.
--- Loading package operations_pkg
-** Error: /homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/components/testbenches/reflectTest.vhd(7): VHDL Compiler exiting
-
-} {7.0 8.0 9.0 10.0 11.0 12.0} {}} /homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/components/delay_pkg.vhd {1 {vcom -work work -2002 -explicit -vopt -stats=none /homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/components/delay_pkg.vhd
-Model Technology ModelSim SE-64 vcom 10.5c Compiler 2016.07 Jul 20 2016
+} {} {}} /homes/a0426419/Desktop/HWSWC16_G4/template/vhdl/components/delay_pkg.vhd {1 {vcom -work work -2002 -explicit -vopt -stats=none /homes/a0426419/Desktop/HWSWC16_G4/template/vhdl/components/delay_pkg.vhd
+Model Technology ModelSim SE-64 vcom 10.4c Compiler 2015.07 Jul 19 2015
 -- Loading package STANDARD
 -- Loading package TEXTIO
 -- Loading package std_logic_1164
 -- Compiling package delay_pkg
 
-} {} {}} /homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/components/operations_pkg.vhd {1 {vcom -work work -2002 -explicit -vopt -stats=none /homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/components/operations_pkg.vhd
-Model Technology ModelSim SE-64 vcom 10.5c Compiler 2016.07 Jul 20 2016
+} {} {}} /homes/a0426419/Desktop/HWSWC16_G4/template/vhdl/components/testbenches/reflectTest.vhd {0 {vcom -work work -2002 -explicit -vopt -stats=none /homes/a0426419/Desktop/HWSWC16_G4/template/vhdl/components/testbenches/reflectTest.vhd
+Model Technology ModelSim SE-64 vcom 10.4c Compiler 2015.07 Jul 19 2015
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Loading package operations_pkg
+-- Loading package components_pkg
+-- Compiling entity reflectTest
+-- Compiling architecture arch of reflectTest
+** Error: /homes/a0426419/Desktop/HWSWC16_G4/template/vhdl/components/testbenches/reflectTest.vhd(44): near ":": (vcom-1576) expecting ',' or ')'.
+** Error: /homes/a0426419/Desktop/HWSWC16_G4/template/vhdl/components/testbenches/reflectTest.vhd(68): VHDL Compiler exiting
+
+} {11.0 13.0} {}} /homes/a0426419/Desktop/HWSWC16_G4/template/vhdl/components/reflect.vhd {2 {vcom -work work -2002 -explicit -vopt -stats=none /homes/a0426419/Desktop/HWSWC16_G4/template/vhdl/components/reflect.vhd
+Model Technology ModelSim SE-64 vcom 10.4c Compiler 2015.07 Jul 19 2015
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Loading package operations_pkg
+-- Loading package delay_pkg
+-- Compiling entity reflect
+-- Compiling architecture beh of reflect
+** Warning: /homes/a0426419/Desktop/HWSWC16_G4/template/vhdl/components/reflect.vhd(77): (vcom-1013) Initial value of "vector_zero" depends on value of signal "scalar_zero".
+** Warning: /homes/a0426419/Desktop/HWSWC16_G4/template/vhdl/components/reflect.vhd(133): (vcom-1272) Length of record element "x" is 32; length of array is 1.
+** Warning: /homes/a0426419/Desktop/HWSWC16_G4/template/vhdl/components/reflect.vhd(133): (vcom-1272) Length of record element "y" is 32; length of array is 1.
+** Warning: /homes/a0426419/Desktop/HWSWC16_G4/template/vhdl/components/reflect.vhd(133): (vcom-1272) Length of record element "z" is 32; length of array is 1.
+** Warning: /homes/a0426419/Desktop/HWSWC16_G4/template/vhdl/components/reflect.vhd(134): (vcom-1272) Length of record element "x" is 32; length of array is 1.
+** Warning: /homes/a0426419/Desktop/HWSWC16_G4/template/vhdl/components/reflect.vhd(134): (vcom-1272) Length of record element "y" is 32; length of array is 1.
+** Warning: /homes/a0426419/Desktop/HWSWC16_G4/template/vhdl/components/reflect.vhd(134): (vcom-1272) Length of record element "z" is 32; length of array is 1.
+
+} {} {}} /homes/a0426419/Desktop/HWSWC16_G4/template/vhdl/components/operations_pkg.vhd {1 {vcom -work work -2002 -explicit -vopt -stats=none /homes/a0426419/Desktop/HWSWC16_G4/template/vhdl/components/operations_pkg.vhd
+Model Technology ModelSim SE-64 vcom 10.4c Compiler 2015.07 Jul 19 2015
 -- Loading package STANDARD
 -- Loading package TEXTIO
 -- Loading package std_logic_1164
 -- Compiling package operations_pkg
 -- Compiling package body operations_pkg
 -- Loading package operations_pkg
-
-} {} {}} /homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/components/raytracing_mm.vhd {1 {vcom -work work -2002 -explicit -vopt -stats=none /homes/h0426419/Downloads/HWSWC16_G4/template/vhdl/components/raytracing_mm.vhd
-Model Technology ModelSim SE-64 vcom 10.5c Compiler 2016.07 Jul 20 2016
--- Loading package STANDARD
--- Loading package TEXTIO
--- Loading package std_logic_1164
--- Loading package NUMERIC_STD
--- Loading package delay_pkg
--- Loading package operations_pkg
--- Loading package components_pkg
--- Compiling entity raytracing_mm
--- Compiling architecture arch of raytracing_mm
 
 } {} {}}

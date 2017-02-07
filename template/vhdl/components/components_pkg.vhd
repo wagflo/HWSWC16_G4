@@ -5,7 +5,30 @@ use work.operations_pkg.all;
 
 package components_pkg is
 
+component reflect is 
+  port
+  (
+    clk : in std_logic;
+    clk_en : in std_logic;
+    reset : in std_logic;
 
+    valid_t  : in std_logic;
+    t : in std_logic_vector(31 downto 0);
+
+    sphere_i : std_logic_vector(3 downto 0);
+
+    one_over_rs : scalarArray;
+    centers     : vectorArray;
+
+    origin : vector;
+    direction : vector;
+
+    new_origin : out vector;
+    new_direction : out vector;
+    valid_refl  : out std_logic
+
+  );
+end component;
 
 component anyRefl is
   port
@@ -51,7 +74,8 @@ port(
     position	: out std_logic_vector (21 downto 0);
     done	: out std_logic
 
-  ); end component;
+  ); 
+end component;
 
 component closestSphere is
   port

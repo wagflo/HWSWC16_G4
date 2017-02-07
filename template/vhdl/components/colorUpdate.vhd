@@ -1,7 +1,7 @@
 
 --					if (nearest_obj != NULL)
 --					{
---						vec3Mul (&col_tmp, &col_tmp, &nearest_obj->color);
+--						vec3Mul (&col_tmp, &col_tmp, &nearest_obj->color); <<<<<<<<<<<<<<<<<<<<<<
 --						if (nearest_obj->mat == EMITTING)
 --							break;
 --						
@@ -26,15 +26,15 @@
 --					  nearest_obj = getClosestSphere (&tmin, &ray_origin, &ray_dir);
 --					}
 --				}
---				/* ray miss or max num reflects reached */
---				if (k == 0 || nearest_obj == NULL)
+--				/* ray miss or max num reflects reached */     <<<<<<<<<<<<<<
+--				if (k == 0 || nearest_obj == NULL)             <<<<<<<<<<<<<<
 --				{
---					col_tmp.x[0] = 0;
---					col_tmp.x[1] = 0;
---					col_tmp.x[2] = 0;
+--					col_tmp.x[0] = 0;                      <<<<
+--					col_tmp.x[1] = 0;                      <<<<
+--					col_tmp.x[2] = 0;                      <<<<
 --				}
 --
---				vec3Add (&col, &col, &col_tmp);
+--				vec3Add (&col, &col, &col_tmp);                <<<<
 
 library ieee;
 use ieee.std_logic_1164.all;
