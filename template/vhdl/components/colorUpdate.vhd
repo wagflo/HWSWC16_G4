@@ -40,6 +40,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.operations_pkg.all;
+use work.delay_pkg.all;
 
 
 
@@ -59,7 +60,8 @@ entity colorUpdate is
 
     color_array : vectorArray;
     
-    color_out : out vector
+    color_out : out vector;
+    valid_color : out std_logic
   );
 end entity;
 
@@ -68,6 +70,8 @@ architecture beh of colorUpdate is
   signal index : natural;
   signal hitColor : vector;
   signal color_out_next : vector;
+  signal valid_t_vec, valid_color_vec : std_logic_vector(0 downto 0);
+  signal valid_color_next : std_logic;
 
 begin
 
@@ -81,13 +85,30 @@ begin
 
   elsif rising_edge(clk) then
 
-    color_out <= color_out_next;
+    if valid_color_next = '1' then 
+
+      color_out <= color_out_next;
+    else
+
+      color_out <= (others => "0");
+    end if;
+
+    valid_color <= valid_color_next;
 
   end if;
 
   end process;
 
-  
+  valid_t_vec(0) <= valid_t;
+
+  delay_validity: delay_element generic map(WIDTH => 1, DEPTH => 2) 
+  port map (
+    clk => clk, clken => clk_en, reset => reset, 
+    source => valid_t_vec,
+    dest => valid_color_vec
+  );
+
+  valid_color_next <= valid_color_vec(0);
 
   index <= natural(to_integer(unsigned(sphere_i)));
 

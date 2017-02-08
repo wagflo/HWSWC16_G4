@@ -284,14 +284,14 @@ begin
     y_1 => scaled_dir_delay_4.y,
     z_1 => scaled_dir_delay_4.z,
 
-    x_2 => unit_normal_vec_delayed.x,
-    y_2 => unit_normal_vec_delayed.y,
-    z_2 => unit_normal_vec_delayed.z,
+    x_2 => unit_normal_vec.x, --unit_normal_vec_delayed.x,
+    y_2 => unit_normal_vec.y, --unit_normal_vec_delayed.y,
+    z_2 => unit_normal_vec.z, --unit_normal_vec_delayed.z,
 
     result => dot_prod_res--(32 downto 1)
   );
 
-  dot_prod_input <= dot_prod_res(31 downto 1) & '0';
+  dot_prod_input <= dot_prod_res(30 downto 0) & '0';
 
   scaleNormalVec : vecMulS
   port map(
@@ -300,9 +300,9 @@ begin
     clk_en => clk_en,
     reset => reset,
 
-    x => unit_normal_vec.x,
-    y => unit_normal_vec.y,
-    z => unit_normal_vec.z,
+    x => unit_normal_vec_delayed.x, --unit_normal_vec.x,
+    y => unit_normal_vec_delayed.y, --unit_normal_vec.y,
+    z => unit_normal_vec_delayed.z, --unit_normal_vec.z,
 
     scalar => dot_prod_input, --(31 downto 1),
 

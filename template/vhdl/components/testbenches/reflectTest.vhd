@@ -10,7 +10,7 @@ end entity;
 
 architecture arch of reflectTest is
 
-signal clk : std_logic := '0';
+signal clk : std_logic := '1';
 signal res : std_logic := '1';
 signal valid_t : std_logic := '0';
 signal t : std_logic_vector (31 downto 0) := x"00000000";
@@ -91,7 +91,7 @@ centers <= (0 => tempvec1, 1 => tempvec2, 2 => tempvec3, others => vector_zero);
 
 
 stdscalar1 := x"00010000";
-stdscalar2 := x"0000B505";
+stdscalar2 := x"0000_8000"; --x"0000B505"; -- 
 tempscalar1 := toscalar(stdscalar1);
 tempscalar2 := toscalar(stdscalar2);
 
@@ -109,16 +109,16 @@ end process;
 data : process
 begin
 
-wait for 110 ns;
+wait for 20 ns; --110 ns;
 
 t <= x"00050000";
 sphere_i <= x"0";
 
-wait for 80 ns;
+wait for 20 ns;
 
-t <= x"00080000";
+t <= x"0007_4498"; --x"00080000"; -- 
 sphere_i <= x"1";
-wait for 80 ns;
+wait for 20 ns;
 
 t <= x"000D0000";
 sphere_i <= x"2";
@@ -129,7 +129,7 @@ begin
 
 wait for 110 ns;
 
-valid_t <= not valid_t after 20 ns;
+valid_t <= '1';--not valid_t after 20 ns;
 
 end process;
 
