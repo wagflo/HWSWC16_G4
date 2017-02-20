@@ -73,8 +73,8 @@ architecture beh of reflect is
   signal unit_normal_vec_delayed_std_logic : std_logic_vector(95 downto 0);
   signal unit_normal_vec_delayed : vector;
 
-  signal scalar_zero : std_logic_vector(31 downto 0) := x"00000000";
-  signal vector_zero : std_logic_vector(95 downto 0) := scalar_zero & scalar_zero & scalar_zero;
+  constant scalar_zero : std_logic_vector(31 downto 0) := x"00000000";
+  constant vector_zero : std_logic_vector(95 downto 0) := scalar_zero & scalar_zero & scalar_zero;
 
 begin
 

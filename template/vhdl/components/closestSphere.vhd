@@ -16,6 +16,8 @@ entity closestSphere is
 
       start	: in std_logic;
 
+      copy_cycle_active : in std_logic;
+
       origin    : in std_logic_vector(95 downto 0);
       dir       : in std_logic_vector(95 downto 0);
 
@@ -194,7 +196,7 @@ t12_c35, t34_c35, t56_c35, t78_c35, t1234_c36, t5678_c36, t_old, t12345678_c37,
 t_int, t_int_c52
 : std_logic_vector(31 downto 0);
 signal subwire0_a_t_min, subwire0_t_out : std_logic_vector(63 downto 0);
-signal start_shift : std_logic_vector(54 downto 0);
+signal start_shift, cycles_shift : std_logic_vector(54 downto 0);
 signal cycle_even : std_logic := '0';
 
 signal t1_valid, t2_valid, t3_valid, t4_valid, t5_valid, t6_valid, t7_valid, t8_valid,
@@ -218,27 +220,28 @@ constant TIME_MIN : std_logic_vector(31 downto 0) := x"0000199A";
 begin
 
 
-center_in1 <= center_1 when (NOT(second_round) OR cycle_even) = '1' else center_9;
-center_in2 <= center_2 when (NOT(second_round) OR cycle_even) = '1' else center_10;
-center_in3 <= center_3 when (NOT(second_round) OR cycle_even) = '1' else center_11;
-center_in4 <= center_4 when (NOT(second_round) OR cycle_even) = '1' else center_12;
-center_in5 <= center_5 when (NOT(second_round) OR cycle_even) = '1' else center_13;
-center_in6 <= center_6 when (NOT(second_round) OR cycle_even) = '1' else center_14;
-center_in7 <= center_7 when (NOT(second_round) OR cycle_even) = '1' else center_15;
-center_in8 <= center_8 when (NOT(second_round) OR cycle_even) = '1' else center_16;
+center_in1 <= center_1 when (NOT(second_round) OR cycles_shift(49)) = '1' else center_9;
+center_in2 <= center_2 when (NOT(second_round) OR cycles_shift(49)) = '1' else center_10;
+center_in3 <= center_3 when (NOT(second_round) OR cycles_shift(49)) = '1' else center_11;
+center_in4 <= center_4 when (NOT(second_round) OR cycles_shift(49)) = '1' else center_12;
+center_in5 <= center_5 when (NOT(second_round) OR cycles_shift(49)) = '1' else center_13;
+center_in6 <= center_6 when (NOT(second_round) OR cycles_shift(49)) = '1' else center_14;
+center_in7 <= center_7 when (NOT(second_round) OR cycles_shift(49)) = '1' else center_15;
+center_in8 <= center_8 when (NOT(second_round) OR cycles_shift(49)) = '1' else center_16;
 
-rad2_in1 <= radius2_1 when (NOT(second_round) OR cycle_even) = '1' else radius2_9;
-rad2_in2 <= radius2_2 when (NOT(second_round) OR cycle_even) = '1' else radius2_10;
-rad2_in3 <= radius2_3 when (NOT(second_round) OR cycle_even) = '1' else radius2_11;
-rad2_in4 <= radius2_4 when (NOT(second_round) OR cycle_even) = '1' else radius2_12;
-rad2_in5 <= radius2_5 when (NOT(second_round) OR cycle_even) = '1' else radius2_13;
-rad2_in6 <= radius2_6 when (NOT(second_round) OR cycle_even) = '1' else radius2_14;
-rad2_in7 <= radius2_7 when (NOT(second_round) OR cycle_even) = '1' else radius2_15;
-rad2_in8 <= radius2_8 when (NOT(second_round) OR cycle_even) = '1' else radius2_16;
+rad2_in1 <= radius2_1 when (NOT(second_round) OR cycles_shift(49)) = '1' else radius2_9;
+rad2_in2 <= radius2_2 when (NOT(second_round) OR cycles_shift(49)) = '1' else radius2_10;
+rad2_in3 <= radius2_3 when (NOT(second_round) OR cycles_shift(49)) = '1' else radius2_11;
+rad2_in4 <= radius2_4 when (NOT(second_round) OR cycles_shift(49)) = '1' else radius2_12;
+rad2_in5 <= radius2_5 when (NOT(second_round) OR cycles_shift(49)) = '1' else radius2_13;
+rad2_in6 <= radius2_6 when (NOT(second_round) OR cycles_shift(49)) = '1' else radius2_14;
+rad2_in7 <= radius2_7 when (NOT(second_round) OR cycles_shift(49)) = '1' else radius2_15;
+rad2_in8 <= radius2_8 when (NOT(second_round) OR cycles_shift(49)) = '1' else radius2_16;
 
 t_min_a(31) <= subwire0_a_t_min(63);
 t_min_a(30 downto 0) <= subwire0_a_t_min(46 downto 16);
 start_shift(54) <= (start AND clk_en) AND NOT(reset);
+cycles_shift(54) <= copy_cycle_active;
 
 a_calc_c1t4 : vector_square port map (
 	clk => clk,
@@ -305,7 +308,7 @@ a_delay : delay_element generic map(WIDTH => 32, DEPTH => 2)
 port map (clk => clk, reset => reset, clken => clk_en, source => a, dest => a_c6
 );
 
-smaller_numbers <= cycle_even OR NOT(second_round);
+smaller_numbers <= copy_cycle_active OR NOT(second_round);
 start1 <= start_shift(49) AND ((smaller_numbers AND spheres(0)) OR spheres(8));
 comp1_c7t33 : sphereDistance port map(
 	clk => clk, reset => reset, clk_en => clk_en, 
@@ -698,12 +701,14 @@ t_int_sp <= (3 => second_round AND NOT(cycle_even), 2 => t_old_sp(2), 1 => t_old
 shift : process(clk, clk_en, reset) is begin
 if reset = '1' then
 	start_shift(53 downto 0) <= (OTHERS => '0');
+        cycles_shift(53 downto 0) <= (OTHERS => '0');
 	cycle_even <= '0';
 	t_old <= (OTHERS => '0');
 	t_old_valid <= '0';
 	t_old_sp <= (OTHERS => '0');
 elsif (rising_edge(clk) AND clk_en = '1') then
 	start_shift(53 downto 0) <= start_shift(54 downto 1);
+        cycles_shift(53 downto 0) <= cycles_shift(54 downto 1);
 	cycle_even <= NOT(cycle_even);
 	t_old <= t12345678_c37;
 	t_old_valid <= t12345678_valid_c37;
@@ -743,7 +748,7 @@ final_mult : lpm_mult GENERIC MAP (
 
 t(31) <= subwire0_t_out(63);
 t(30 DOWNTO 0) <= subwire0_t_out(46 DOWNTO 16);
-done <= (NOT(second_round) OR NOT(cycle_even)) AND start_shift(0);
+done <= (NOT(second_round) OR cycles_shift(0)) AND start_shift(0);
 i_out <= t_int_sp_c54;
 valid_t <= t_int_valid_c54;
 

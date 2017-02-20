@@ -75,13 +75,13 @@ architecture beh of colorUpdate is
 
 begin
 
-  sync : process
+  sync : process(clk, reset)
 
   begin
 
   if reset = '1' then 
 
-    color_out <= (others => "0");
+    color_out <= (others => (others => '0'));
 
   elsif rising_edge(clk) then
 
@@ -90,7 +90,7 @@ begin
       color_out <= color_out_next;
     else
 
-      color_out <= (others => "0");
+      color_out <= (others => (others => '0'));
     end if;
 
     valid_color <= valid_color_next;
@@ -112,14 +112,14 @@ begin
 
   index <= natural(to_integer(unsigned(sphere_i)));
 
-  async : process
+  async : process(valid_t, index)
 
   begin
 
   if valid_t = '1' then 
     hitColor <= color_array(index);
   else 
-    hitColor <= (others => "0");
+    hitColor <= (others => (others => '0'));
   end if;
   end process;
 
