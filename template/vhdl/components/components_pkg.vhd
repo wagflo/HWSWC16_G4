@@ -5,6 +5,37 @@ use work.operations_pkg.all;
 
 package components_pkg is
 
+component anyRefl is
+  port
+  (
+    clk 	: in std_logic;
+    reset 	: in std_logic;
+   
+    -- kein clock enable, nehme valid
+
+    num_samples	: in std_logic_vector(4 downto 0); -- one hot: 16, 8, 4, 2, 1
+--    max_num_reflect : in std_logic_vector(2 downto 0);
+
+
+--    reflectedArray	: in std_logic_vector(15 downto 0); -- input of buffered rays
+    endOfBundle : in std_logic;
+    startOfBundle : in std_logic;
+
+    remaining_reflects : in std_logic_vector(2 downto 0);
+
+    valid_t	: in std_logic;
+    --t 		: in std_logic_vector(31 downto 0);
+    
+    isReflected : out std_logic;
+    pseudoReflect : out std_logic;
+    valid_data  : out std_logic;
+
+    startOfBundle_out : out std_logic;
+    endOfBundle_out : out std_logic
+    
+  );
+end component;
+
 component reflect is 
   port
   (
@@ -27,24 +58,6 @@ component reflect is
     new_direction : out vector;
     valid_refl  : out std_logic
 
-  );
-end component;
-
-component anyRefl is
-  port
-  (
-    clk 	: in std_logic;
-    reset 	: in std_logic;
-   
-    -- kein clock enable, nehme valid
-
-    validRay 	: in std_logic;
-    startBundle : in std_logic;
-
-    valid_t	: in std_logic;
-    t 		: in std_logic_vector(31 downto 0);
-    
-    isReflected : out std_logic
   );
 end component;
 

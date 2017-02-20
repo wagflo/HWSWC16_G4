@@ -18,6 +18,8 @@ component closestSphere is
 
       start	: in std_logic;
 
+     copy_cycle_active : in std_logic;
+
       origin    : in std_logic_vector(95 downto 0);
       dir       : in std_logic_vector(95 downto 0);
 
@@ -85,11 +87,32 @@ signal reset : std_logic := '1';
 signal t : std_logic_vector(31 downto 0);
 signal i : std_logic_vector(3 downto 0);
 signal done, valid : std_logic;
+constant cycle_even_radius : std_logic_vector(31 downto 0) := (X"00040000");
+constant cycle_odd_radius : std_logic_vector(31 downto 0) := X"00010000";
+
+signal radius_in : std_logic_vector(31 downto 0) := cycle_even_radius;
+signal cycle_even : std_logic := '0';
 
 begin
 
 clk <= not(clk) after 10 ns;
 reset <= '0' after 20 ns;
+
+sync : process(clk, reset) is begin
+if reset = '1' then
+radius_in <= cycle_even_radius;
+cycle_even <= '0';
+elsif rising_edge(clk) then
+	if cycle_even = '0' then
+	cycle_even <= '1';
+	radius_in <= cycle_odd_radius;
+	ELSE 
+	cycle_even <= '0';
+	radius_in <= cycle_even_radius;
+	end if;
+end if;
+end process;
+
 
 start <= '1';
 
@@ -97,11 +120,12 @@ cl : closestSphere port map (
 	clk => clk,
 	reset => reset,
 	clk_en => '1',
+	copy_cycle_active => '0',
 	start => start,
 	origin => X"000000000000000000000000",
 	dir => X"000000000001000000000000",
 	center_1 => X"000000000005000000000000",
-	radius2_1 => X"00040000",
+	radius2_1 => radius_in,
 	center_2 => X"000000000005000000000000",
 	radius2_2 => X"00040000",
 	radius2_3 => X"00040000",
