@@ -104,14 +104,14 @@ wait for 20 ns;
 sphere_i <= x"2";
 end process;
 
-toggle_valid : process
-begin
+--toggle_valid : process
+--begin
 
-wait for 110 ns;
+--wait for 110 ns;
 
-valid_t <= '1';--not valid_t after 20 ns;
+valid_t <= not valid_t after 60 ns;
 
-end process;
+--end process;
 
 assert color_out = vector_zero;
 assert valid_color = '1';

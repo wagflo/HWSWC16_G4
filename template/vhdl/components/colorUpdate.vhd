@@ -75,29 +75,29 @@ architecture beh of colorUpdate is
 
 begin
 
-  sync : process(clk, reset)
+  --sync : process(clk, reset)
 
-  begin
+  --begin
 
-  if reset = '1' then 
+  --if reset = '1' then 
 
-    color_out <= (others => (others => '0'));
+  --  color_out <= (others => (others => '0'));
 
-  elsif rising_edge(clk) then
+  --elsif rising_edge(clk) then
 
-    if valid_color_next = '1' then 
+   -- if valid_color_next = '1' then 
 
-      color_out <= color_out_next;
-    else
+    --  color_out <= color_out_next;
+   -- else
 
-      color_out <= (others => (others => '0'));
-    end if;
+   --   color_out <= (others => (others => '0'));
+   -- end if;
 
-    valid_color <= valid_color_next;
+   -- valid_color <= valid_color_next;
 
-  end if;
+  --end if;
 
-  end process;
+--  end process;
 
   valid_t_vec(0) <= valid_t;
 
@@ -108,7 +108,8 @@ begin
     dest => valid_color_vec
   );
 
-  valid_color_next <= valid_color_vec(0);
+--  valid_color_next <= valid_color_vec(0);
+valid_color <= valid_color_vec(0);
 
   index <= natural(to_integer(unsigned(sphere_i)));
 
@@ -133,7 +134,7 @@ begin
     a => color_in.x,
     b => hitColor.x,
 
-    result => color_out_next.x
+    result => color_out.x --color_out_next.x
   );
 
   mul_y : scalarMul
@@ -146,7 +147,7 @@ begin
     a => color_in.y,
     b => hitColor.y,
 
-    result => color_out_next.y
+    result => color_out.y -- color_out_next.y
   );
 
   mul_z : scalarMul
@@ -159,7 +160,7 @@ begin
     a => color_in.z,
     b => hitColor.z,
 
-    result => color_out_next.z
+    result => color_out.z --color_out_next.z
   );
 
 end architecture;
