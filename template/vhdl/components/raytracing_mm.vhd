@@ -192,6 +192,8 @@ gcs : closestSphere port map (
 	valid_t => valid
 );
 
+
+
 next_raydir : process(done_rdo, frames) is begin
 if done_rdo = '1' then
 	frames_next(0) <= frames(1);
