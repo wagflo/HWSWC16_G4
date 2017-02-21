@@ -21,11 +21,11 @@ signal origin, direction : vector;
 signal new_origin, new_direction : vector;
 signal valid_refl : std_logic;
 
-signal scalar_zero_std : std_logic_vector(31 downto 0) := x"00000000";
-signal vector_zero_std : std_logic_vector(95 downto 0) := scalar_zero_std & scalar_zero_std & scalar_zero_std;
+constant scalar_zero_std : std_logic_vector(31 downto 0) := x"00000000";
+constant vector_zero_std : std_logic_vector(95 downto 0) := scalar_zero_std & scalar_zero_std & scalar_zero_std;
 
-signal scalar_zero : scalar := toscalar(scalar_zero_std);
-signal vector_zero : vector := tovector(vector_zero_std);
+constant scalar_zero : scalar := toscalar(scalar_zero_std);
+constant vector_zero : vector := tovector(vector_zero_std);
 
 signal one_over_rs : scalarArray := (others => scalar_zero);
 signal centers 	: vectorArray 	 := (others => vector_zero);
@@ -101,7 +101,7 @@ direction <= tovector(stdscalar1 & scalar_zero_std & scalar_zero_std);
 
 origin <= tovector(stdscalar1 & scalar_zero_std & scalar_zero_std);
 
-wait for 1sec;
+wait for 1 sec;
 
 end process;
 

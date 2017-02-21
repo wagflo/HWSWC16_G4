@@ -123,7 +123,7 @@ begin
   end if;
   end process;
 
-  mul_x : mul
+  mul_x : scalarMul
   port map(
 
     clk => clk,
@@ -133,10 +133,10 @@ begin
     a => color_in.x,
     b => hitColor.x,
 
-    res => color_out_next.x
+    result => color_out_next.x
   );
 
-  mul_y : mul
+  mul_y : scalarMul
   port map(
 
     clk => clk,
@@ -146,10 +146,10 @@ begin
     a => color_in.y,
     b => hitColor.y,
 
-    res => color_out_next.y
+    result => color_out_next.y
   );
 
-  mul_z : mul
+  mul_z : scalarMul
   port map(
 
     clk => clk,
@@ -159,7 +159,7 @@ begin
     a => color_in.z,
     b => hitColor.z,
 
-    res => color_out_next.z
+    result => color_out_next.z
   );
 
 end architecture;

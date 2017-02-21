@@ -60,20 +60,33 @@ package operations_pkg is
 
 
 
-  component mul is
+--  component mul is
 
-  generic (INPUT_WIDTH : NATURAL := 32; OUTPUT_WIDTH : NATURAL := 32);
+--  generic (INPUT_WIDTH : NATURAL := 32; OUTPUT_WIDTH : NATURAL := 32);
 
-  port (
-	a : in std_logic_vector(INPUT_WIDTH-1 DOWNTO 0);
-	b : in std_logic_vector(INPUT_WIDTH-1 DOWNTO 0);
+--  port (
+--	a : in std_logic_vector(INPUT_WIDTH-1 DOWNTO 0);
+--	b : in std_logic_vector(INPUT_WIDTH-1 DOWNTO 0);
 	
-	res : out std_logic_vector(OUTPUT_WIDTH-1 DOWNTO 0);
+--	res : out std_logic_vector(OUTPUT_WIDTH-1 DOWNTO 0);
+
+--	clk, clk_en, reset : in std_logic	
+--  );
+
+--  end component mul;
+
+component scalarMul is
+
+GENERIC (INPUT_WIDTH : NATURAL := 32; OUTPUT_WIDTH : NATURAL := 32);
+
+PORT (
+	a, b : in std_logic_vector(INPUT_WIDTH-1 DOWNTO 0);
+	result : out std_logic_vector(OUTPUT_WIDTH-1 DOWNTO 0);
 
 	clk, clk_en, reset : in std_logic	
-  );
+);
 
-  end component mul;
+end component scalarMul;
 
 
   component vecMulS is
