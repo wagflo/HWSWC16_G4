@@ -9,6 +9,7 @@ port(
 
     clk 	: in std_logic;
     clk_en 	: in std_logic;
+    hold 	: in std_logic;
     reset 	: in std_logic;
     start 	: in std_logic;
 
@@ -27,7 +28,8 @@ port(
     result	: out vector;
 
     position	: out std_logic_vector (21 downto 0);
-    done	: out std_logic
+    done	: out std_logic;
+    copyRay	: out std_logic
 
   );
 
@@ -41,7 +43,9 @@ signal next_vector, addition_result, addition_input1, addition_input2 : vector;
 
 signal i, j, sample_i, sample_j, last_i, last_j, last_sample_i, last_sample_j : natural;
 
-signal next_done : std_logic;
+signal next_done, next_copyRay : std_logic;
+
+signal next_sob, next_eob : std_logic;
 
 constant max_width : natural := 799;
 
@@ -71,6 +75,8 @@ add : vector_add_sub
 
   );
 
+
+
 async : process(start, last_i, last_j, last_sample_i, last_sample_j) is begin
 if start = '1' then 
 	i <= 0;
@@ -82,9 +88,16 @@ if start = '1' then
 	last_j_vector <= addition_base;
 	last_i_vector <= addition_base;
 	last_sample_base <= addition_base;
+	next_sob <= '1';
+	if num_samples_i = "001" AND num_samples_j = "001" then
+		next_eob <= '1';
+	end if;
 else
+	next_eob <= '0';
+	next_sob <= '0';
 	if last_sample_i >= unsigned(num_samples_i) then
 		if last_sample_j >= unsigned(num_samples_j) then
+			next_sob <= '1';
 			if last_i >= max_width then
 				i <= 0;
 				j <= last_j + 1;
@@ -111,6 +124,7 @@ else
 
 	if (last_sample_i = unsigned(num_samples_i)-1 OR (last_sample_i = 1 AND num_samples_i = "001")) AND last_sample_j = 1 then
 		last_i_vector <= addition_result;
+		next_eob <= '1';
 	end if;
 
 	if last_sample_i >= unsigned(num_samples_i)-1 then
@@ -139,11 +153,12 @@ end process;
 result <= addition_base when start = '1' else addition_result;
 
 next_done <= '1' when (sample_i = unsigned(num_samples_i) AND sample_j = unsigned(num_samples_j) AND i = max_width AND j = max_height) else '0';
+next_copyRay <= hold;
 
 sync : process(clk, clk_en, reset) is begin
 if reset = '1' then
 	
-elsif rising_edge(clk) AND clk_en = '1' then
+elsif rising_edge(clk) AND clk_en = '1' and hold = '0' then
 	last_i <= i;
 	last_j <= j;
 	last_sample_i <= sample_i;
@@ -153,6 +168,10 @@ elsif rising_edge(clk) AND clk_en = '1' then
 	position(19 downto 10) <= std_logic_vector(to_unsigned(i, 10));
 	position(9 downto 0) <= std_logic_vector(to_unsigned(j, 10));
 	
+end if;
+
+if rising_edge(clk) AND NOT(reset = '1') AND clk_en ='1' then
+	copyRay <= next_copyRay;
 end if;
 end process;
 

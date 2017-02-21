@@ -1,5 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 package operations_pkg is 
 
@@ -23,11 +24,15 @@ package operations_pkg is
 
   function tovector(input : std_logic_vector(95 downto 0)) return vector;
 
+  function "and"(a : vector; b : std_logic_vector(31 downto 0)) return vector;
+
   function to_std_logic(input : vector) return std_logic_vector;
 
   function toscalar(input : std_logic_vector(31 downto 0)) return scalar;
 
   function to_std_logic(input : scalar) return std_logic_vector;
+
+  function "+"(a, b : vector) return vector;
 
   type sphere is record
 	center : vector;
@@ -192,4 +197,23 @@ begin
 end to_std_logic;
 
 
+function "+"(a, b : vector) return vector is
+  variable result : vector;
+
+begin
+	result.x := std_logic_vector(signed(a.x) + signed(b.x));
+	result.y := std_logic_vector(signed(a.y) + signed(b.y));
+	result.z := std_logic_vector(signed(a.z) + signed(b.z));
+return result;
+end "+";
+
+
+function "and"(a : vector; b : std_logic_vector(31 downto 0)) return vector is
+	variable result : vector;
+begin
+	result.x := a.x and b;
+	result.y := a.y and b;
+	result.z := a.z and b;
+return result;
+end "and";
 end package body;

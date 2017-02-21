@@ -5,68 +5,13 @@ use work.operations_pkg.all;
 
 package components_pkg is
 
-component anyRefl is
-  port
-  (
-    clk 	: in std_logic;
-    reset 	: in std_logic;
-   
-    -- kein clock enable, nehme valid
-
-    num_samples	: in std_logic_vector(4 downto 0); -- one hot: 16, 8, 4, 2, 1
---    max_num_reflect : in std_logic_vector(2 downto 0);
-
-
---    reflectedArray	: in std_logic_vector(15 downto 0); -- input of buffered rays
-    endOfBundle : in std_logic;
-    startOfBundle : in std_logic;
-
-    remaining_reflects : in std_logic_vector(2 downto 0);
-
-    valid_t	: in std_logic;
-    --t 		: in std_logic_vector(31 downto 0);
-    
-    isReflected : out std_logic;
-    pseudoReflect : out std_logic;
-    valid_data  : out std_logic;
-
-    startOfBundle_out : out std_logic;
-    endOfBundle_out : out std_logic
-    
-  );
-end component;
-
-component reflect is 
-  port
-  (
-    clk : in std_logic;
-    clk_en : in std_logic;
-    reset : in std_logic;
-
-    valid_t  : in std_logic;
-    t : in std_logic_vector(31 downto 0);
-
-    sphere_i : std_logic_vector(3 downto 0);
-
-    one_over_rs : scalarArray;
-    centers     : vectorArray;
-
-    origin : vector;
-    direction : vector;
-
-    new_origin : out vector;
-    new_direction : out vector;
-    valid_refl  : out std_logic
-
-  );
-end component;
-
 component getRayDirOpt is
 
 port(
 
     clk 	: in std_logic;
     clk_en 	: in std_logic;
+    hold 	: in std_logic;
     reset 	: in std_logic;
     start 	: in std_logic;
 
@@ -85,16 +30,47 @@ port(
     result	: out vector;
 
     position	: out std_logic_vector (21 downto 0);
-    done	: out std_logic
+    done	: out std_logic;
+    copyRay	: out std_logic
 
-  ); 
-end component;
+  ); end component;
+
+component getRayDirAltt is
+
+port(
+
+    clk 	: in std_logic;
+    clk_en 	: in std_logic;
+    hold 	: in std_logic;
+    reset 	: in std_logic;
+    start 	: in std_logic;
+
+    frame	: in std_logic_vector(1 downto 0);
+
+    num_samples_i : in std_logic_vector(2 downto 0);
+
+    num_samples_j : in std_logic_vector(2 downto 0); 
+
+    addition_hor : in vector;
+
+    addition_ver : in vector;
+
+    addition_base : in vector;
+    
+    result	: out vector;
+
+    position	: out std_logic_vector (21 downto 0);
+    done	: out std_logic;
+    copyRay	: out std_logic
+
+  ); end component;
 
 component closestSphere is
   port
     (
       clk   : in std_logic;
       reset : in std_logic;
+      copy_cycle_active : in std_logic;
       
       clk_en : in std_logic;
 

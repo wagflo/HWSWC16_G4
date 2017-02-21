@@ -60,7 +60,7 @@ signal t, elem, coord, sphere : std_logic_vector(3 downto 0);
 signal number_filled : natural := 0;
 signal number_filled_v : std_logic_vector(1 downto 0);
 
-signal can_feed, start_rdo, start_rdo_next, done_rdo : std_logic;
+signal can_feed, start_rdo, start_rdo_next, done_rdo, copyRay_rdo : std_logic;
 
 signal result_rdo : vector;
 signal position_rdo : std_logic_vector(21 downto 0);
@@ -68,6 +68,8 @@ signal position_rdo : std_logic_vector(21 downto 0);
 signal sph_demux : std_logic_vector(15 downto 0) := "0000000000011111";
 
 signal start_sphere, valid, done : std_logic;
+
+signal toggle, stall : std_logic := '0';
 
 signal i : std_logic_vector(3 downto 0);
 
@@ -100,11 +102,15 @@ syn : process(res_n, clk) is begin
 		frames <= (OTHERS => initial_frame);
 		readdata <= (OTHERS => '0');
 		number_filled <= 0;
+		toggle <= '0';
 	elsif rising_edge(clk) then
 		readdata <= next_readdata;
 		number_filled <= natural(to_integer(unsigned(number_filled_v)));
 		frames <= frames_next;
 		start_rdo <= start_rdo_next;
+                if can_feed = '1' then
+			toggle <= not(toggle);
+		end if;
 	end if;
 end process;
 
@@ -113,13 +119,14 @@ sphere <= address(11 downto 8);
 elem <= address(7 downto 4);
 coord <= address(3 downto 0);
 
-can_feed <= frames(0).all_info AND NOT(sc.num_spheres(3));
+can_feed <= frames(0).all_info AND NOT(stall);
 
-rdo : getRayDirOpt port map (
+rdo : getRayDirAlt port map (
     clk => clk,
     clk_en => can_feed,
     reset => res_n,
     start => start_rdo,
+    hold => toggle,
 
     frame => frames(0).frame_no,
 
@@ -136,12 +143,14 @@ rdo : getRayDirOpt port map (
     result	=> result_rdo,
 
     position	=> position_rdo,
-    done	=> done_rdo);
+    done	=> done_rdo,
+    copyRay	=> copyRay_rdo);
 
 gcs : closestSphere port map (
 	clk => clk,
 	reset => res_n,
 	clk_en => '1',
+	copy_cycle_active => copyRay_rdo,
 	start => start_sphere,
 	origin => to_std_logic(frames(0).camera_origin),
 	dir => to_std_logic(result_rdo),
