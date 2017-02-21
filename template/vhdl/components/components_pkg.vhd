@@ -35,7 +35,7 @@ port(
 
   ); end component;
 
-component getRayDirAltt is
+component getRayDirAlt is
 
 port(
 
