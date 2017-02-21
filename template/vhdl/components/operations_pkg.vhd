@@ -54,8 +54,14 @@ package operations_pkg is
   type frame_array is array(1 downto 0) of frame_info;
 
   type scene is record
-	num_spheres, num_reflects, num_samples_i, num_samples_j : std_logic_vector(7 downto 0);
+	num_spheres, num_reflects, num_samples : std_logic_vector(7 downto 0);
 	spheres : sphere_array;
+  end record;
+
+  type ray is record
+	origin, direction, vector : vector;
+	remaining_reflects : std_logic_vector(2 downto 0);
+	sob, eob : std_logic;
   end record;
 
 

@@ -130,9 +130,7 @@ rdo : getRayDirAlt port map (
 
     frame => frames(0).frame_no,
 
-    num_samples_i => sc.num_samples_i(2 downto 0),
-
-    num_samples_j => sc.num_samples_j(2 downto 0),
+    num_samples => sc.num_samples(4 downto 0),
 
     addition_hor => frames(0).addition_hor,
 
@@ -194,73 +192,8 @@ gcs : closestSphere port map (
 	valid_t => valid
 );
 
-writeproc : process(t, elem, coord, write, writedata) is begin
-if write = '1' then
---write
-	if t = finish_frame then
-		--finish_frame
-		frames_next(number_filled).all_info <= '1';
-		start_rdo_next <= '1';
-	elsif t = change_spheres then
-		--change a param of a sphere
-		if elem = radius then
-			sc_next.spheres(to_integer(unsigned(sphere))).radius <= writedata;
-		elsif elem = radius2 then
-			sc_next.spheres(to_integer(unsigned(sphere))).radius2 <= writedata;
-		elsif elem = center then
-			if coord = x then
-				sc_next.spheres(to_integer(unsigned(sphere))).center.x <= writedata;
-			elsif coord = y then
-				sc_next.spheres(to_integer(unsigned(sphere))).center.y <= writedata;
-			elsif coord = z then
-				sc_next.spheres(to_integer(unsigned(sphere))).center.z <= writedata;
-			end if;
-		end if;
-	elsif t = change_general then
-		--change the gerneral parameters
-		sc_next.num_spheres <= writedata(31 downto 24);
-		sc_next.num_reflects <= writedata(23 downto 16);
-		sc_next.num_samples_i <= writedata(15 downto 8);
-		sc_next.num_samples_j <= writedata(7 downto 0);
-	elsif t = change_frame then
-		--set a param in the camera position
-		if elem = camera_origin then
-			if coord = x then
-				frames_next(number_filled).camera_origin.x <= writedata;
-			elsif coord = y then
-				frames_next(number_filled).camera_origin.y <= writedata;
-			elsif coord = z then
-				frames_next(number_filled).camera_origin.z <= writedata;
-			end if;
-		elsif elem = addition_base then
-			if coord = x then
-				frames_next(number_filled).addition_base.x <= writedata;
-			elsif coord = y then
-				frames_next(number_filled).addition_base.y <= writedata;
-			elsif coord = z then
-				frames_next(number_filled).addition_base.z <= writedata;
-			end if;
-		elsif elem = addition_hor then
-			if coord = x then
-				frames_next(number_filled).addition_hor.x <= writedata;
-			elsif coord = y then
-				frames_next(number_filled).addition_hor.y <= writedata;
-			elsif coord = z then
-				frames_next(number_filled).addition_hor.z <= writedata;
-			end if;
-		elsif elem = addition_ver then
-			if coord = x then
-				frames_next(number_filled).addition_ver.x <= writedata;
-			elsif coord = y then
-				frames_next(number_filled).addition_ver.y <= writedata;
-			elsif coord = z then
-				frames_next(number_filled).addition_ver.z <= writedata;
-			end if;
-		elsif elem = frame_no then
-			frames_next(number_filled).frame_no <= writedata(1 downto 0);
-		end if;
-	end if;
-elsif done_rdo = '1' then
+next_raydir : process(done_rdo, frames) is begin
+if done_rdo = '1' then
 	frames_next(0) <= frames(1);
 	frames_next(1) <= initial_frame;
 else 

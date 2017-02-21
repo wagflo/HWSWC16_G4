@@ -26,6 +26,39 @@ component colorUpdate is
   );
 end component;
 
+component getRayDirAlt is
+
+port(
+
+    clk 	: in std_logic;
+    clk_en 	: in std_logic;
+    hold 	: in std_logic;
+    reset 	: in std_logic;
+    start 	: in std_logic;
+
+    frame	: in std_logic_vector(1 downto 0);
+
+    num_samples : in std_logic_vector(4 downto 0);
+
+    addition_hor : in vector;
+
+    addition_ver : in vector;
+
+    addition_base : in vector;
+    
+    result	: out vector;
+
+    position	: out std_logic_vector (21 downto 0);
+    done	: out std_logic;
+    copyRay	: out std_logic;
+    valid	: out std_logic;
+    sob		: out std_logic;
+    eob		: out std_logic
+
+  );
+
+end component;
+
 component anyRefl is
   port
   (
@@ -120,6 +153,8 @@ component closestSphere is
       clk_en : in std_logic;
 
       start	: in std_logic;
+
+      copy_cycle_active : in std_logic;
 
       origin    : in std_logic_vector(95 downto 0);
       dir       : in std_logic_vector(95 downto 0);
