@@ -17,12 +17,15 @@ component colorUpdate is
     valid_t  : std_logic;
     sphere_i : std_logic_vector(3 downto 0);
 
+    valid_ray_in : std_logic;
+
     -- Kugeldaten: Farbe, ws nicht emitting
 
     color_array : vectorArray;
     
     color_out : out vector;
-    valid_color : out std_logic
+    valid_color : out std_logic;
+    valid_ray_out : out std_logic
   );
 end component;
 

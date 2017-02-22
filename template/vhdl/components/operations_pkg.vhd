@@ -59,9 +59,19 @@ package operations_pkg is
   end record;
 
   type ray is record
+
+        color : vector;
 	origin, direction, vector : vector;
+
 	remaining_reflects : std_logic_vector(2 downto 0);
+	
 	sob, eob : std_logic;
+
+-- oder 	origin, direction, color : vector; ?
+
+
+	position : std_logic_vector (21 downto 0);      
+
   end record;
 
 

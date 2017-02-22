@@ -56,12 +56,15 @@ entity colorUpdate is
     valid_t  : std_logic;
     sphere_i : std_logic_vector(3 downto 0);
 
+    valid_ray_in : std_logic;
+
     -- Kugeldaten: Farbe, ws nicht emitting
 
     color_array : vectorArray;
     
     color_out : out vector;
-    valid_color : out std_logic
+    valid_color : out std_logic;
+    valid_ray_out : out std_logic
   );
 end entity;
 
@@ -71,6 +74,7 @@ architecture beh of colorUpdate is
   signal hitColor : vector;
   signal color_out_next : vector;
   signal valid_t_vec, valid_color_vec : std_logic_vector(0 downto 0);
+  signal valid_ray_in_vec, valid_ray_out_vec : std_logic_vector(0 downto 0);
   signal valid_color_next : std_logic;
 
 begin
@@ -101,7 +105,7 @@ begin
 
   valid_t_vec(0) <= valid_t;
 
-  delay_validity: delay_element generic map(WIDTH => 1, DEPTH => 2) 
+  delay_refl_validity: delay_element generic map(WIDTH => 1, DEPTH => 2) 
   port map (
     clk => clk, clken => clk_en, reset => reset, 
     source => valid_t_vec,
@@ -109,7 +113,20 @@ begin
   );
 
 --  valid_color_next <= valid_color_vec(0);
-valid_color <= valid_color_vec(0);
+  valid_color <= valid_color_vec(0);
+
+  valid_ray_in_vec(0) <= valid_ray_in;
+
+  delay_ray_validity: delay_element generic map(WIDTH => 1, DEPTH => 2) 
+  port map (
+    clk => clk, clken => clk_en, reset => reset, 
+    source => valid_ray_in_vec,
+    dest => valid_ray_out_vec
+  );
+
+  valid_ray_out <= valid_ray_out_vec(0);
+
+
 
   index <= natural(to_integer(unsigned(sphere_i)));
 

@@ -13,11 +13,13 @@ architecture arch of colorUpdateTest is
 signal clk : std_logic := '1';
 signal res : std_logic := '1';
 signal valid_t : std_logic := '0';
+signal valid_ray_in :std_logic := '1';
 
 signal sphere_i : std_logic_vector (3 downto 0) := x"0";
 
 signal color_in, color_out : vector;
 signal valid_color : std_logic;
+signal valid_ray_out : std_logic;
 
 constant scalar_zero_std : std_logic_vector(31 downto 0) := x"00000000";
 constant vector_zero_std : std_logic_vector(95 downto 0) := scalar_zero_std & scalar_zero_std & scalar_zero_std;
@@ -46,12 +48,16 @@ refl : colorUpdate
     valid_t  => valid_t,
     sphere_i => sphere_i,
 
+    valid_ray_in  => valid_ray_in,
+
     -- Kugeldaten: Farbe, ws nicht emitting
 
     color_array => colors,
     
     color_out => color_out,
-    valid_color => valid_color
+    valid_color => valid_color,
+
+    valid_ray_out  => valid_ray_out
   );
 
 clk <= not clk after 10 ns;
@@ -93,13 +99,13 @@ end process;
 data : process
 begin
 
-wait for 20 ns; --110 ns;
+wait for 40 ns; --110 ns;
 
 sphere_i <= x"0";
-wait for 20 ns;
+wait for 40 ns;
 
 sphere_i <= x"1";
-wait for 20 ns;
+wait for 40 ns;
 
 sphere_i <= x"2";
 end process;
@@ -109,7 +115,9 @@ end process;
 
 --wait for 110 ns;
 
-valid_t <= not valid_t after 60 ns;
+valid_t <= not valid_t after 40 ns;
+
+valid_ray_in <= not valid_ray_in after 20 ns;
 
 --end process;
 
