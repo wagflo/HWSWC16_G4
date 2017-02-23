@@ -3,3 +3,7 @@
 *.elf
 *.objdump
 *.bak
+*.mti
+template/vhdl/tb_sophie/tes_benches.mpf
+template/vhdl/tb_sophie/transcript
+template/vhdl/tb_sophie/work/
