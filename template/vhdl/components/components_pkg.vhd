@@ -49,14 +49,10 @@ port(
 
     addition_base : in vector;
     
-    result	: out vector;
+    outputRay 	: out ray;
 
-    position	: out std_logic_vector (21 downto 0);
     done	: out std_logic;
-    copyRay	: out std_logic;
-    valid	: out std_logic;
-    sob		: out std_logic;
-    eob		: out std_logic
+    valid	: out std_logic
 
   );
 

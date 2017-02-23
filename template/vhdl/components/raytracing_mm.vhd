@@ -62,7 +62,7 @@ signal number_filled_v : std_logic_vector(1 downto 0);
 
 signal can_feed, start_rdo, start_rdo_next, done_rdo, copyRay_rdo : std_logic;
 
-signal result_rdo : vector;
+signal outputRay_rdo : ray;
 signal position_rdo : std_logic_vector(21 downto 0);
 
 signal sph_demux : std_logic_vector(15 downto 0) := "0000000000011111";
@@ -117,21 +117,18 @@ rdo : getRayDirAlt port map (
     addition_ver => frames(0).addition_ver,
 
     addition_base => frames(0).addition_ver,
-    
-    result	=> result_rdo,
 
-    position	=> position_rdo,
-    done	=> done_rdo,
-    copyRay	=> copyRay_rdo);
+    outputRay 	=> outputRay_rdo,
+    done	=> done_rdo);
 
 gcs : closestSphere port map (
 	clk => clk,
 	reset => res_n,
 	clk_en => '1',
-	copy_cycle_active => copyRay_rdo,
+	copy_cycle_active => (outputRay_rdo.copy),
 	start => start_sphere,
-	origin => to_std_logic(frames(0).camera_origin),
-	dir => to_std_logic(result_rdo),
+	origin => to_std_logic(outputRay_rdo.origin),
+	dir => to_std_logic(outputRay_rdo.direction),
 	center_1 => to_std_logic(sc.spheres(0).center),
 	radius2_1 => sc.spheres(0).radius2,
 	center_2 => to_std_logic(sc.spheres(1).center),
@@ -165,7 +162,7 @@ gcs : closestSphere port map (
 	radius2_16 => sc.spheres(15).radius2,
 	center_16 => to_std_logic(sc.spheres(15).center),
 	second_round => sc.num_spheres(3),
-	spheres => sph_demux,
+	spheres => sc.sphere_enable,
 	t => distance,
 	i_out => i,
 	done => done,

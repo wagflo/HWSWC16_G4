@@ -64,11 +64,12 @@ package operations_pkg is
   type ray is record
 
         color : vector;
-	origin, direction, vector : vector;
+	origin, direction : vector;
 
 	remaining_reflects : std_logic_vector(2 downto 0);
+
 	
-	sob, eob : std_logic;
+	sob, eob, copy, pseudo_refl : std_logic;
 
 -- oder 	origin, direction, color : vector; ?
 
