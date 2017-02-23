@@ -80,22 +80,7 @@ begin
 --next_readdata(0) <= frames(0).all_info AND frames(1).all_info;
 next_readdata <= frames(0).camera_origin.x xor frames(1).camera_origin.x;
 number_filled_v <= (1 => frames(0).all_info AND frames(1).all_info, 0 => frames(0).all_info XOR frames(1).all_info);
-sph_demux(15) <= (sc.num_spheres(3) AND sc.num_spheres(2) AND sc.num_spheres(1) AND sc.num_spheres(0));
-sph_demux(14) <= (sc.num_spheres(3) AND sc.num_spheres(2) AND sc.num_spheres(1));
-sph_demux(13) <= (sc.num_spheres(3) AND sc.num_spheres(2) AND (sc.num_spheres(0) OR sc.num_spheres(1)));
-sph_demux(12) <= (sc.num_spheres(3) AND sc.num_spheres(2));
-sph_demux(11) <= (sc.num_spheres(3) AND (sc.num_spheres(2) OR (sc.num_spheres(1) AND sc.num_spheres(0))));
-sph_demux(10) <= (sc.num_spheres(3) AND (sc.num_spheres(2) OR sc.num_spheres(1)));
-sph_demux(9) <= (sc.num_spheres(3) AND (sc.num_spheres(2) OR sc.num_spheres(1) OR sc.num_spheres(0)));
-sph_demux(8) <= sc.num_spheres(3);
-sph_demux(7) <= sc.num_spheres(3) OR (sc.num_spheres(2) AND sc.num_spheres(1) AND sc.num_spheres(0));
-sph_demux(6) <= sc.num_spheres(3) OR (sc.num_spheres(2) AND sc.num_spheres(1));
-sph_demux(5) <= sc.num_spheres(3) OR (sc.num_spheres(2) AND (sc.num_spheres(0) OR sc.num_spheres(1)));
-sph_demux(4) <= sc.num_spheres(3) OR (sc.num_spheres(2));
-sph_demux(3) <= sc.num_spheres(3) OR (sc.num_spheres(2) OR (sc.num_spheres(1) AND sc.num_spheres(0)));
-sph_demux(2) <= sc.num_spheres(3) OR (sc.num_spheres(2) OR sc.num_spheres(1));
-sph_demux(1) <= sc.num_spheres(3) OR (sc.num_spheres(2) OR sc.num_spheres(1) OR sc.num_spheres(0));
-sph_demux(0) <= '1';
+
 
 syn : process(res_n, clk) is begin
 	if res_n = '1' then 
@@ -113,11 +98,6 @@ syn : process(res_n, clk) is begin
 		end if;
 	end if;
 end process;
-
-t <= address(15 downto 12);
-sphere <= address(11 downto 8);
-elem <= address(7 downto 4);
-coord <= address(3 downto 0);
 
 can_feed <= frames(0).all_info AND NOT(stall);
 

@@ -38,6 +38,8 @@ package operations_pkg is
 	center : vector;
 	radius : std_logic_vector(31 downto 0);
 	radius2 : std_logic_vector(31 downto 0);
+	colour : vector;
+	emitting : std_logic;
   end record;
 
   type sphere_array is array (15 downto 0) of sphere;
@@ -56,6 +58,7 @@ package operations_pkg is
   type scene is record
 	num_spheres, num_reflects, num_samples : std_logic_vector(7 downto 0);
 	spheres : sphere_array;
+	sphere_enable : std_logic_vector(15 downto 0);
   end record;
 
   type ray is record
