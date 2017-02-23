@@ -14,27 +14,35 @@ signal clk : std_logic := '1';
 signal res : std_logic := '1';
 signal valid_t : std_logic := '0';
 
-signal sob, eob, emitting : std_logic;
+signal sob, eob, emitting, valid_ray : std_logic;
 signal remaining : std_logic_vector(2 downto 0);
 signal num_samples : std_logic_vector(4 downto 0);
 
 signal is_refl, pseudoReflect, valid_data, sob_out, eob_out : std_logic;
 
-type data_array is array(natural range <>) of std_logic_vector(6 downto 0);
+-- BEWARE OF LONG INIT/RESET PHASE: 17 clocks
 
-signal data : data_array(8 downto 0) := (
-	-- sob, eob, valid_t, emitting, remaining
-	0 => "1010111",
-	1 => "0110111",
-	2 => "0000000",
-	3 => "0000000",
-	4 => "0000000",
-	5 => "1010000",
-	6 => "0110000",
-	7 => "1011010",
-	8 => "0111010" );
+type data_array is array(natural range <>) of std_logic_vector(7 downto 0);
 
-signal input : std_logic_vector(6 downto 0); -- := "0000000";
+signal data : data_array(14 downto 0) := (
+	-- sob, eob, valid_ray, valid_t, emitting, remaining
+	0 => "10100111", -- no refl (no valid_t)			nr p
+	1 => "01110111", -- refl => all pseudo				r  p
+	2 => "00000001",	--					0  0
+	3 => "00000010",	--					0  0	
+	4 => "00000100", --						0  0
+	5 => "10110000", --						nr np 
+	6 => "01110000", -- no remaining => no pseudo => no refl	nr np
+	7 => "10111010", -- 						nr np
+	8 => "01111010", -- valid_t but, emitting => no pseudo, no refl	nr np
+	9 => "00000000", --						0  0   => kleiner Fehler, aber ausserhalb von sob, eob
+	10=> "00000000", --						0  0
+	11=> "10110010", -- refl					r  p
+	12=> "01111010", -- only one emitting => pseudo                 nr p
+	13=> "10101010", -- 						nr np
+	14=> "01101010"); -- no refl, just emitting => no pseudo	nr np
+
+signal input : std_logic_vector(7 downto 0); -- := "0000000";
 
 signal counter : natural := 0;
 
@@ -43,12 +51,15 @@ begin
 refl : anyRefl  
     port map (
     clk 	=> clk,
+    clk_en => '1',
     reset 	=> res,
 
     num_samples	=> "00010", --num_samples,
 
     endOfBundle => eob,
     startOfBundle => sob,
+
+    valid_ray_in => valid_ray,
 
     remaining_reflects => remaining,
     emitting_sphere => emitting,
@@ -57,7 +68,7 @@ refl : anyRefl
     
     isReflected => is_refl,
     pseudoReflect => pseudoReflect,
-    valid_data => valid_data,
+    valid_ray_out => valid_data,
 
     startOfBundle_out => sob_out,
     endOfBundle_out => eob_out
@@ -69,8 +80,9 @@ clk <= not clk after 10 ns;
 res <= '0' after 25 ns;
 
 input <= data(counter);
-sob <= input(6);
-eob <= input(5);
+sob <= input(7);
+eob <= input(6);
+valid_ray <= input(5);
 valid_t <= input(4);
 emitting <= input(3);
 remaining <= input(2 downto 0);

@@ -224,3 +224,4 @@ set_global_assignment -name VHDL_FILE ../vhdl/top.vhd
 set_global_assignment -name QSYS_FILE raytracing.qsys
 set_global_assignment -name SDC_FILE raytracing.sdc
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
+set_global_assignment -name QIP_FILE ../vhdl/ip_cores/miniMult.qip

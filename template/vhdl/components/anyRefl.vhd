@@ -1,10 +1,12 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use work.delay_pkg.all;
 
 entity anyRefl is
   port
   (
     clk 	: in std_logic;
+    clk_en 	: in std_logic;
     reset 	: in std_logic;
    
     -- kein clock enable, nehme valid
@@ -17,6 +19,8 @@ entity anyRefl is
     endOfBundle : in std_logic;
     startOfBundle : in std_logic;
 
+    valid_ray_in : in std_logic;
+
     remaining_reflects : in std_logic_vector(2 downto 0);
     emitting_sphere : in std_logic;
 
@@ -25,7 +29,7 @@ entity anyRefl is
     
     isReflected : out std_logic;
     pseudoReflect : out std_logic;
-    valid_data  : out std_logic;
+    valid_ray_out  : out std_logic;
 
     startOfBundle_out : out std_logic;
     endOfBundle_out : out std_logic
@@ -40,14 +44,31 @@ signal any, anyNext : std_logic; --startOfBundle_out_next, endOfBundle_out_next:
 signal reflect, next_reflect, pseudo_reflect, next_pseudo_reflect, bundle, next_bundle, eob_delay, sob_delay : std_logic_vector(16 downto 0);
 
 signal anyNext_vec, eob_vec: std_logic_vector(15 downto 0);
+signal valid_ray_in_vec, valid_ray_out_vec : std_logic_vector(0 downto 0);
 
 begin
 
-anyNext <= (startOfBundle and valid_t and (remaining_reflects(0) OR remaining_reflects(1) or remaining_reflects(2))) or
-	   (not(startOfBundle) and 
-	   ((valid_t and (remaining_reflects(0) or remaining_reflects(1) or remaining_reflects(2)) and not emitting_sphere) or any));
+valid_ray_in_vec(0) <= valid_ray_in;
 
-next_reflect(16) <= valid_t and (remaining_reflects(0) OR remaining_reflects(1) or remaining_reflects(2)) and not emitting_sphere;
+delay_ray_validity: delay_element generic map(WIDTH => 1, DEPTH => 17) 
+port map (
+  clk => clk, clken => clk_en, reset => reset, 
+  source => valid_ray_in_vec,
+  dest => valid_ray_out_vec
+);
+
+valid_ray_out <= valid_ray_out_vec(0);
+
+anyNext <= --(valid_ray_in and (
+	   (startOfBundle and valid_t and (remaining_reflects(0) OR remaining_reflects(1) or remaining_reflects(2)) and not emitting_sphere) 
+	   or 
+	   (not(startOfBundle) and 
+	   ((valid_t and (remaining_reflects(0) or remaining_reflects(1) or remaining_reflects(2)) and not emitting_sphere) or any))
+	   ;--));
+
+next_reflect(16) <= (valid_ray_in and (
+	   valid_t and (remaining_reflects(0) OR remaining_reflects(1) or remaining_reflects(2)) and not emitting_sphere
+	   ));
 
 next_reflect(15 downto 0) <= reflect(16 downto 1);
 
@@ -83,7 +104,7 @@ begin
     sob_delay <= (others => '0');
     eob_delay <= (others => '0');
 
-  elsif rising_edge(clk) then
+  elsif rising_edge(clk) and clk_en = '1' then
 
     any <= anyNext;
     reflect <= next_reflect;

@@ -62,6 +62,7 @@ component anyRefl is
    port
   (
     clk 	: in std_logic;
+    clk_en 	: in std_logic;
     reset 	: in std_logic;
    
     -- kein clock enable, nehme valid
@@ -74,6 +75,8 @@ component anyRefl is
     endOfBundle : in std_logic;
     startOfBundle : in std_logic;
 
+    valid_ray_in : in std_logic;
+
     remaining_reflects : in std_logic_vector(2 downto 0);
     emitting_sphere : in std_logic;
 
@@ -82,7 +85,7 @@ component anyRefl is
     
     isReflected : out std_logic;
     pseudoReflect : out std_logic;
-    valid_data  : out std_logic;
+    valid_ray_out  : out std_logic;
 
     startOfBundle_out : out std_logic;
     endOfBundle_out : out std_logic

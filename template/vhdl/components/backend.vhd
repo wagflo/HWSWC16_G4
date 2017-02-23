@@ -29,8 +29,12 @@ entity backend is
     num_samples	: in std_logic_vector(4 downto 0); -- one hot: 16, 8, 4, 2, 1
 
 --    color_in : vector;
-    valid_data  : std_logic;
+    --valid_data  : std_logic;
     valid_ray   : std_logic;
+    copy_ray    : std_logic;
+
+    startOfBundle : in std_logic;
+    endOfBundle : in std_logic;
 
     ray_in : ray; -- with color? and position
 
@@ -44,18 +48,17 @@ end entity;
 architecture beh of backend is
 
   signal index : natural;
-  signal hitColor : vector;
-  signal color_out_next : vector;
   signal valid_t_vec, valid_color_vec : std_logic_vector(0 downto 0);
   signal valid_ray_in_vec, valid_ray_out_vec : std_logic_vector(0 downto 0);
-  signal valid_color_next : std_logic;
+
+--  signal color_accum : vector;
 
 --  signal color_shifted_x : std_logic_vector(31 downto 0);
 --  signal color_shifted_y : std_logic_vector(31 downto 0);
 --  signal color_shifted_z : std_logic_vector(31 downto 0);
 
-  signal color_shifted : vector;
-
+  signal color_shifted, color_accum, color_accum_next, color_root : vector;
+  signal eob_and_valid, eob_and_valid_next : std_logic;
 begin
 
   shift : process(ray_in)
@@ -89,35 +92,75 @@ begin
     end if;
   end process;
 
--- latchen ws
--- ins SQRT rein
-
+-- latchen ws/vl mal schauen
+async : process(color_accum, color_shifted, startOfBundle, endOfBundle, valid_ray, copy_ray)
+begin
+if  valid_ray = '1' and copy_ray = '0' then
+  
+  eob_and_valid_next <= endOfBundle; -- oder einfach in delay Element?
+  if startOfBundle = '1' then 
+    
+    color_accum_next <= color_shifted;
+  else 
+    
+    color_accum_next <= color_accum + color_shifted;
+  end if;
+end if;
+end process;
+  
 -- addieren, wenn valid(delayed), mit eob raus und mit sob neu machen
 
+sqrt_x : sqrt
+port map (
+  input => color_accum.x,
+  output => color_root.x,
 
-  --sync : process(clk, reset)
+  clk => clk, 
+  clk_en => clk_en, 
+  reset => reset
+);
 
-  --begin
+sqrt_y : sqrt
+port map (
+  input => color_accum.y,
+  output => color_root.y,
 
-  --if reset = '1' then 
+  clk => clk, 
+  clk_en => clk_en, 
+  reset => reset
+);
 
-  --  color_out <= (others => (others => '0'));
+sqrt_z : sqrt
+port map (
+  input => color_accum.z,
+  output => color_root.z,
 
-  --elsif rising_edge(clk) then
+  clk => clk, 
+  clk_en => clk_en, 
+  reset => reset
+);
 
-   -- if valid_color_next = '1' then 
 
-    --  color_out <= color_out_next;
-   -- else
+-- ins SQRT rein
 
-   --   color_out <= (others => (others => '0'));
-   -- end if;
+-- Adressberechnung!
 
-   -- valid_color <= valid_color_next;
 
-  --end if;
+sync : process(clk, reset)
+begin
 
---  end process;
+  if reset = '1' then 
+
+    color_accum <= (others => (others => '0'));
+    eob_and_valid <= '0';
+
+  elsif rising_edge(clk) and clk_en = '1' then
+
+    color_accum <= color_accum_next;
+    eob_and_valid <= eob_and_valid_next;
+
+  end if;
+end process;
 
 
 

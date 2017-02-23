@@ -42,6 +42,7 @@ entity reflect is
     sphere_i : std_logic_vector(3 downto 0);
 
     valid_ray_in : std_logic;
+    copy_ray_in : std_logic;
 
     one_over_rs : scalarArray;
     centers     : vectorArray;
@@ -54,7 +55,8 @@ entity reflect is
     new_origin : out vector;
     new_direction : out vector;
     valid_refl  : out std_logic;
-    valid_ray_out : out std_logic
+    valid_ray_out : out std_logic;
+    copy_ray_out : out std_logic
 
   );
 end entity;
@@ -79,12 +81,27 @@ architecture beh of reflect is
   signal unit_normal_vec_delayed : vector;
   signal valid_ray_in_vec, valid_ray_out_vec : std_logic_vector(0 downto 0);
 
+  signal valid_other_in_vec, valid_other_out_vec : std_logic_vector(1 downto 0);
+
+
   constant scalar_zero : std_logic_vector(31 downto 0) := x"00000000";
   constant vector_zero : std_logic_vector(95 downto 0) := scalar_zero & scalar_zero & scalar_zero;
 
 begin
 
   --valid_t_vec(0) <= valid_t;
+
+  valid_other_in_vec(0) <= valid_ray_in;
+  valid_other_in_vec(1) <= copy_ray_in;
+
+  delay_other_validities: delay_element generic map(WIDTH => 2, DEPTH => 14) port map (
+  clk => clk, clken => clk_en, reset => reset, 
+  source => valid_other_in_vec,
+  dest => valid_other_out_vec
+  );
+
+  valid_ray_out <= valid_other_out_vec(0);
+  copy_ray_out <= valid_other_out_vec(1);
 
   delay_sphere_i_for_center: delay_element generic map(WIDTH => 5, DEPTH => 3) 
   port map (

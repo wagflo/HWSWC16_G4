@@ -108,6 +108,18 @@ package operations_pkg is
 
 --  end component mul;
 
+component sqrt is
+
+GENERIC (INPUT_WIDTH : NATURAL := 32; OUTPUT_WIDTH : NATURAL := 32);
+
+PORT (
+	input : in std_logic_vector(INPUT_WIDTH-1 DOWNTO 0);
+	output : out std_logic_vector(OUTPUT_WIDTH-1 DOWNTO 0);
+
+	clk, clk_en, reset : in std_logic	
+);
+end component sqrt;
+
 component scalarMul is
 
 GENERIC (INPUT_WIDTH : NATURAL := 32; OUTPUT_WIDTH : NATURAL := 32);
