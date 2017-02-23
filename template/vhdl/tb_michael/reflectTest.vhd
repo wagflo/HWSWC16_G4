@@ -14,12 +14,15 @@ signal clk : std_logic := '1';
 signal res : std_logic := '1';
 signal valid_t : std_logic := '0';
 signal t : std_logic_vector (31 downto 0) := x"00000000";
+
+signal valid_ray_in :std_logic := '0';
+
 signal sphere_i : std_logic_vector (3 downto 0) := x"0";
-constant v1, v2 : std_logic_vector(95 downto 0) := X"000100000001000000010000";
-constant v3, v4 : std_logic_vector(95 downto 0) := X"000100000001000000010000";
 signal origin, direction : vector;
+
 signal new_origin, new_direction : vector;
 signal valid_refl : std_logic;
+signal valid_ray_out : std_logic;
 
 constant scalar_zero_std : std_logic_vector(31 downto 0) := x"00000000";
 constant vector_zero_std : std_logic_vector(95 downto 0) := scalar_zero_std & scalar_zero_std & scalar_zero_std;
@@ -49,6 +52,8 @@ port map (
 
   sphere_i => sphere_i,
 
+  valid_ray_in  => valid_ray_in,
+
   one_over_rs => one_over_rs,
   centers     => centers,
 
@@ -57,7 +62,8 @@ port map (
 
   new_origin => new_origin,
   new_direction => new_direction,
-  valid_refl  => valid_refl
+  valid_refl  => valid_refl,
+  valid_ray_out  => valid_ray_out
 
 );
 
@@ -109,16 +115,16 @@ end process;
 data : process
 begin
 
-wait for 20 ns; --110 ns;
+wait for 40 ns; --110 ns;
 
 t <= x"00050000";
 sphere_i <= x"0";
 
-wait for 20 ns;
+wait for 40 ns;
 
 t <= x"0007_4498"; --x"00080000"; -- 
 sphere_i <= x"1";
-wait for 20 ns;
+wait for 40 ns;
 
 t <= x"000D0000";
 sphere_i <= x"2";
@@ -131,11 +137,14 @@ end process;
 
 valid_t <= not valid_t after 160 ns;
 
+valid_ray_in <= not valid_ray_in after 20 ns;
+
 --end process;
 
 assert new_origin = vector_zero;
 assert new_direction = vector_zero;
 assert valid_refl = '1';
+assert valid_ray_out = '1';
 
 
 

@@ -18,6 +18,7 @@ entity anyRefl is
     startOfBundle : in std_logic;
 
     remaining_reflects : in std_logic_vector(2 downto 0);
+    emitting_sphere : in std_logic;
 
     valid_t	: in std_logic;
     --t 		: in std_logic_vector(31 downto 0);
@@ -43,9 +44,10 @@ signal anyNext_vec, eob_vec: std_logic_vector(15 downto 0);
 begin
 
 anyNext <= (startOfBundle and valid_t and (remaining_reflects(0) OR remaining_reflects(1) or remaining_reflects(2))) or
-	   (not(startOfBundle) and ((valid_t and (remaining_reflects(0) or remaining_reflects(1) or remaining_reflects(2))) or any));
+	   (not(startOfBundle) and 
+	   ((valid_t and (remaining_reflects(0) or remaining_reflects(1) or remaining_reflects(2)) and not emitting_sphere) or any));
 
-next_reflect(16) <= valid_t and (remaining_reflects(0) OR remaining_reflects(1) or remaining_reflects(2));
+next_reflect(16) <= valid_t and (remaining_reflects(0) OR remaining_reflects(1) or remaining_reflects(2)) and not emitting_sphere;
 
 next_reflect(15 downto 0) <= reflect(16 downto 1);
 

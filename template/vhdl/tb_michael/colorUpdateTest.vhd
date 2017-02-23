@@ -13,7 +13,7 @@ architecture arch of colorUpdateTest is
 signal clk : std_logic := '1';
 signal res : std_logic := '1';
 signal valid_t : std_logic := '0';
-signal valid_ray_in :std_logic := '1';
+signal valid_ray_in :std_logic := '0';
 
 signal sphere_i : std_logic_vector (3 downto 0) := x"0";
 
@@ -115,7 +115,7 @@ end process;
 
 --wait for 110 ns;
 
-valid_t <= not valid_t after 40 ns;
+valid_t <= not valid_t after 120 ns;
 
 valid_ray_in <= not valid_ray_in after 20 ns;
 

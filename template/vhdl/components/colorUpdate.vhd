@@ -72,10 +72,10 @@ architecture beh of colorUpdate is
 
   signal index : natural;
   signal hitColor : vector;
-  signal color_out_next : vector;
+  --signal color_out_next : vector;
   signal valid_t_vec, valid_color_vec : std_logic_vector(0 downto 0);
   signal valid_ray_in_vec, valid_ray_out_vec : std_logic_vector(0 downto 0);
-  signal valid_color_next : std_logic;
+  --signal valid_color_next : std_logic;
 
 begin
 
@@ -114,6 +114,7 @@ begin
 
 --  valid_color_next <= valid_color_vec(0);
   valid_color <= valid_color_vec(0);
+
 
   valid_ray_in_vec(0) <= valid_ray_in;
 

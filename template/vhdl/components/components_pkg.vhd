@@ -59,7 +59,7 @@ port(
 end component;
 
 component anyRefl is
-  port
+   port
   (
     clk 	: in std_logic;
     reset 	: in std_logic;
@@ -75,6 +75,7 @@ component anyRefl is
     startOfBundle : in std_logic;
 
     remaining_reflects : in std_logic_vector(2 downto 0);
+    emitting_sphere : in std_logic;
 
     valid_t	: in std_logic;
     --t 		: in std_logic_vector(31 downto 0);
@@ -101,15 +102,20 @@ component reflect is
 
     sphere_i : std_logic_vector(3 downto 0);
 
+    valid_ray_in : std_logic;
+
     one_over_rs : scalarArray;
     centers     : vectorArray;
+
+    --emitters : std_logic_vector(15 downto 0); -- noch genaui schauen, wo rein => any Refl
 
     origin : vector;
     direction : vector;
 
     new_origin : out vector;
     new_direction : out vector;
-    valid_refl  : out std_logic
+    valid_refl  : out std_logic;
+    valid_ray_out : out std_logic
 
   );
 end component;

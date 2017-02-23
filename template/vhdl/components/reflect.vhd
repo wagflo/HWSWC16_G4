@@ -41,15 +41,20 @@ entity reflect is
 
     sphere_i : std_logic_vector(3 downto 0);
 
+    valid_ray_in : std_logic;
+
     one_over_rs : scalarArray;
     centers     : vectorArray;
+
+    --emitters : std_logic_vector(15 downto 0); -- noch genaui schauen, wo rein => any Refl
 
     origin : vector;
     direction : vector;
 
     new_origin : out vector;
     new_direction : out vector;
-    valid_refl  : out std_logic
+    valid_refl  : out std_logic;
+    valid_ray_out : out std_logic
 
   );
 end entity;
@@ -72,6 +77,7 @@ architecture beh of reflect is
   signal scaled_dir_delay_4, scaled_dir_delay_10 : vector;
   signal unit_normal_vec_delayed_std_logic : std_logic_vector(95 downto 0);
   signal unit_normal_vec_delayed : vector;
+  signal valid_ray_in_vec, valid_ray_out_vec : std_logic_vector(0 downto 0);
 
   constant scalar_zero : std_logic_vector(31 downto 0) := x"00000000";
   constant vector_zero : std_logic_vector(95 downto 0) := scalar_zero & scalar_zero & scalar_zero;
@@ -159,6 +165,17 @@ begin
     z_res => scaled_dir.z
 
   );
+
+  valid_ray_in_vec(0) <= valid_ray_in;
+
+  delay_ray_validity: delay_element generic map(WIDTH => 1, DEPTH => 14) 
+  port map (
+    clk => clk, clken => clk_en, reset => reset, 
+    source => valid_ray_in_vec,
+    dest => valid_ray_out_vec
+  );
+
+  valid_ray_out <= valid_ray_out_vec(0);
 
   delay_scaled_dir_for_dot_product: delay_element generic map(WIDTH => 96, DEPTH => 4) 
   port map (
