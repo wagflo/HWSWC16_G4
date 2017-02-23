@@ -87,7 +87,7 @@ component sphereDistance is
     (
       clk   : in std_logic;
       reset : in std_logic;
-	  clk_en : in std_logic;
+      clk_en : in std_logic;
 
       start : in std_logic;
 

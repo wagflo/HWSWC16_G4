@@ -42,6 +42,19 @@ package operations_pkg is
 	emitting : std_logic;
   end record;
 
+  type sCInputSpheres is record
+	center : vector;
+	radius2 : std_logic_vector(31 downto 0);
+  end record;
+
+  type sCInputSpheresArray is array(15 downto 0) of sCInputSpheres;
+
+  type scInput is record
+	spheres : sCInputSpheresArray;
+	activeSpheres : std_logic_vector(15 downto 0);
+	num_spheres : std_logic_vector(3 downto 0);
+  end record;
+
   type sphere_array is array (15 downto 0) of sphere;
 
   type frame_info is record
@@ -69,7 +82,7 @@ package operations_pkg is
 	remaining_reflects : std_logic_vector(2 downto 0);
 
 	
-	sob, eob, copy, pseudo_refl : std_logic;
+	sob, eob, copy, pseudo_refl, valid : std_logic;
 
 -- oder 	origin, direction, color : vector; ?
 
