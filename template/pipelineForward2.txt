@@ -77,13 +77,14 @@
 59	+					+				| 
 60	+					+				| 
 61	+					+ end buffer			| 
-62	+					anyRefl(17)			| leite raus: sob, eob
+62	+					anyRefl(17)			| leite raus: sob, eob, remaining
 	+					+ - valid_ray, valid_t		|
 	+					+ - sphere_i, sob, eob		|
+	+					+ - remaining			|
 63 	+					+				| 
 --	+					+				| 
 64 	+ end buffer 				+				| 
-65			reflect	(14)		+				| end: origin, dir 
+65			reflect(14)		+				| end: origin, dir 
 			+ -direction actual, 	+				| (alternativ orig endet 2 spaeter! eher nicht! eher schon!)
 			+ -sphere_i, pseudo(?)	+				|
 			+ -origin, t, valid_t	+				|
