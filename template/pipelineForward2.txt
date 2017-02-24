@@ -1,0 +1,107 @@
+-5
+-4
+-3
+-2
+-1
+--
+ 0  			closestSphere(37)					| RAY_DELAY_IN_PARALLEL
+			+ -dir actual, origin, valid_ray (start), copy		| start: color,	orig+dir, sob, eob, valid_ray, copy, position/address, remaining
+ 1			+							| pseudoRefl: oder ueber valid_ray regeln?
+ 2			+							| 
+ 3 			+ 							| 
+ 4 	div: 1/a (48)	+ ready: a						| 
+	+ -a		+							|
+ 5	+		+ 							| 
+	+		+  							| 
+ 6 	+		+ sphereDistance <- origin actual			| 
+	+		+ + -orig actual, dir					| 
+ 7	+		+ + -dir actual						| 
+ 8	+		+							| 
+ 9	+		+							| 							
+10	+		+							| 
+11	+		+							| 
+12	+		+							| 
+13	+		+							| 
+14	+		+							| 
+15	+		+							| 
+--	+		+							| 
+16	+		+							| 
+17	+		+							| 
+18	+		+							| 
+19	+		+							| 
+20	+		+							| 
+21	+		+							| 
+22	+		+							| 
+23 	+		+							| 
+24 	+		+							| 
+25	+		+							| 
+26 	+		+							| 
+27	+		+							| 
+28	+		+							| 
+29	+		+							| 
+30	+		+							| 
+31	+		+							| 
+32	+		+							| 
+33 	+									|
+	+									|  
+	+		  sob, eob, sphere_i					|
+34 	+					(Buffer(16))			|
+35	+									| 
+36	+									|  			
+37	+									| 			
+38	+									| 			
+39	+									| 
+40	+									| 
+41	+									| 
+42	+									| 
+43 	+									| 
+44 	+									| 
+45	+									| 
+46 	+									| 
+47	+									| 
+--	+									| 
+48	+									| 
+49	+									| 
+50	+									| 
+51	+									| 
+	+		  							|
+52	end div: 1/a								| 
+	mul 1/a*t_tim_a								| 
+53 	+									| 
+54 	end mul : t	end cS							| 
+	out: t		out: valid_t, valid_ray(done), sphere_i 		|
+55	buffer: t, valid_t, sphere_i		+ buffer: valid_ray, valid_t	| 
+56 	+		 			+				| 
+57	+					+				| 
+58	+					+				| 
+59	+					+				| 
+60	+					+				| 
+61	+					+ end buffer			| 
+62	+					anyRefl(17)			| leite raus: sob, eob
+	+					+ - valid_ray, valid_t		|
+	+					+ - sphere_i, sob, eob		|
+63 	+					+				| 
+--	+					+				| 
+64 	+ end buffer 				+				| 
+65			reflect	(14)		+				| end: origin, dir 
+			+ -direction actual, 	+				| (alternativ orig endet 2 spaeter! eher nicht! eher schon!)
+			+ -sphere_i, pseudo(?)	+				|
+			+ -origin, t, valid_t	+				|
+66 			+			+				| 
+67			+ -origin actual	+				| 
+68			+ 			+				| 				 
+69			+			+				| 
+70			+			+				| 
+71			+			+				| 
+72			+			+				| 
+73 			+			+				| 
+74			+ 			+				| 
+75			+			+				| 
+76 			+			+				| 
+77			+			+		colorUpdate(2)	| end: color
+78			+			+		+		| 
+79 demux: 		end reflect		end anyRefl	end cU		| 
+-- backend oder loop	out: new origin, dir	out: pseudoRefl	out: new color	| out: position/adress
+
+Kommentar: kritischer Pfad: a = dir*dir, div 1/a, mul 1/a*t_times_a, reflect, padding auf n*16 => anyRefl, colorUpdate, Datenpuffer nur darauf angepasst und nach hinten geschoben
+

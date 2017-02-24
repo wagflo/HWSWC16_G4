@@ -5,12 +5,12 @@
 -1
 --
  0  			getclosestSphere(start, copy, orig, dir)		| RAY_DELAY_IN_PARALLEL
-			+ -dir							| color start	orig+dir start sob, eob, valid_ray, copy
+			+ -dir							| color start	orig+dir start sob, eob, valid_ray, copy, position, remaining
  1			+							| 
  2			+							| 
  3 			+							| 
- 4 			+							| 
- 5	start div(a)(48)+ 							| 
+ 4 	start div(a)(48)+							| 
+ 5			+ 							| 
 			+  							| 
  6 			+ sphereDistance 					| 
 			  + -orig						| 
@@ -41,7 +41,8 @@
 30										| 
 31										| 
 32										| 
-33 			out: t, valid_t, valid_ray(done), sob, eob, sphere_i	| color, sob, eob end
+33 			out: t_times_a, valid_t, valid_ray(done)		| color, sob, eob end
+			  sob, eob, sphere_i	
 34 			anyRefl(17)		Buffer(16)	colorUpdate(2)	|
 35										| 
 36								end cU		|  			
@@ -49,46 +50,50 @@
 38										| 			
 39										| 
 40										| 
-41
-42
-43 
-44 
-45
-46 
-47
---
-48
-49
-50
-51			end anyRefl
-52
-53 	result div: 1/a
-54 
-55
-56 
-57
-58
-59
-60
-61
-62
-63 
---
-64 
-65
-66 
-67
-68
-69
-70
-71
+41										| 
+42										| 
+43 										| 
+44 										| 
+45										| 
+46 										| 
+47										| 
+--										| 
+48										| 
+49										| 
+50										| 
+51			end anyRefl						| 
+			  out: pseudoRefl
+52	result div: 1/a								| 
+	mul 1/a*t_times_a							| 
+53 										| 
+54 	end mul : t	reflect	(14)						| orig, dir end (alternativ orig endet 2 spaeter! eher nicht!)
+			+ -direction						| |
+55			+							| |
+56 			+ -orig							| v
+57			+							| 
+58			+							| 
+59			+							| 
+60			+							| 
+61			+							| 
+62			+							| 
+63 			+							| 
+--			+							| 
+64 			+							| 
+65			+							| 
+66 			+							| 
+67			+							| 
+68			end reflect						| 
+			new origin, direction					| 
+69			|							| 
+70			|
+71			v vl. ganz ans Ende
 72
 73 
 74 
 75
 76 
 77
-78
+78			demux: backend oder loop
 79
 --
 
