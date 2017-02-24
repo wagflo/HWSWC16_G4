@@ -19,4 +19,21 @@
 | color		| 96	 | getRayDir /	| changeColor		|
 |		|	 | changeColor	| finishColor (backEnd) |
 +---------------+--------+--------------+-----------------------+
-| position	| 22	 | getRayDir	| 
+| position	| 22	 | getRayDir	| setPixel (backEnd)	|
++---------------+--------+--------------+-----------------------+
+| valid		| 1	 | 		| demux, finishColor	|
++---------------+--------+--------------+-----------------------+
+| copy		| 1	 | getRayDir	| getClosestSphere	|
+|		|	 |		| finishColor (backEnd)	|
++---------------+--------+--------------+-----------------------+
+| remaining_	| 3	 | getRayDir /	| anyReflects		|
+| reflects	|	 | reflect	| finishColor (backEnd) |
++---------------+--------+--------------+-----------------------+
+| sob		| 1	 | getRayDir	| anyReflects		|
+|		|	 |		| finishColor (backEnd)	|
++---------------+--------+--------------+-----------------------+
+| eob		| 1	 | getRayDir	| anyReflects		|
+|		|	 |		| finishColor (backEnd)	|
++---------------+--------+--------------+-----------------------+
+| pseudo_refl	| 1	 | anyRefl	| demux, reflect	|
++---------------+--------+--------------+-----------------------+
