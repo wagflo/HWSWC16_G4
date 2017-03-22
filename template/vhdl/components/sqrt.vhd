@@ -41,7 +41,9 @@ sqrt : lpm_sqrt port map (
   clk => clk, 
   radical(47 downto 16) => input,
   radical(15 downto 0) => (OTHERS => '0'), --multiply with 2^32 - get result*2^16 (which is wanted)
-  q => output);
+  q => output(23 downto 0));
+output(31 downto 24) <= (OTHERS => '0');
+
 
 --
 

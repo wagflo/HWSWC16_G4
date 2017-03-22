@@ -40,8 +40,8 @@ entity backend is
 
     -- Kugeldaten: Farbe, ws nicht emitting
 
-    memory_address : out std_logic_vector(31 downto 0);
-    color_data : out std_logic_vector(31 downto 0)
+    memory_address : out std_logic_vector(31 downto 0); --
+    color_data : out std_logic_vector(23 downto 0)
   );
 end entity;
 
@@ -105,6 +105,12 @@ if  valid_ray = '1' and copy_ray = '0' then
     
     color_accum_next <= color_accum + color_shifted;
   end if;
+
+else -- wird latchen sonst
+
+  eob_and_valid_next <= '0';
+  color_accum_next <= color_accum;
+
 end if;
 end process;
   
@@ -140,11 +146,33 @@ port map (
   reset => reset
 );
 
-
+--color_data <= color.root;
 -- ins SQRT rein
 
--- Adressberechnung!
+-- Adressberechnung! oder eh von Anfang an?
+-- noch color packen
 
+vec_sub : vector_add_sub 
+  generic map (
+    DATA_WIDTH => 8
+  )
+  port map (
+    x1 => color_root.x(15 downto 8),
+    y1 => color_root.y(15 downto 8),
+    z1 => color_root.z(15 downto 8),
+    x2 => color_root.x(23 downto 16), 
+    y2 => color_root.y(23 downto 16),  
+    z2 => color_root.z(23 downto 16), 
+    add_sub => '0', -- testen 
+    
+    reset => reset,
+    clk => clk,
+    clk_en => clk_en,
+	
+    x => color_data(23 downto 16), 
+    y => color_data(15 downto  8), 
+    z => color_data( 7 downto  0)
+  );
 
 sync : process(clk, reset)
 begin

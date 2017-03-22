@@ -5,6 +5,32 @@ use work.operations_pkg.all;
 
 package components_pkg is
 
+component backend is 
+  port
+  (
+    clk : in std_logic;
+    clk_en : in std_logic;
+    reset : in std_logic;
+
+    num_samples	: in std_logic_vector(4 downto 0); -- one hot: 16, 8, 4, 2, 1
+
+--    color_in : vector;
+    --valid_data  : std_logic;
+    valid_ray   : std_logic;
+    copy_ray    : std_logic;
+
+    startOfBundle : in std_logic;
+    endOfBundle : in std_logic;
+
+    ray_in : ray; -- with color? and position
+
+    -- Kugeldaten: Farbe, ws nicht emitting
+
+    memory_address : out std_logic_vector(31 downto 0); --
+    color_data : out std_logic_vector(23 downto 0)
+  );
+end component;
+
 component colorUpdate is 
   port
   (
