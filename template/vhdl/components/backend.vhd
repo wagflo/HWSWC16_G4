@@ -30,18 +30,19 @@ entity backend is
 
 --    color_in : vector;
     --valid_data  : std_logic;
-    valid_ray   : std_logic;
-    copy_ray    : std_logic;
+    --valid_ray   : std_logic; -- aus ray
+    --copy_ray    : std_logic;
 
-    startOfBundle : in std_logic;
-    endOfBundle : in std_logic;
+    --startOfBundle : in std_logic;
+    --endOfBundle : in std_logic;
 
     ray_in : ray; -- with color? and position
 
     -- Kugeldaten: Farbe, ws nicht emitting
 
-    memory_address : out std_logic_vector(31 downto 0); --
-    color_data : out std_logic_vector(23 downto 0)
+    --memory_address : out std_logic_vector(31 downto 0); --
+    color_data : out std_logic_vector(23 downto 0);
+    valid_data : out std_logic
   );
 end entity;
 
@@ -59,7 +60,15 @@ architecture beh of backend is
 
   signal color_shifted, color_accum, color_accum_next, color_root : vector;
   signal eob_and_valid, eob_and_valid_next : std_logic;
+
+  signal valid_ray, copy_ray, startOfBundle, endOfBundle : std_logic;
+  signal valid_shift : std_logic_vector(17 downto 0);
 begin
+
+  valid_ray <= ray_in.valid;
+  copy_ray  <= ray_in.copy;
+  startOfBundle <= ray_in.sob;
+  endOfBundle   <= ray_in.eob;
 
   shift : process(ray_in)
   begin

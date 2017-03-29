@@ -46,17 +46,19 @@ signal input : std_logic_vector(7 downto 0); -- := "0000000";
 
 signal counter : natural := 0;
 
-constant initRay : ray := (color => tovector(x"000100000001000000010000"), 
-origin => tovector(x"000100000001000000010000"),
-direction => tovector(x"000100000001000000010000"),
+signal initRay : ray := (color => tovector(x"00010000_00010000_00010000"), 
+origin => tovector(x"00010000_00010000_00010000"),
+direction => tovector(x"0001000_000010000_00010000"),
 remaining_reflects => "000",
-sob => '1', eob => '1', copy => '0', pseudo_refl=>'0', valid=> '1', position => "0000000000000000000000");
+sob => '1', eob => '0', copy => '0', pseudo_refl=>'0', valid=> '1', position => "0000000000000000000000");
 
 signal memA : std_logic_vector(31 downto 0);
 
 signal col : std_logic_vector(23 downto 0);
 
 signal copy : std_logic := '0';
+
+--signal sob, eob : std_logic := '0';
 
 begin
 
@@ -67,15 +69,15 @@ refl : backend
     clk_en => '1',
     reset => res,
 
-    num_samples	=> "00001",
+    num_samples	=> "00010",
 
 --    color_in : vector;
     --valid_data  : std_logic;
-    valid_ray   => '1',
-    copy_ray    => copy,
+    --valid_ray   => '1',
+    --copy_ray    => copy,
 
-    startOfBundle => '1',
-    endOfBundle => '1',
+    --startOfBundle => '1',
+    --endOfBundle => '1',
 
     ray_in => initRay,
 
@@ -90,6 +92,25 @@ clk <= not clk after 10 ns;
 res <= '0' after 25 ns;
 
 copy <= not copy when rising_edge(clk) else copy;
+
+--sob <= not sob when rising_edge(clk) else sob;
+--eob <= not eob when rising_edge(clk) else eob;
+
+sync : process(clk)
+begin
+if rising_edge(clk) then
+
+	initRay.copy <= not initRay.copy;
+	
+	if initRay.copy = '1' then
+		initRay.sob <= not initRay.sob;
+		initRay.eob <= not initRay.eob;
+	else 
+		initRay.sob <= initRay.sob;
+		initRay.eob <= initRay.eob;
+	end if;
+end if;
+end process sync;
 
 
 --input <= data(counter);
@@ -132,11 +153,11 @@ copy <= not copy when rising_edge(clk) else copy;
 
 
 
-assert is_refl = '0';
-assert pseudoReflect = '0';
-assert valid_data = '0';
-assert sob_out = '0';
-assert eob_out = '0';
+--assert is_refl = '0';
+--assert pseudoReflect = '0';
+--assert valid_data = '0';
+--assert sob_out = '0';
+--assert eob_out = '0';
 
 
 end architecture;

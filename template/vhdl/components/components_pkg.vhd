@@ -16,11 +16,11 @@ component backend is
 
 --    color_in : vector;
     --valid_data  : std_logic;
-    valid_ray   : std_logic;
-    copy_ray    : std_logic;
+    --valid_ray   : std_logic; -- aus ray
+    --copy_ray    : std_logic;
 
-    startOfBundle : in std_logic;
-    endOfBundle : in std_logic;
+    --startOfBundle : in std_logic;
+    --endOfBundle : in std_logic;
 
     ray_in : ray; -- with color? and position
 

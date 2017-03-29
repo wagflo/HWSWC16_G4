@@ -6,6 +6,9 @@ use ieee.numeric_std.all;
 library lpm;
 use lpm.lpm_components.all;
 
+LIBRARY altera_mf;
+USE altera_mf.all;
+
 entity sqrt is
 
 GENERIC (INPUT_WIDTH : NATURAL := 32; OUTPUT_WIDTH : NATURAL := 32);
@@ -21,7 +24,15 @@ end sqrt;
 
 architecture arch of sqrt is
 
-component lpm_sqrt PORT
+component altsqrt --lpm_sqrt --changed to altsqrt
+	GENERIC (
+		pipeline		: NATURAL;
+		q_port_width		: NATURAL;
+		r_port_width		: NATURAL;
+		width		: NATURAL;
+		lpm_type		: STRING
+	); -- generic added
+	PORT
 	(
 		aclr		: IN STD_LOGIC ;
 		clk		: IN STD_LOGIC ;
@@ -36,7 +47,15 @@ signal write_data, next_readdata, rdata : std_logic_vector(31 downto 0);
 
 begin
 
-sqrt : lpm_sqrt port map (
+sqrt : altsqrt --lpm_sqrt --changed to altsqrt
+GENERIC MAP (
+		pipeline => 16,
+		q_port_width => 24,
+		r_port_width => 25,
+		width => 48,
+		lpm_type => "ALTSQRT"
+	) -- generic map added
+port map (
   aclr => reset, 
   clk => clk, 
   radical(47 downto 16) => input,
