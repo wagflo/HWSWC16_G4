@@ -252,6 +252,64 @@ component closestSphere is
 
 end component;
 
+component sphereDistance is
+  port
+    (
+      clk   : in std_logic;
+      reset : in std_logic;
+      clk_en : in std_logic;
 
+      start : in std_logic;
+
+
+      origin    : in std_logic_vector(95 downto 0);
+      dir       : in std_logic_vector(95 downto 0);
+
+      a		: in std_logic_vector(31 downto 0);
+
+      center    : in std_logic_vector(95 downto 0);
+      radius2   : in std_logic_vector(31 downto 0);
+      t_min_a 	: in std_logic_vector(31 downto 0);
+      t		: out std_logic_vector(31 downto 0);
+      t_valid	: out std_logic
+
+      );
+end component;
+
+component closestSphereNew is 
+port (
+	clk, reset, clk_en 	: in std_logic;
+	dir, origin		: in vector;
+	a			: in std_logic_vector(31 downto 0);
+	copy, valid		: in std_logic;
+	relevantScene		: in scInput;
+	t_times_a		: out std_logic_vector(31 downto 0);
+	valid_t			: out std_logic;
+	closestSphere		: out std_logic_vector(3 downto 0)
+	
+);
+end component;
+
+component picture_data is
+	port(
+	w : in std_logic;
+	address : std_logic_vector(15 downto 0);
+	writedata : std_logic_vector(31 downto 0);
+	frames : out frame_array;
+	sc : out scene;
+	write_poss : out std_logic;
+	clk : in std_logic;
+	reset : in std_logic;
+	clk_en : in std_logic
+	);
+end component;
+
+component closestSpherePrep is
+port (
+	clk, clk_en, reset 	: in std_logic;
+	input_direction 	: vector;
+	a			: out std_logic_vector(31 downto 0)
+);
+end component;
 
 end package;

@@ -48,6 +48,7 @@ package operations_pkg is
   end record;
 
   type sCInputSpheresArray is array(15 downto 0) of sCInputSpheres;
+  function to_sCInputSpheres(input : sphere) return sCInputSpheres;
 
   type scInput is record
 	spheres : sCInputSpheresArray;
@@ -73,6 +74,8 @@ package operations_pkg is
 	spheres : sphere_array;
 	sphere_enable : std_logic_vector(15 downto 0);
   end record;
+
+ function to_scInput(input : scene) return scInput;
 
   type ray is record
 
@@ -274,4 +277,37 @@ begin
 	result.z := a.z and b;
 return result;
 end "and";
+
+function to_scInput(input : scene) return scInput is 
+	variable result : scInput;
+begin
+	result.num_spheres := input.num_spheres(3 downto 0);
+	result.activeSpheres := input.sphere_enable;
+	result.spheres(0) := to_sCInputSpheres(input.spheres(0));
+	result.spheres(1) := to_sCInputSpheres(input.spheres(1));
+	result.spheres(2) := to_sCInputSpheres(input.spheres(2));
+	result.spheres(3) := to_sCInputSpheres(input.spheres(3));
+	result.spheres(4) := to_sCInputSpheres(input.spheres(4));
+	result.spheres(5) := to_sCInputSpheres(input.spheres(5));
+	result.spheres(6) := to_sCInputSpheres(input.spheres(6));
+	result.spheres(7) := to_sCInputSpheres(input.spheres(7));
+	result.spheres(8) := to_sCInputSpheres(input.spheres(8));
+	result.spheres(9) := to_sCInputSpheres(input.spheres(9));
+	result.spheres(10) := to_sCInputSpheres(input.spheres(10));
+	result.spheres(11) := to_sCInputSpheres(input.spheres(11));
+	result.spheres(12) := to_sCInputSpheres(input.spheres(12));
+	result.spheres(13) := to_sCInputSpheres(input.spheres(13));
+	result.spheres(14) := to_sCInputSpheres(input.spheres(14));
+	result.spheres(15) := to_sCInputSpheres(input.spheres(15));
+return result;
+end to_scInput;
+
+function to_sCInputSpheres(input : sphere) return sCInputSpheres is
+	variable result : sCInputSpheres;
+begin
+	result.center := input.center;
+	result.radius2 := input.radius2;
+return result;
+end to_sCInputSpheres;
+
 end package body;

@@ -6,6 +6,7 @@ use ieee.numeric_std.all;
 use work.delay_pkg.all;
 use work.operations_pkg.all;
 use work.components_pkg.all;
+use work.lpm_util.all;
 
 entity raytracing_mm is
 	port (
@@ -54,33 +55,44 @@ constant addition_base : std_logic_vector(3 downto 0) := X"2";
 constant addition_hor : std_logic_vector(3 downto 0) := X"3";
 constant addition_ver : std_logic_vector(3 downto 0) := X"4";
 constant frame_no : std_logic_vector(3 downto 0) := X"5";
+constant one48 : std_logic_vector(47 downto 0) := (32 => '1', OTHERS => '0');
 
 signal next_readdata : std_logic_vector(31 downto 0);
 signal t, elem, coord, sphere : std_logic_vector(3 downto 0);
 signal number_filled : natural := 0;
 signal number_filled_v : std_logic_vector(1 downto 0);
+signal t_times_a : std_logic_vector(31 downto 0);
+signal one_over_a : std_logic_vector(47 downto 0);
+signal mult_input : std_logic_vector(31 downto 0);
 
 signal can_feed, start_rdo, start_rdo_next, done_rdo, copyRay_rdo : std_logic;
 
-signal outputRay_rdo : ray;
+signal outputRay_rdo,reflected_ray, rightRay : ray;
 signal position_rdo : std_logic_vector(21 downto 0);
 
 signal sph_demux : std_logic_vector(15 downto 0) := "0000000000011111";
 
 signal start_sphere, valid, done : std_logic;
 
-signal toggle, stall : std_logic := '0';
+signal toggle, stall, valid_t, write_poss : std_logic := '0';
 
 signal i : std_logic_vector(3 downto 0);
 
-signal distance : std_logic_vector(31 downto 0);
+signal distance, a : std_logic_vector(31 downto 0);
+
+signal gcsInputRay : std_logic_vector(193 downto 0);
+
+signal gcsInput : scInput;
+
+signal closestSphere : std_logic_vector(3 downto 0);
+
+signal subwire_t : std_logic_vector(63 downto 0);
+
 begin
 
---next_readdata(31 downto 1) <= (OTHERS => '0');
---next_readdata(0) <= frames(0).all_info AND frames(1).all_info;
-next_readdata <= frames(0).camera_origin.x xor frames(1).camera_origin.x;
+next_readdata <= (OTHERS=>NOT(write_poss));
 number_filled_v <= (1 => frames(0).all_info AND frames(1).all_info, 0 => frames(0).all_info XOR frames(1).all_info);
-
+gcsInput <= to_scInput(sc);
 
 syn : process(res_n, clk) is begin
 	if res_n = '1' then 
@@ -121,55 +133,44 @@ rdo : getRayDirAlt port map (
     outputRay 	=> outputRay_rdo,
     done	=> done_rdo);
 
-gcs : closestSphere port map (
+rightRay <= outputRay_rdo when stall = '0' else reflected_ray;
+
+csp : closestSpherePrep port map(
+	clk => clk, reset => res_n, clk_en=> can_feed,
+	input_direction => rightRay.direction,
+	a => a
+);
+
+delay_dir_gcs : delay_element generic map (DEPTH => 4, WIDTH => 194)
+port map (clk => clk, reset => res_n, clken => '1', source(193 downto 98) => to_std_logic(rightRay.direction),
+source(97 downto 2) => to_std_logic(rightRay.origin), source(1) => rightRay.copy, source(0) => rightRay.valid, dest => gcsInputRay);
+
+gcs : closestSphereNew port map (
 	clk => clk,
 	reset => res_n,
 	clk_en => '1',
-	copy_cycle_active => (outputRay_rdo.copy),
-	start => start_sphere,
-	origin => to_std_logic(outputRay_rdo.origin),
-	dir => to_std_logic(outputRay_rdo.direction),
-	center_1 => to_std_logic(sc.spheres(0).center),
-	radius2_1 => sc.spheres(0).radius2,
-	center_2 => to_std_logic(sc.spheres(1).center),
-	radius2_2 => sc.spheres(1).radius2,
-	radius2_3 => sc.spheres(2).radius2,
-	center_3 => to_std_logic(sc.spheres(2).center),
-	radius2_4 => sc.spheres(3).radius2,
-	center_4 => to_std_logic(sc.spheres(3).center),
-	radius2_5 => sc.spheres(4).radius2,
-	center_5 => to_std_logic(sc.spheres(4).center),
-	radius2_6 => sc.spheres(5).radius2,
-	center_6 => to_std_logic(sc.spheres(5).center),
-	radius2_7 => sc.spheres(6).radius2,
-	center_7 => to_std_logic(sc.spheres(6).center),
-	radius2_8 => sc.spheres(7).radius2,
-	center_8 => to_std_logic(sc.spheres(7).center),
-	radius2_9 => sc.spheres(8).radius2,
-	center_9 => to_std_logic(sc.spheres(8).center),
-	radius2_10 => sc.spheres(9).radius2,
-	center_10 => to_std_logic(sc.spheres(9).center),
-	radius2_11 => sc.spheres(10).radius2,
-	center_11 => to_std_logic(sc.spheres(10).center),
-	radius2_12 => sc.spheres(11).radius2,
-	center_12 => to_std_logic(sc.spheres(11).center),
-	radius2_13 => sc.spheres(12).radius2,
-	center_13 => to_std_logic(sc.spheres(12).center),
-	radius2_14 => sc.spheres(13).radius2,
-	center_14 => to_std_logic(sc.spheres(13).center),
-	radius2_15 => sc.spheres(14).radius2,
-	center_15 => to_std_logic(sc.spheres(14).center),
-	radius2_16 => sc.spheres(15).radius2,
-	center_16 => to_std_logic(sc.spheres(15).center),
-	second_round => sc.num_spheres(3),
-	spheres => sc.sphere_enable,
-	t => distance,
-	i_out => i,
-	done => done,
-	valid_t => valid
+	dir => tovector(gcsInputRay(193 downto 98)),
+	origin	=> tovector(gcsInputRay(97 downto 2)),
+	a => a,
+	copy => gcsInputRay(1),
+	valid => gcsInputRay(0),
+	relevantScene => gcsInput,
+	t_times_a => t_times_a,
+	valid_t	 => valid_t,
+	closestSphere	=> closestSphere
 );
 
-
+static_data : picture_data port map (
+	w => write,
+	address => address,
+	writedata => writedata,
+	frames => frames,
+	sc => sc,
+	write_poss => write_poss,
+	clk => clk,
+	reset => res_n,
+	clk_en => '1'
+);
 
 next_raydir : process(done_rdo, frames) is begin
 if done_rdo = '1' then
@@ -179,6 +180,37 @@ else
 	start_rdo_next <= '0';
 end if;
 end process;
+
+div_a : lpm_divide generic map (lpm_drepresentation => "SIGNED",
+		lpm_hint => "ONE_INPUT_IS_ CONSTANT = YES",
+		lpm_nrepresentation => "SIGNED",
+		lpm_pipeline => 48,
+		lpm_type => "lpm_divide",
+		lpm_widthd => 32,
+		lpm_widthn => 48)
+port map(aclr => res_n, clken => '1', clock => clk, denom => a, numer => one48, quotient => one_over_a, remain => open);
+
+delay_t_min_a : delay_element generic map (WIDTH => 32, DEPTH => 25) 
+port map (clk => clk, clken => '1', reset => res_n, source => t_times_a, dest => mult_input)
+;
+mult : lpm_mult
+	GENERIC MAP (
+		lpm_hint => "UNUSED",
+		lpm_pipeline => 2,
+		lpm_representation => "SIGNED",
+		lpm_type => "lpm_mult",
+		lpm_widtha => 32,
+		lpm_widthb => 32,
+		lpm_widthp => 64
+	)
+	PORT MAP (
+			aclr => res_n,
+			clken	=> '1',
+			clock	=> clk,
+			dataa	=> mult_input(31 downto 0),
+			datab	=> one_over_a(31 downto 0),
+			result	=> subwire_t
+	);
 
 end architecture;
 
