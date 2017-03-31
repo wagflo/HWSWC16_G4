@@ -111,6 +111,22 @@ package operations_pkg is
 
 --  end component mul;
 
+component sr_ram IS
+	GENERIC (
+		width		: NATURAL;
+		depth		: NATURAL := 3 --needs to be greater than 3  
+	);
+	PORT
+	(
+		aclr		: IN STD_LOGIC  := '1';
+		clken		: IN STD_LOGIC  := '1';
+		clock		: IN STD_LOGIC ;
+		shiftin		: IN STD_LOGIC_VECTOR (width - 1 DOWNTO 0);
+		shiftout	: OUT STD_LOGIC_VECTOR (width - 1 DOWNTO 0);
+		taps		: OUT STD_LOGIC_VECTOR (width - 1 DOWNTO 0)
+	);
+END component sr_ram;
+
 component sqrt is
 
 GENERIC (INPUT_WIDTH : NATURAL := 32; OUTPUT_WIDTH : NATURAL := 32);

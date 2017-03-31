@@ -1,6 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
---use work.delay_pkg.all;
+use work.delay_pkg.all;
+use work.operations_pkg.all;
 
 entity delay_element is
   generic
@@ -25,8 +26,27 @@ architecture beh of delay_element is
 
 begin
 
+	IF0 : if depth*width > 200 and depth > 3 generate -- ram shift register, depth must be > 3 for on-chip ram
 
-	IF1 : if DEPTH > 0 AND WIDTH > 0 generate -- sonst mit generate
+	  ram : sr_ram
+	    generic map(
+	      width => width,
+	      depth => depth
+	    )
+            port map(
+		aclr => reset,
+		clken => clken,
+	 	clock => clk,
+		
+		shiftin => source,
+		shiftout => dest,
+		taps => open
+	    );
+
+        end generate;
+
+	IF1 : if not(depth*width > 200 and depth > 3) and
+		 DEPTH > 0 AND WIDTH > 0 generate -- sonst mit generate
 
 	-- real delay
 	store(WIDTH*(DEPTH +1) - 1 downto WIDTH*DEPTH) <= source;
