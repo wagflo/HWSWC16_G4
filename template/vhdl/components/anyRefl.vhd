@@ -50,7 +50,7 @@ begin
 
 valid_ray_in_vec(0) <= valid_ray_in;
 
-delay_ray_validity: delay_element generic map(WIDTH => 1, DEPTH => 17) 
+delay_ray_validity: delay_element generic map(WIDTH => 1, DEPTH => 17) -- falsch?
 port map (
   clk => clk, clken => clk_en, reset => reset, 
   source => valid_ray_in_vec,

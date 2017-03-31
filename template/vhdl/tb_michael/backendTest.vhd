@@ -83,8 +83,9 @@ refl : backend
 
     -- Kugeldaten: Farbe, ws nicht emitting
 
-    memory_address => memA,
-    color_data => col
+    --memory_address => memA,
+    color_data => col,
+    valid_data => valid_data
   );
 
 clk <= not clk after 10 ns;
@@ -155,7 +156,7 @@ end process sync;
 
 --assert is_refl = '0';
 --assert pseudoReflect = '0';
---assert valid_data = '0';
+assert valid_data = '0';
 --assert sob_out = '0';
 --assert eob_out = '0';
 

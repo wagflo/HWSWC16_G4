@@ -5,6 +5,23 @@ use work.operations_pkg.all;
 
 package components_pkg is
 
+component alt_fwft_fifo IS
+	generic (
+		DATA_WIDTH : integer := 32;
+		NUM_ELEMENTS : integer 
+	);
+	PORT (
+		aclr		: IN STD_LOGIC ;
+		clock		: IN STD_LOGIC ;
+		data		: IN STD_LOGIC_VECTOR (DATA_WIDTH-1 DOWNTO 0);
+		rdreq		: IN STD_LOGIC ;
+		wrreq		: IN STD_LOGIC ;
+		empty		: OUT STD_LOGIC ;
+		full		: OUT STD_LOGIC ;
+		q		: OUT STD_LOGIC_VECTOR (DATA_WIDTH-1 DOWNTO 0)
+	);
+END component;
+
 component backend is 
   port
   (
@@ -26,8 +43,9 @@ component backend is
 
     -- Kugeldaten: Farbe, ws nicht emitting
 
-    memory_address : out std_logic_vector(31 downto 0); --
-    color_data : out std_logic_vector(23 downto 0)
+    --memory_address : out std_logic_vector(31 downto 0); --
+    color_data : out std_logic_vector(23 downto 0);
+    valid_data : out std_logic
   );
 end component;
 
