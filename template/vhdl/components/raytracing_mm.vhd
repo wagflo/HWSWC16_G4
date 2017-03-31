@@ -65,7 +65,13 @@ signal t_times_a : std_logic_vector(31 downto 0);
 signal one_over_a : std_logic_vector(47 downto 0);
 signal mult_input : std_logic_vector(31 downto 0);
 
-signal can_feed, start_rdo, start_rdo_next, done_rdo, copyRay_rdo : std_logic;
+signal can_feed, start_rdo, start_rdo_next, done_rdo, copyRay_rdo,
+anyref_ray_endOfBundle, anyref_ray_startOfBundle, anyref_ray_valid, 
+anyref_ray_pseudo_refl, gcsp_emmiting, anyref_csp_emitting, anyref_csp_valid_t,
+anyrefo_isRef, anyrefo_pseudo, anyrefo_valid_ray, anyrefo_sob, anyrefo_eob,
+anyref_valid_t : std_logic;
+
+signal anyref_ray_rem_ref : std_logic_vector(2 downto 0);
 
 signal outputRay_rdo,reflected_ray, rightRay : ray;
 signal position_rdo : std_logic_vector(21 downto 0);
@@ -160,6 +166,45 @@ gcs : closestSphereNew port map (
 	closestSphere	=> closestSphere
 );
 
+assign_gcsp_emmiting : process(closestSphere) is begin
+case closestSphere is
+	when "0000" =>
+		gcsp_emmiting <= sc.spheres(0).emitting;
+	when "0001" =>
+		gcsp_emmiting <= sc.spheres(1).emitting;
+	when "0010" =>
+		gcsp_emmiting <= sc.spheres(2).emitting;
+	when "0011" =>
+		gcsp_emmiting <= sc.spheres(3).emitting;
+	when "0100" =>
+		gcsp_emmiting <= sc.spheres(4).emitting;
+	when "0101" =>
+		gcsp_emmiting <= sc.spheres(5).emitting;
+	when "0110" =>
+		gcsp_emmiting <= sc.spheres(6).emitting;
+	when "0111" =>
+		gcsp_emmiting <= sc.spheres(7).emitting;
+	when "1000" =>
+		gcsp_emmiting <= sc.spheres(8).emitting;
+	when "1001" =>
+		gcsp_emmiting <= sc.spheres(9).emitting;
+	when "1010" =>
+		gcsp_emmiting <= sc.spheres(10).emitting;
+	when "1011" =>
+		gcsp_emmiting <= sc.spheres(11).emitting;
+	when "1100" =>
+		gcsp_emmiting <= sc.spheres(12).emitting;
+	when "1101" =>
+		gcsp_emmiting <= sc.spheres(13).emitting;
+	when "1110" =>
+		gcsp_emmiting <= sc.spheres(14).emitting;
+	when "1111" =>
+		gcsp_emmiting <= sc.spheres(15).emitting;
+	when others => 
+		gcsp_emmiting <= sc.spheres(0).emitting;
+end case;
+end process;
+
 static_data : picture_data port map (
 	w => write,
 	address => address,
@@ -212,6 +257,39 @@ mult : lpm_mult
 			result	=> subwire_t
 	);
 
+anyref_rayDelay : delay_element generic map(DEPTH => 52, WIDTH => 7)
+port map (clk => clk, reset => res_n, clken => '1', source(6) => rightRay.eob, source(5) => rightRay.sob, source(4) => rightRay.valid,
+source(3) => rightRay.pseudo_refl, source(2 downto 0) => rightRay.remaining_reflects,
+dest(6) => anyref_ray_endOfBundle, dest(5) => anyref_ray_startOfBundle, dest(4) => anyref_ray_valid,
+dest(3) => anyref_ray_pseudo_refl, dest(2 downto 0) => anyref_ray_rem_ref);
+
+anyref_cspDealy : delay_element generic map (DEPTH =>24, WIDTH => 2)
+port map (clk => clk, reset => res_n, clken => '1', source(1) => gcsp_emmiting, source(0) => valid_t, dest(1) => anyref_csp_emitting, dest(0) => anyref_csp_valid_t);
+
+anyref_valid_t <= NOT(anyref_ray_pseudo_refl) AND anyref_csp_valid_t;
+
+anyref : anyRefl port map (clk => clk,
+    clk_en => '1',
+    reset => res_n,
+   
+    -- kein clock enable, nehme valid
+
+    num_samples => sc.num_samples(4 downto 0),
+    endOfBundle => anyref_ray_endOfBundle,
+    startOfBundle => anyref_ray_startOfBundle,
+
+    valid_ray_in => anyref_ray_valid,
+    remaining_reflects => anyref_ray_rem_ref,
+    emitting_sphere => anyref_csp_emitting,
+
+    valid_t => anyref_valid_t,
+    
+    isReflected => anyrefo_isRef,
+    pseudoReflect => anyrefo_pseudo,
+    valid_ray_out  => anyrefo_valid_ray,
+
+    startOfBundle_out => anyrefo_sob,
+    endOfBundle_out => anyrefo_eob);
+
+
 end architecture;
-
-
