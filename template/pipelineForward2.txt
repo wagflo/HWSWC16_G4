@@ -2,7 +2,7 @@
 -4
 -3
 -2
--1
+-1			getRayDir
 --
  0  			closestSphere(37)					| RAY_DELAY_IN_PARALLEL
 			+ -dir actual, origin, valid_ray (start), copy		| start: color,	orig+dir, sob, eob, valid_ray, copy, position/address, remaining

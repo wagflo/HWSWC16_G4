@@ -21,6 +21,21 @@ entity raytracing_mm is
 		readdata  : out std_logic_vector(31 downto 0)
 		
 		--framereader master
+		-- first step: memmapped read interface for pixel address and color
+		pixel_address   : in  std_logic_vector(0 downto 0);
+		--write     : in  std_logic;
+		pixel_read      : in  std_logic;
+		--writedata : in  std_logic_vector(31 downto 0);
+		pixel_readdata  : out std_logic_vector(31 downto 0);
+
+		-- alternative: memmapped write master to sdram
+
+		master_address   : out  std_logic_vector(0 downto 0);
+		--write     : in  std_logic;
+		master_write     : out  std_logic;
+		--writedata : in  std_logic_vector(31 downto 0);
+		master_colordata : out std_logic_vector(31 downto 0);
+		slave_waitreq	 : in std_logic
 		
 	);
 end entity;
@@ -105,14 +120,15 @@ syn : process(res_n, clk) is begin
 		frames <= (OTHERS => initial_frame);
 		readdata <= (OTHERS => '0');
 		number_filled <= 0;
-		toggle <= '0';
+		toggle <= '0'; 	
+		-- start-rdo auch angeben
 	elsif rising_edge(clk) then
 		readdata <= next_readdata;
 		number_filled <= natural(to_integer(unsigned(number_filled_v)));
 		frames <= frames_next;
 		start_rdo <= start_rdo_next;
                 if can_feed = '1' then
-			toggle <= not(toggle);
+			toggle <= not(toggle); -- ws besser auch else Zweig angeben
 		end if;
 	end if;
 end process;

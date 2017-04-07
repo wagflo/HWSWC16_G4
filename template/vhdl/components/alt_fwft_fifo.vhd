@@ -8,6 +8,10 @@ USE altera_mf.all;
 
 use altera_mf_components.all;
 
+--LIBRARY altera_mf;
+--USE altera_mf.altera_mf_components.all;
+
+
 use work.math_pkg.all;
 
 ENTITY alt_fwft_fifo IS

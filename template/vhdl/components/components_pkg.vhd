@@ -5,6 +5,30 @@ use work.operations_pkg.all;
 
 package components_pkg is
 
+component writeInterface is
+  port
+  (
+    clk 	: in std_logic;
+    clk_en 	: in std_logic;
+    reset 	: in std_logic;
+   
+    -- kein clock enable, nehme valid
+
+    pixel_address : in std_logic_vector(31 downto 0);
+    pixel_color   : in std_logic_vector(23 downto 0);
+    valid_data    : in std_logic;
+
+    stall 	  : out std_logic;
+    
+    master_address   : out  std_logic_vector(31 downto 0);
+    --write     : in  std_logic;
+    --writedata : in  std_logic_vector(31 downto 0);
+    master_colordata : out std_logic_vector(31 downto 0);
+    master_write     : out  std_logic;
+    slave_waitreq	 : in std_logic
+  );
+end component;
+
 component alt_fwft_fifo IS
 	generic (
 		DATA_WIDTH : integer := 32;
