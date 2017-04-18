@@ -5,7 +5,40 @@ use work.operations_pkg.all;
 
 package components_pkg is
 
+
+component readInterface is
+  generic
+  (
+    FIFOSIZE : positive := 8 -- 256 => whole m9k block, zum testen 4 
+  );
+  port
+  (
+    clk 	: in std_logic;
+    clk_en 	: in std_logic;
+    reset 	: in std_logic;
+   
+    -- kein clock enable, nehme valid
+
+    pixel_address : in std_logic_vector(31 downto 0);
+    pixel_color   : in std_logic_vector(23 downto 0);
+    valid_data    : in std_logic;
+
+    stall 	  : out std_logic;
+    
+    slave_address   : out  std_logic_vector(31 downto 0);
+    --write     : in  std_logic;
+    --writedata : in  std_logic_vector(31 downto 0);
+    slave_colordata : out std_logic_vector(31 downto 0);
+    slave_read      : in  std_logic
+    --slave_waitreq    : in std_logic
+  );
+end component;
+
 component writeInterface is
+  generic
+  (
+    FIFOSIZE : positive := 8 -- 256 => whole m9k block, zum testen 4 
+  );
   port
   (
     clk 	: in std_logic;
@@ -164,29 +197,31 @@ end component;
 component reflect is 
   port
   (
-    clk : in std_logic;
-    clk_en : in std_logic;
-    reset : in std_logic;
+    clk 	: in std_logic;
+    clk_en 	: in std_logic;
+    reset	: in std_logic;
 
-    valid_t  : in std_logic;
-    t : in std_logic_vector(31 downto 0);
+    valid_t  	: in std_logic;
+    t 		: in std_logic_vector(31 downto 0);
 
-    sphere_i : std_logic_vector(3 downto 0);
+    sphere_i 	: in std_logic_vector(3 downto 0);
 
-    valid_ray_in : std_logic;
+    valid_ray_in : in std_logic;
+    copy_ray_in  : in std_logic;
 
-    one_over_rs : scalarArray;
-    centers     : vectorArray;
+    one_over_rs : in scalarArray;
+    centers     : in vectorArray;
 
     --emitters : std_logic_vector(15 downto 0); -- noch genaui schauen, wo rein => any Refl
 
-    origin : vector;
-    direction : vector;
+    origin 	: in vector;
+    direction 	: in vector;
 
-    new_origin : out vector;
-    new_direction : out vector;
-    valid_refl  : out std_logic;
-    valid_ray_out : out std_logic
+    new_origin 		: out vector;
+    new_direction 	: out vector;
+    valid_refl  	: out std_logic;
+    valid_ray_out 	: out std_logic;
+    copy_ray_out 	: out std_logic
 
   );
 end component;

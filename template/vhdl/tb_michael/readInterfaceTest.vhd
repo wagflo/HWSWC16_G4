@@ -4,15 +4,15 @@ use ieee.numeric_std.all;
 use work.components_pkg.all;
 use work.operations_pkg.all;
 
-entity writeIFTest is
+entity readIFTest is
 
 end entity;
 
-architecture arch of writeIFTest is
+architecture arch of readIFTest is
 
-constant PIPEMAX : integer := 12; -- how much can be in pipeline
+constant PIPEMAX : integer := 13; -- how much can be in pipeline
 
-constant RAYPERIOD : integer := 8;
+constant STARTOFREAD : natural := 25;
 
 signal pipeline : std_logic_vector(PIPEMAX - 1 downto 0) := (others => '0');
 
@@ -54,7 +54,7 @@ signal input_color 	: std_logic_vector(23 downto 0);
 signal input_valid 	: std_logic;
 signal output_address	: std_logic_vector(31 downto 0);
 signal output_color 	: std_logic_vector(31 downto 0);
-signal output_write 	: std_logic;
+signal read_req 	: std_logic;
 
 signal stall : std_logic;
 
@@ -72,7 +72,7 @@ end function;
 
 begin
 
-dut : writeInterface
+dut : readInterface
   port map
   (
     clk 	=> clk,
@@ -83,20 +83,20 @@ dut : writeInterface
 
     pixel_address => input_address,
     pixel_color   => input_color,
-    valid_data    => pipeline(PIPEMAX - 1),
+    valid_data    => pipeline(PIPEMAX - 1), --input_valid,
 
     stall 	  => stall,
     
-    master_address  	=> output_address,
-    master_colordata	=> output_color,
-    master_write    	=> output_write,
+    slave_address  	=> output_address,
+    slave_colordata	=> output_color,
+    slave_read   	=> read_req
 
-    slave_waitreq	=> waitreq
+    --slave_waitreq	=> waitreq
   );
 
 clk <= not clk after 10 ns;
 
-res <= '0' after 25 ns;
+res <= '0' after 425 ns;
 
 --input <= not input after 10 ns;
 
@@ -108,14 +108,11 @@ if res = '1' then
   input_address <= (others => '0');
   input_color   <= (others => '0');
   input_valid   <= '0';
-  pipeline 	<= (others => '0'); 
+  pipeline 	<= (others => '0');
 
 elsif rising_edge(clk) then
 
   pipeline(0) <= not stall;
- -- and (to_std_logic((slave_counter mod RAYPERIOD) = 1) 
- -- or to_std_logic((slave_counter mod RAYPERIOD) = 2) or to_std_logic((slave_counter mod RAYPERIOD) = 3)
- -- or to_std_logic((slave_counter mod RAYPERIOD) = 4));
   pipeline(PIPEMAX - 1 downto 1) <= pipeline(PIPEMAX - 2 downto 0);
 
   slave_counter <= slave_counter + 1;
@@ -143,10 +140,7 @@ end if;
 
 end process;
 
-  waitreq <= output_write and (to_std_logic((slave_counter mod 7) = 1) 
-  or to_std_logic((slave_counter mod 7) = 2) or to_std_logic((slave_counter mod 7) = 3)
-  or to_std_logic((slave_counter mod 7) = 4) or to_std_logic((slave_counter mod 7) = 5))
-  after 1 ns;
+read_req <= to_std_logic((slave_counter >= STARTOFREAD) and (slave_counter mod 5) = 0);
 
 
 --input <= data(counter);
