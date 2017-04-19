@@ -18,7 +18,7 @@ entity raytracing_mm is
 		write     : in  std_logic;
 		read      : in  std_logic;
 		writedata : in  std_logic_vector(31 downto 0);
-		readdata  : out std_logic_vector(31 downto 0)
+		readdata  : out std_logic_vector(31 downto 0);
 		
 		--framereader master
 		-- first step: memmapped read interface for pixel address and color
@@ -79,12 +79,13 @@ signal number_filled_v : std_logic_vector(1 downto 0);
 signal t_times_a : std_logic_vector(31 downto 0);
 signal one_over_a : std_logic_vector(47 downto 0);
 signal mult_input : std_logic_vector(31 downto 0);
+signal ref_dir, ref_origin : std_logic_vector(95 downto 0);
 
 signal can_feed, start_rdo, start_rdo_next, done_rdo, copyRay_rdo,
 anyref_ray_endOfBundle, anyref_ray_startOfBundle, anyref_ray_valid, 
 anyref_ray_pseudo_refl, gcsp_emmiting, anyref_csp_emitting, anyref_csp_valid_t,
 anyrefo_isRef, anyrefo_pseudo, anyrefo_valid_ray, anyrefo_sob, anyrefo_eob,
-anyref_valid_t : std_logic;
+anyref_valid_t, ref_valid_t, ref_valid, ref_copy, ref_out_valid, ref_out_copy : std_logic;
 
 signal anyref_ray_rem_ref : std_logic_vector(2 downto 0);
 
@@ -97,7 +98,7 @@ signal start_sphere, valid, done : std_logic;
 
 signal toggle, stall, valid_t, write_poss : std_logic := '0';
 
-signal i : std_logic_vector(3 downto 0);
+signal i, ref_sphere_i : std_logic_vector(3 downto 0);
 
 signal distance, a : std_logic_vector(31 downto 0);
 
@@ -105,9 +106,15 @@ signal gcsInputRay : std_logic_vector(193 downto 0);
 
 signal gcsInput : scInput;
 
+signal one_over_rs : scalarArray;
+
+signal centers : vectorArray;
+
 signal closestSphere : std_logic_vector(3 downto 0);
 
 signal subwire_t : std_logic_vector(63 downto 0);
+
+signal ref_out_origin, ref_out_dir : vector;
 
 begin
 
@@ -306,6 +313,80 @@ anyref : anyRefl port map (clk => clk,
 
     startOfBundle_out => anyrefo_sob,
     endOfBundle_out => anyrefo_eob);
+
+ref_ray_delay : delay_element generic map (WIDTH => 194, DEPTH => 54)
+port map (clk => clk, clken => '1', reset => res_n, 
+source(193) => rightRay.valid, source(192) => rightRay.copy, source(191 DOWNTO 96) => to_std_logic(rightRay.direction), source(95 downto 0) => to_std_logic(rightRay.origin),
+dest(193) => ref_valid, dest(192) => ref_copy, dest(191 downto 96) => ref_dir, dest(95 downto 0) => ref_origin);
+
+ref_gcs_delay : delay_element generic map (WIDTH => 5, DEPTH => 25) port map(
+clk => clk, clken => '1', reset => res_n, source(4) => valid_t, source(3 downto 0) => closestSphere, dest(4) => ref_valid_t, dest(3 downto 0) => ref_sphere_i);
+
+one_over_rs <= (0 => toscalar(sc.spheres(0).radius), 
+1 => toscalar(sc.spheres(1).radius),
+2 => toscalar(sc.spheres(2).radius),
+3 => toscalar(sc.spheres(3).radius), 
+4 => toscalar(sc.spheres(4).radius), 
+5 => toscalar(sc.spheres(5).radius), 
+6 => toscalar(sc.spheres(6).radius), 
+7 => toscalar(sc.spheres(7).radius), 
+8 => toscalar(sc.spheres(8).radius), 
+9 => toscalar(sc.spheres(9).radius), 
+10 => toscalar(sc.spheres(10).radius), 
+11 => toscalar(sc.spheres(11).radius), 
+12 => toscalar(sc.spheres(12).radius), 
+13 => toscalar(sc.spheres(13).radius), 
+14 => toscalar(sc.spheres(14).radius), 
+15 => toscalar(sc.spheres(15).radius));
+centers <= (0 => sc.spheres(0).center, 
+1 => sc.spheres(1).center,
+2 => sc.spheres(2).center,
+3 => sc.spheres(3).center, 
+4 => sc.spheres(4).center, 
+5 => sc.spheres(5).center, 
+6 => sc.spheres(6).center, 
+7 => sc.spheres(7).center, 
+8 => sc.spheres(8).center, 
+9 => sc.spheres(9).center, 
+10 => sc.spheres(10).center, 
+11 => sc.spheres(11).center, 
+12 => sc.spheres(12).center, 
+13 => sc.spheres(13).center, 
+14 => sc.spheres(14).center, 
+15 => sc.spheres(15).center);
+
+refl : reflect
+  port map
+  (
+    clk => clk,
+    clk_en => '1',
+    reset => res_n,
+
+    valid_t => ref_valid_t,
+    t(31) => subwire_t(63),
+    t(30 downto 0) => subwire_t(46 downto 16),
+
+    sphere_i => ref_sphere_i,
+
+    valid_ray_in => ref_valid,
+    copy_ray_in => ref_copy,
+
+    one_over_rs => one_over_rs,
+    centers   =>  centers,
+
+    --emitters : std_logic_vector(15 downto 0); -- noch genaui schauen, wo rein => any Refl
+
+    origin => tovector(ref_origin),
+    direction => tovector(ref_dir),
+
+    new_origin => ref_out_origin,
+    new_direction => ref_out_dir,
+    valid_refl  => open,
+    valid_ray_out => ref_out_valid,
+    copy_ray_out => ref_out_copy
+  );
+
+
 
 
 end architecture;

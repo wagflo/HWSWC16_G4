@@ -376,5 +376,7 @@ begin
     y => new_direction_next.y,
     z => new_direction_next.z
   );
+
+
   
 end architecture;
