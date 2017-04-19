@@ -167,7 +167,11 @@ rdo : getRayDirAlt port map (
 
     frame => frames(0).frame_no,
 
-    num_samples => sc.num_samples(4 downto 0),
+    num_samples => sc.num_samples(4 downto 0), --MK
+
+    num_reflects  => sc.num_reflects(2 downto 0),  --MK
+
+    camera_center => frames(0).camera_origin,  --MK
 
     addition_hor => frames(0).addition_hor,
 
@@ -259,36 +263,47 @@ static_data : picture_data port map (
 );
 
 
-div_a : lpm_divide generic map (lpm_drepresentation => "SIGNED",
+div_a : lpm_divide 
+generic map 
+(lpm_drepresentation => "SIGNED",
 		lpm_hint => "ONE_INPUT_IS_CONSTANT = YES",
 		lpm_nrepresentation => "SIGNED",
 		lpm_pipeline => 48,
 		lpm_type => "lpm_divide",
 		lpm_widthd => 32,
 		lpm_widthn => 48)
-port map(aclr => res_n, clken => '1', clock => clk, denom => a, numer => one48, quotient => one_over_a, remain => open);
+port map(
+aclr => res_n, clken => '1', clock => clk, 
+denom => a, numer => one48, quotient => one_over_a, remain => open);
 
 delay_t_min_a : delay_element generic map (WIDTH => 32, DEPTH => 23) 
 port map (clk => clk, clken => '1', reset => res_n, source => t_times_a, dest => mult_input)
 ;
-mult : lpm_mult
-	GENERIC MAP (
-		lpm_hint => "UNUSED",
-		lpm_pipeline => 2,
-		lpm_representation => "SIGNED",
-		lpm_type => "lpm_mult",
-		lpm_widtha => 32,
-		lpm_widthb => 32,
-		lpm_widthp => 64
-	)
-	PORT MAP (
-			aclr => res_n,
-			clken	=> '1',
-			clock	=> clk,
-			dataa	=> mult_input(31 downto 0),
-			datab	=> one_over_a(31 downto 0),
-			result	=> subwire_t
-	);
+mult : scalarMul --lpm_mult
+	--GENERIC MAP (
+	--	lpm_hint => "UNUSED",
+	--	lpm_pipeline => 2,
+	--	lpm_representation => "SIGNED",
+	--	lpm_type => "lpm_mult",
+	--	lpm_widtha => 32,
+	--	lpm_widthb => 32,
+	--	lpm_widthp => 64
+	--)
+	--PORT MAP (
+	--		aclr => res_n,
+	--		clken	=> '1',
+	--		clock	=> clk,
+	--		dataa	=> mult_input(31 downto 0),
+	--		datab	=> one_over_a(31 downto 0),
+	--		result	=> subwire_t
+	--);
+	PORT map(
+	a => mult_input(31 downto 0),
+	b => one_over_a(31 downto 0),
+	result => subwire_t,
+
+	clk => clk, clk_en => '1', reset => res_n
+);
 
 anyref_rayDelay : delay_element generic map(DEPTH => 36, WIDTH => 7)
 port map (clk => clk, reset => res_n, clken => '1', source(6) => rightRay.eob, source(5) => rightRay.sob, source(4) => rightRay.valid,
@@ -400,6 +415,8 @@ colUp : colorUpdate  port map
   (
     clk => clk, clk_en => '1', reset => res_n,
     color_in => tovector(colUp_color_in), valid_t => colUp_valid_t_in, sphere_i => colUp_sphere, valid_ray_in => colUp_valid,
+
+    copy_ray_in => ?? -- noch copy aus delay holen
 
     -- Kugeldaten: Farbe, ws nicht emitting
 

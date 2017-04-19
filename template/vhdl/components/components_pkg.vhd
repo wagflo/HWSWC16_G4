@@ -119,6 +119,7 @@ component colorUpdate is
     sphere_i : std_logic_vector(3 downto 0);
 
     valid_ray_in : std_logic;
+    copy_ray_in : std_logic;
 
     -- Kugeldaten: Farbe, ws nicht emitting
 
@@ -143,6 +144,10 @@ port(
     frame	: in std_logic_vector(1 downto 0);
 
     num_samples : in std_logic_vector(4 downto 0);
+
+    num_reflects  : in std_logic_vector(2 downto 0);  --MK
+
+    camera_center : in vector; --MK
 
     addition_hor : in vector;
 

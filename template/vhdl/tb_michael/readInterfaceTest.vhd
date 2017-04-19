@@ -103,7 +103,7 @@ dut : readInterface
     stall 	  => stall,
     
     slave_address  	=> output_address,
-    slave_colordata	=> output_color,
+    slave_data		=> output_color,
     slave_read   	=> read_req
 
     --slave_waitreq	=> waitreq

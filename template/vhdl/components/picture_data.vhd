@@ -44,6 +44,8 @@ constant change_frame : std_logic_vector(3 downto 0) := X"3";
 constant radius : std_logic_vector(3 downto 0) := X"1";
 constant radius2 : std_logic_vector(3 downto 0) := X"2";
 constant center : std_logic_vector(3 downto 0) := X"3";
+constant color : std_logic_vector(3 downto 0) := X"4";
+constant emitting : std_logic_vector(3 downto 0) := X"5";
 constant x : std_logic_vector(3 downto 0) := X"1";
 constant y : std_logic_vector(3 downto 0) := X"2";
 constant z : std_logic_vector(3 downto 0) := X"3";
@@ -83,6 +85,16 @@ if w = '1' then
 			elsif coord = z then
 				sc_sig.spheres(to_integer(unsigned(sphere))).center.z <= writedata;
 			end if;
+		elsif elem = color then
+			if coord = x then
+				sc_sig.spheres(to_integer(unsigned(sphere))).colour.x <= writedata;
+			elsif coord = y then
+				sc_sig.spheres(to_integer(unsigned(sphere))).colour.y <= writedata;
+			elsif coord = z then
+				sc_sig.spheres(to_integer(unsigned(sphere))).colour.z <= writedata;
+			end if;
+		elsif elem = emitting then
+			sc_sig.spheres(to_integer(unsigned(sphere))).emitting <= writedata(0);
 		end if;
 	elsif t = change_general then
 		--update the general data
