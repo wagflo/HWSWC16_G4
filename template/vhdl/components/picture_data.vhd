@@ -15,7 +15,9 @@ entity picture_data is
 	write_poss : out std_logic;
 	clk : in std_logic;
 	reset : in std_logic;
-	clk_en : in std_logic
+	clk_en : in std_logic;
+	next_frame : in std_logic;
+	start : out std_logic
 	);
 end entity;
 
@@ -29,8 +31,9 @@ constant initial_frame : frame_info := (all_info => '0',
 	addition_ver => zero_vector,
 	frame_no => (OTHERS => '0'));
 signal sc_sig : scene;
-signal frames_sig : frame_array := (OTHERS => initial_frame);
+signal frames_sig, frames_out : frame_array := (OTHERS => initial_frame);
 signal number_filled : natural := 0;
+signal start_sig : std_logic := '0';
 
 signal t, sphere, elem, coord : std_logic_vector(3 downto 0);
 
@@ -59,11 +62,12 @@ elem <= address(7 downto 4);
 coord <= address(3 downto 0);
 
 write_poss <= '1' when number_filled < 2 else '0';
-async_update : process(address, w, writedata) is begin
+async_update : process(address, w, writedata, next_frame) is begin
+start_sig <= '0';
 if w = '1' then
 	if t = finish_frame then
 		--the current frame has all data
-		frames(number_filled).all_info <= '1';
+		frames_sig(number_filled).all_info <= '1';
 		number_filled <= number_filled + 1;
 	elsif t = change_spheres then
 		---change a parameter of a sphere
@@ -139,7 +143,11 @@ if w = '1' then
 			frames_sig(number_filled).frame_no <= writedata(1 downto 0);
 		end if;
 	end if;
-	
+
+elsif next_frame = '1' then
+	frames_sig(0) <= frames_out(1);
+	frames_sig(1) <= initial_frame;
+	start_sig <= '1';
 end if;
 end process;
 
@@ -147,10 +155,12 @@ output : process(clk, reset, clk_en) is begin
 if reset = '1' then
 	---
 elsif rising_edge(clk) and clk_en = '1' then
-	frames <= frames_sig;
+	frames_out <= frames_sig;
 	sc <= sc_sig;
+	start <= start_sig;
 end if;
 end process;
 
+frames <= frames_out;
 
 end architecture;

@@ -29,6 +29,7 @@ port(
     addition_base : in vector;
 
     outputRay	: out ray;
+
     done	: out std_logic;
     valid	: out std_logic
 
@@ -52,6 +53,9 @@ signal ver_base, next_result, next_result_hold, result_hold, next_ver_base, ran_
 signal next_i, j, next_j, i, samples, next_samples : natural;
 signal next_frame_no, frame_no : std_logic_vector(1 downto 0);
 signal ran : std_logic_vector(31 downto 0) := x"00000000";
+
+signal address : natural := 0;
+signal next_address : natural := 1;
 
 component lfsr is
   port (
@@ -93,14 +97,16 @@ if start =  '1' then
 	if num_samples = "00001" then
 		next_eob <= '1';
 	end if;
+	next_address <= 0;
 else
+	next_address <= address + 1;
 	if samples = unsigned(num_samples) then
 		next_samples <= 1;
 		next_sob <= '1';
 		if num_samples = "00001" then
 			next_eob <= '1';
 		end if;
-		if i = max_width then
+		if i >= max_width then
 			if j >= max_height then
 				next_valid <= '0';
 			else
@@ -151,6 +157,7 @@ if reset = '1' then
 	outputRay.color <= basisColourVector;
 	outputRay.remaining_reflects <= (OTHERS => '0');
 	outputRay.pseudo_refl <= '0';
+	address <= 0;
 elsif rising_edge(clk) AND clk_en = '1' then
 	outputRay.copy <= next_copyRay;
 	if hold = '0' then
@@ -161,8 +168,9 @@ elsif rising_edge(clk) AND clk_en = '1' then
 		outputRay.sob <= next_sob;
 		outputRay.eob <= next_eob;
 		outputRay.position(21 downto 20) <= next_frame_no;
-		outputRay.position(19 downto 10) <= std_logic_vector(to_unsigned(next_i, 10));
-		outputRay.position(9 downto 0) <= std_logic_vector(to_unsigned(next_j, 10));
+		--outputRay.position(19 downto 10) <= std_logic_vector(to_unsigned(next_i, 10));
+		--outputRay.position(9 downto 0) <= std_logic_vector(to_unsigned(next_j, 10));
+		outputRay.position(19 downto 0) <= std_logic_vector(to_unsigned(next_address, 20));
 		outputRay.origin <= camera_center;
 		outputRay.color <= basisColourVector;
 		outputRay.remaining_reflects <= num_reflects;
@@ -171,6 +179,7 @@ elsif rising_edge(clk) AND clk_en = '1' then
 		done <= next_done;
 		ran_add <= next_ran_add;
 		outputRay.pseudo_refl <= '0';
+		address <= next_address;
 	end if;
 end if;
 end process;

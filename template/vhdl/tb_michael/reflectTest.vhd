@@ -64,7 +64,7 @@ port map (
   new_direction => new_direction,
   valid_refl  => valid_refl,
   valid_ray_out  => valid_ray_out
-
+  -- copy_ray_in fehlt noch
 );
 
 clk <= not clk after 10 ns;

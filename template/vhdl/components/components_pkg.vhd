@@ -25,10 +25,10 @@ component readInterface is
 
     stall 	  : out std_logic;
     
-    slave_address   : out  std_logic_vector(31 downto 0);
+    slave_address   : in  std_logic_vector(0 downto 0);
     --write     : in  std_logic;
     --writedata : in  std_logic_vector(31 downto 0);
-    slave_colordata : out std_logic_vector(31 downto 0);
+    slave_data 	    : out std_logic_vector(31 downto 0);
     slave_read      : in  std_logic
     --slave_waitreq    : in std_logic
   );
@@ -377,7 +377,9 @@ component picture_data is
 	write_poss : out std_logic;
 	clk : in std_logic;
 	reset : in std_logic;
-	clk_en : in std_logic
+	clk_en : in std_logic;
+	next_frame : in std_logic;
+	start : out std_logic
 	);
 end component;
 

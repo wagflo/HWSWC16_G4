@@ -24,10 +24,10 @@ entity readInterface is
 
     stall 	  : out std_logic;
     
-    slave_address   : out  std_logic_vector(31 downto 0);
+    slave_address   : in  std_logic_vector(0 downto 0);
     --write     : in  std_logic;
     --writedata : in  std_logic_vector(31 downto 0);
-    slave_colordata : out std_logic_vector(31 downto 0);
+    slave_data 	    : out std_logic_vector(31 downto 0);
     slave_read      : in  std_logic
     --slave_waitreq    : in std_logic
   );
@@ -39,6 +39,10 @@ architecture beh of readInterface is
 
 signal data_betw_fifos : std_logic_vector(55 downto 0);
 signal req_betw_fifos, req_for_output, first_empty, second_empty, stall_int : std_logic;
+
+signal read_req_back : std_logic;
+signal slave_address_int   : std_logic_vector(31 downto 0);
+signal slave_colordata_int : std_logic_vector(31 downto 0);
 
 begin
 
@@ -70,18 +74,29 @@ begin
       aclr	=> reset,
       clock	=> clk,
       data	=> data_betw_fifos,
-      rdreq	=> slave_read,
+      rdreq	=> read_req_back, --slave_read,
       wrreq	=> req_betw_fifos,
       empty	=> second_empty,
       full	=> stall_int,
-      q(55 downto 24) => slave_address,
-      q(23 downto  0) => slave_colordata(23 downto 0)
+      q(55 downto 24) => slave_address_int,
+      q(23 downto  0) => slave_colordata_int(23 downto 0)
     );
 
 stall <= stall_int;
 
 --req_for_output <= (not slave_waitreq) and (not second_empty)
 
-slave_colordata(31 downto 24) <= (others => '0');
+slave_colordata_int(31 downto 24) <= (others => '0');
+
+read_req_back <= slave_read and slave_address(0); -- needs to be == 1! == color
+
+choose : process(slave_address, slave_colordata_int, slave_address_int)
+begin
+if slave_address(0) = '1' then
+  slave_data <= slave_colordata_int;
+else 
+  slave_data <= slave_address_int;
+end if;
+end process;
 
 end architecture;

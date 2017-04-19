@@ -14,6 +14,10 @@ constant PIPEMAX : integer := 13; -- how much can be in pipeline
 
 constant STARTOFREAD : natural := 25;
 
+constant RAYPERIOD : integer := 1;
+constant RAYCYCLESACTIVE : integer := 1;
+constant FIFOSIZE : integer := 5;
+
 signal pipeline : std_logic_vector(PIPEMAX - 1 downto 0) := (others => '0');
 
 signal clk : std_logic := '1';
@@ -70,9 +74,20 @@ end if;
 end function;
 
 
+function rayOrNot(count : integer; period : integer; active : integer) return std_logic is
+begin
+
+return to_std_logic(count mod period > active);
+
+end function;
+
 begin
 
 dut : readInterface
+  generic map
+  (
+    FIFOSIZE => FIFOSIZE
+  )
   port map
   (
     clk 	=> clk,
@@ -112,7 +127,7 @@ if res = '1' then
 
 elsif rising_edge(clk) then
 
-  pipeline(0) <= not stall;
+  pipeline(0) <= not stall and rayOrNot(slave_counter, RAYPERIOD, RAYCYCLESACTIVE);
   pipeline(PIPEMAX - 1 downto 1) <= pipeline(PIPEMAX - 2 downto 0);
 
   slave_counter <= slave_counter + 1;
