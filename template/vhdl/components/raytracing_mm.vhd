@@ -7,7 +7,12 @@ use work.delay_pkg.all;
 use work.rayDelay_pkg.all;
 use work.operations_pkg.all;
 use work.components_pkg.all;
-use work.lpm_util.all;
+--use work.lpm_util.all;
+
+
+library lpm;
+use lpm.lpm_components.all;
+
 
 entity raytracing_mm is
 	port (
@@ -42,6 +47,29 @@ entity raytracing_mm is
 end entity;
 
 architecture arch of raytracing_mm is
+
+
+COMPONENT lpm_divide
+	GENERIC (
+		lpm_drepresentation		: STRING;
+		lpm_hint		: STRING;
+		lpm_nrepresentation		: STRING;
+		lpm_pipeline		: NATURAL;
+		lpm_type		: STRING;
+		lpm_widthd		: NATURAL;
+		lpm_widthn		: NATURAL
+	);
+	PORT (
+			aclr	: IN STD_LOGIC ;
+			clken	: IN STD_LOGIC ;
+			clock	: IN STD_LOGIC ;
+			denom	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+			numer	: IN STD_LOGIC_VECTOR (47 DOWNTO 0);
+			quotient	: OUT STD_LOGIC_VECTOR (47 DOWNTO 0);
+			remain	: OUT STD_LOGIC_VECTOR (31 DOWNTO 0)
+	);
+	END COMPONENT;
+
 
 constant zero : std_logic_vector(31 downto 0) := (others=> '0');
 constant zero_vector : vector := (x => zero, y => zero, z => zero);
@@ -90,7 +118,7 @@ anyref_ray_pseudo_refl, gcsp_emmiting, anyref_csp_emitting, anyref_csp_valid_t,
 anyrefo_isRef, anyrefo_pseudo, anyrefo_valid_ray, anyrefo_sob, anyrefo_eob,
 anyref_valid_t, ref_valid_t, ref_valid, ref_copy, ref_out_valid, ref_out_copy, fifo_full,
 colUp_valid_t, colUp_valid_t_in, colUp_valid, updatedColorRayValid, updatedColorValid, colUp_pseudo,
-backend_valid, backend_sob, backend_eob, backend_copy, back_out_valid
+backend_valid, backend_sob, backend_eob, backend_copy, back_out_valid, valid_data, start_picture, old_valid_data
  : std_logic;
 
 signal anyref_ray_rem_ref, rem_reflects_old : std_logic_vector(2 downto 0);
@@ -126,7 +154,7 @@ signal old_color : std_logic_vector(95 downto 0);
 
 signal back_out_color : std_logic_vector(23 downto 0);
 
-signal pixel_address_writeIF : std_logic_vector(31 downto 0);
+signal pixel_address_writeIF, ref_t : std_logic_vector(31 downto 0);
 
 begin
 
@@ -140,23 +168,26 @@ syn : process(res_n, clk) is begin
 		--readdata <= (OTHERS => '0');
 		--number_filled <= 0;
 		toggle <= '0'; 
-		start_rdo <= '0';
+		--start_rdo <= '0';
 		-- start-rdo auch angeben
+		old_valid_data <= '0';
 	elsif rising_edge(clk) then
 		--readdata <= next_readdata;
 		--number_filled <= natural(to_integer(unsigned(number_filled_v)));
 		--frames <= frames_next;
-		start_rdo <= start_rdo_next;
-                if can_feed = '1' then
+		--start_rdo <= start_rdo_next;
+                if can_feed = '1' AND sc.num_spheres(3) = '1' then
 			toggle <= not(toggle); -- ws besser auch else Zweig angeben
 		--else 
 		--  toggle <= toggle;
 		end if;
+		old_valid_data <= valid_data;
 	end if;
 end process;
 
+start_rdo <= (valid_data AND NOT(old_valid_data)) OR start_picture;
 can_feed <= frames(0).all_info AND NOT(stall);
-stall <= reflected_ray.valid OR fifo_full;
+stall <= delayed_reflected_ray.valid OR fifo_full;
 
 rdo : getRayDirAlt port map (
     clk => clk,
@@ -164,6 +195,7 @@ rdo : getRayDirAlt port map (
     reset => res_n,
     start => start_rdo,
     hold => toggle,
+    valid_data => valid_data,
 
     frame => frames(0).frame_no,
 
@@ -177,7 +209,7 @@ rdo : getRayDirAlt port map (
 
     addition_ver => frames(0).addition_ver,
 
-    addition_base => frames(0).addition_ver,
+    addition_base => frames(0).addition_base,
 
     outputRay 	=> outputRay_rdo,
     done	=> done_rdo);
@@ -185,7 +217,7 @@ rdo : getRayDirAlt port map (
 rightRay <= outputRay_rdo when stall = '0' else delayed_reflected_ray;
 
 csp : closestSpherePrep port map(
-	clk => clk, reset => res_n, clk_en=> can_feed,
+	clk => clk, reset => res_n, clk_en=> '1',
 	input_direction => rightRay.direction,
 	a => a
 );
@@ -209,7 +241,7 @@ gcs : closestSphereNew port map (
 	closestSphere	=> closestSphere
 );
 
-assign_gcsp_emmiting : process(closestSphere) is begin
+assign_gcsp_emmiting : process(closestSphere, sc) is begin
 case closestSphere is
 	when "0000" =>
 		gcsp_emmiting <= sc.spheres(0).emitting;
@@ -259,14 +291,15 @@ static_data : picture_data port map (
 	reset => res_n,
 	clk_en => '1',
 	next_frame => done_rdo,
-	start => start_rdo
+	start => start_picture,
+	valid_data => valid_data
 );
 
 
 div_a : lpm_divide 
 generic map 
 (lpm_drepresentation => "SIGNED",
-		lpm_hint => "ONE_INPUT_IS_CONSTANT = YES",
+		lpm_hint => "ONE_INPUT_IS_CONSTANT=YES",
 		lpm_nrepresentation => "SIGNED",
 		lpm_pipeline => 48,
 		lpm_type => "lpm_divide",
@@ -276,34 +309,32 @@ port map(
 aclr => res_n, clken => '1', clock => clk, 
 denom => a, numer => one48, quotient => one_over_a, remain => open);
 
-delay_t_min_a : delay_element generic map (WIDTH => 32, DEPTH => 23) 
+delay_t_min_a : delay_element generic map (WIDTH => 32, DEPTH => 15) 
 port map (clk => clk, clken => '1', reset => res_n, source => t_times_a, dest => mult_input)
 ;
-mult : scalarMul --lpm_mult
-	--GENERIC MAP (
-	--	lpm_hint => "UNUSED",
-	--	lpm_pipeline => 2,
-	--	lpm_representation => "SIGNED",
-	--	lpm_type => "lpm_mult",
-	--	lpm_widtha => 32,
-	--	lpm_widthb => 32,
-	--	lpm_widthp => 64
-	--)
-	--PORT MAP (
-	--		aclr => res_n,
-	--		clken	=> '1',
-	--		clock	=> clk,
-	--		dataa	=> mult_input(31 downto 0),
-	--		datab	=> one_over_a(31 downto 0),
-	--		result	=> subwire_t
-	--);
-	PORT map(
-	a => mult_input(31 downto 0),
-	b => one_over_a(31 downto 0),
-	result => subwire_t,
+mult : lpm_mult
+	GENERIC MAP (
+		lpm_hint => "UNUSED",
+		lpm_pipeline => 2,
+		lpm_representation => "SIGNED",
+		lpm_type => "lpm_mult",
+		lpm_widtha => 32,
+		lpm_widthb => 32,
+		lpm_widthp => 64
+	)
+	PORT MAP (
+			aclr => res_n,
+			clken	=> '1',
+			clock	=> clk,
+			dataa	=> mult_input(31 downto 0),
+			datab	=> one_over_a(31 downto 0),
+			result	=> subwire_t
+	);
 
-	clk => clk, clk_en => '1', reset => res_n
-);
+delay_t : delay_element generic map(DEPTH => 1, WIDTH => 32)
+port map (clk => clk, reset => res_n, clken => '1',
+source(31) => subwire_t(63), source(30 downto 0) => subwire_t(46 downto 16),
+dest => ref_t);
 
 anyref_rayDelay : delay_element generic map(DEPTH => 36, WIDTH => 7)
 port map (clk => clk, reset => res_n, clken => '1', source(6) => rightRay.eob, source(5) => rightRay.sob, source(4) => rightRay.valid,
@@ -339,12 +370,12 @@ anyref : anyRefl port map (clk => clk,
     startOfBundle_out => anyrefo_sob,
     endOfBundle_out => anyrefo_eob);
 
-ref_ray_delay : delay_element generic map (WIDTH => 194, DEPTH => 54)
+ref_ray_delay : delay_element generic map (WIDTH => 194, DEPTH => 64)
 port map (clk => clk, clken => '1', reset => res_n, 
 source(193) => rightRay.valid, source(192) => rightRay.copy, source(191 DOWNTO 96) => to_std_logic(rightRay.direction), source(95 downto 0) => to_std_logic(rightRay.origin),
 dest(193) => ref_valid, dest(192) => ref_copy, dest(191 downto 96) => ref_dir, dest(95 downto 0) => ref_origin);
 
-ref_gcs_delay : delay_element generic map (WIDTH => 5, DEPTH => 25) port map(
+ref_gcs_delay : delay_element generic map (WIDTH => 5, DEPTH => 18) port map(
 clk => clk, clken => '1', reset => res_n, source(4) => valid_t, source(3 downto 0) => closestSphere, dest(4) => ref_valid_t, dest(3 downto 0) => ref_sphere_i);
 
 one_over_rs <= (0 => toscalar(sc.spheres(0).radius), 
@@ -388,8 +419,7 @@ refl : reflect
     reset => res_n,
 
     valid_t => ref_valid_t,
-    t(31) => subwire_t(63),
-    t(30 downto 0) => subwire_t(46 downto 16),
+    t => ref_t,
 
     sphere_i => ref_sphere_i,
 
@@ -416,7 +446,7 @@ colUp : colorUpdate  port map
     clk => clk, clk_en => '1', reset => res_n,
     color_in => tovector(colUp_color_in), valid_t => colUp_valid_t_in, sphere_i => colUp_sphere, valid_ray_in => colUp_valid,
 
-    copy_ray_in => ?? -- noch copy aus delay holen
+    --copy_ray_in => ?? -- noch copy aus delay holen
 
     -- Kugeldaten: Farbe, ws nicht emitting
 
@@ -430,11 +460,11 @@ colUp_par_color : delay_element  generic map (WIDTH => 96, DEPTH => 2) port map 
 
 colUp_valid_t_in <= colUp_valid_t AND NOT(colUp_pseudo);
 
-colUp_ray_delay : delay_element generic map (DEPTH => 66, WIDTh => 98) port map (clk => clk, clken => '1', reset => res_n,
+colUp_ray_delay : delay_element generic map (DEPTH => 67, WIDTh => 98) port map (clk => clk, clken => '1', reset => res_n,
 source(97) => rightRay.valid, source(96) => rightRay.pseudo_refl, source(95 downto 0) => to_std_logic(rightRay.color),
 dest(97) => colUp_valid, dest(96) => colUp_pseudo, dest(95 downto 0) => colUp_color_in);
 
-colUp_gcs_delay : delay_element generic map (DEPTH => 37, WIDTH => 5) port map (clk => clk, clken=> '1', reset => res_n,
+colUp_gcs_delay : delay_element generic map (DEPTH => 30, WIDTH => 5) port map (clk => clk, clken=> '1', reset => res_n,
 source(4) => valid_t, source(3 downto 0) => closestSphere, dest(4) => colUp_valid_t, dest(3 downto 0) => colUp_sphere);
 
 colUp_colors <= (0 => sc.spheres(0).colour, 
@@ -454,9 +484,10 @@ colUp_colors <= (0 => sc.spheres(0).colour,
 14 => sc.spheres(14).colour,
 15 => sc.spheres(15).colour);
 
-demux : process(anyrefo_pseudo, anyrefo_isRef, updatedColorRayValid, updatedColorValid, old_color, updatedColor) is begin
+demux : process(anyrefo_pseudo, anyrefo_isRef, updatedColorRayValid, updatedColorValid, old_color, updatedColor, ref_out_origin, ref_out_dir, rem_reflects_old,
+	anyrefo_sob, anyrefo_eob, ref_out_copy, old_position) is begin
 reflected_ray.valid <= '0';
-backend_valid <= '0';
+backend_ray.valid <= '0';
 
 if anyrefo_pseudo = '1' then
 	reflected_ray.pseudo_refl <= anyrefo_pseudo AND NOT(anyrefo_isRef);
@@ -489,9 +520,9 @@ else
 end if;
 end process;
 rem_ref_delay : delay_element generic map (WIDTH => 3, DEPTH => 32) port map (clk => clk, clken => '1', reset => res_n, source => anyref_ray_rem_ref, dest => rem_reflects_old);
-position_delay : delay_element generic map (WIDTH => 22, DEPTH => 68) port map (clk => clk, clken=> '1', reset => res_n, source => rightRay.position, dest => old_position);
+position_delay : delay_element generic map (WIDTH => 22, DEPTH => 69) port map (clk => clk, clken=> '1', reset => res_n, source => rightRay.position, dest => old_position);
 
-reflectDelay : rayDelay generic map (DELAY_LENGTH => 28)
+reflectDelay : rayDelay generic map (DELAY_LENGTH => 27)
 port map(clk => clk, reset => res_n, clk_en => '1',
 inputRay => reflected_ray, outputRay => delayed_reflected_ray);
 
@@ -511,7 +542,7 @@ backend_par : delay_element generic map (WIDTH => 22, DEPTH => 17) port map (clk
 writeIF : writeInterface 
   generic map
   (
-    FIFOSIZE => 256
+    FIFOSIZE => 128--256
   )
   port map
   (

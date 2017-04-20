@@ -3,7 +3,13 @@ use ieee.std_logic_1164.all;
 
 use work.delay_pkg.all;
 
-use work.lpm_util.all;
+--use work.lpm_util.all;
+library lpm;
+use lpm.lpm_components.all;
+
+LIBRARY altera_mf;
+USE altera_mf.all;
+
 
 use work.operations_pkg.all;
 
@@ -20,81 +26,68 @@ entity closestSphereNew is port (
 );
 end entity;
 
---entity closestSphere is
---  port
---    (
---      clk   : in std_logic;
---      reset : in std_logic;
---      
---      clk_en : in std_logic;
---
---      start	: in std_logic;
---
---      copy_cycle_active : in std_logic;
---
---      origin    : in std_logic_vector(95 downto 0);
---      dir       : in std_logic_vector(95 downto 0);
---
---      center_1  : in std_logic_vector(95 downto 0);
---      radius2_1 : in std_logic_vector(31 downto 0);
---
---      center_2  : in std_logic_vector(95 downto 0);
---      radius2_2 : in std_logic_vector(31 downto 0);
---
---      center_3  : in std_logic_vector(95 downto 0);
---      radius2_3 : in std_logic_vector(31 downto 0);
---
---      center_4  : in std_logic_vector(95 downto 0);
---      radius2_4 : in std_logic_vector(31 downto 0);
---
---      center_5  : in std_logic_vector(95 downto 0);
---      radius2_5 : in std_logic_vector(31 downto 0);
---
---      center_6  : in std_logic_vector(95 downto 0);
---      radius2_6 : in std_logic_vector(31 downto 0);
---
---      center_7  : in std_logic_vector(95 downto 0);
---      radius2_7 : in std_logic_vector(31 downto 0);
---
---      center_8  : in std_logic_vector(95 downto 0);
---      radius2_8 : in std_logic_vector(31 downto 0);
---		
---      center_9  : in std_logic_vector(95 downto 0);
---      radius2_9 : in std_logic_vector(31 downto 0);
---
---      center_10  : in std_logic_vector(95 downto 0);
---      radius2_10 : in std_logic_vector(31 downto 0);
---
---      center_11  : in std_logic_vector(95 downto 0);
---      radius2_11 : in std_logic_vector(31 downto 0);
---
---      center_12  : in std_logic_vector(95 downto 0);
---      radius2_12 : in std_logic_vector(31 downto 0);
---
---      center_13  : in std_logic_vector(95 downto 0);
---      radius2_13 : in std_logic_vector(31 downto 0);
---
---      center_14  : in std_logic_vector(95 downto 0);
---      radius2_14 : in std_logic_vector(31 downto 0);
---
---      center_15  : in std_logic_vector(95 downto 0);
---      radius2_15 : in std_logic_vector(31 downto 0);
---
---      center_16  : in std_logic_vector(95 downto 0);
---      radius2_16 : in std_logic_vector(31 downto 0);
---		
---	second_round : in std_logic;
---
---	spheres : in std_logic_vector(15 downto 0);
---
---	  t			: out std_logic_vector(31 downto 0);
---	  i_out		: out std_logic_vector(3 downto 0);
---	  done		: out std_logic;
---	  valid_t 	: out std_logic);
---
---end entity;
-
 architecture arch of closestSphereNew is
+
+
+COMPONENT lpm_mult
+	GENERIC (
+		lpm_hint		: STRING;
+		lpm_pipeline		: NATURAL;
+		lpm_representation		: STRING;
+		lpm_type		: STRING;
+		lpm_widtha		: NATURAL;
+		lpm_widthb		: NATURAL;
+		lpm_widthp		: NATURAL
+	);
+	PORT (
+			aclr	: IN STD_LOGIC ;
+			clken	: IN STD_LOGIC ;
+			clock	: IN STD_LOGIC ;
+			dataa	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+			datab	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+			result	: OUT STD_LOGIC_VECTOR (63 DOWNTO 0)
+	);
+	END COMPONENT;
+	
+COMPONENT lpm_compare
+	GENERIC (
+		lpm_hint		: STRING;
+		lpm_pipeline		: NATURAL;
+		lpm_representation		: STRING;
+		lpm_type		: STRING;
+		lpm_width		: NATURAL
+	);
+	PORT (
+			aclr	: IN STD_LOGIC ;
+			clken	: IN STD_LOGIC ;
+			clock	: IN STD_LOGIC ;
+			dataa	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+			datab	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+			agb	: OUT STD_LOGIC 
+	);
+	END COMPONENT;
+
+COMPONENT lpm_divide
+	GENERIC (
+		lpm_drepresentation		: STRING;
+		lpm_hint		: STRING;
+		lpm_nrepresentation		: STRING;
+		lpm_pipeline		: NATURAL;
+		lpm_type		: STRING;
+		lpm_widthd		: NATURAL;
+		lpm_widthn		: NATURAL
+	);
+	PORT (
+			aclr	: IN STD_LOGIC ;
+			clken	: IN STD_LOGIC ;
+			clock	: IN STD_LOGIC ;
+			denom	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+			numer	: IN STD_LOGIC_VECTOR (47 DOWNTO 0);
+			quotient	: OUT STD_LOGIC_VECTOR (47 DOWNTO 0);
+			remain	: OUT STD_LOGIC_VECTOR (31 DOWNTO 0)
+	);
+	END COMPONENT;
+
 
 component sphereDistance is
   port
@@ -123,21 +116,17 @@ component sphereDistance is
       );
 end component;
 
-signal sub_wire0_oneovera : std_logic_vector(47 downto 0);
 
 signal origin_c6, dir_c6,
 center_in1, center_in2, center_in3, center_in4, center_in5, center_in6, center_in7, center_in8
 	: std_logic_vector(95 downto 0);
 signal a_c6, t_min_a,
-rad2_in1, rad2_in2, rad2_in3, rad2_in4, rad2_in5, rad2_in6, rad2_in7, rad2_in8, one_over_a,
+rad2_in1, rad2_in2, rad2_in3, rad2_in4, rad2_in5, rad2_in6, rad2_in7, rad2_in8, 
 t1, t2, t3, t4, t5, t6, t7, t8, t12, t34, t56, t78, t1234, t5678, t12345678,
 t1_c34, t2_c34, t3_c34, t4_c34, t5_c34, t6_c34, t7_c34, t8_c34,
-t12_c35, t34_c35, t56_c35, t78_c35, t1234_c36, t5678_c36, t_old, t12345678_c37, t_res1,
-t_int, t_int_c52
+t12_c35, t34_c35, t56_c35, t78_c35, t1234_c36, t5678_c36, t_old, t12345678_c37, t_res1
 : std_logic_vector(31 downto 0);
-signal subwire0_a_t_min, subwire0_t_out : std_logic_vector(63 downto 0);
-signal start_shift, cycles_shift : std_logic_vector(54 downto 0);
-signal cycle_even : std_logic := '0';
+signal subwire0_a_t_min : std_logic_vector(63 downto 0);
 
 signal t1_valid, t2_valid, t3_valid, t4_valid, t5_valid, t6_valid, t7_valid, t8_valid,
 t2_smaller, t4_smaller, t6_smaller, t8_smaller, t34_smaller, t78_smaller, t5678_smaller,
@@ -146,7 +135,7 @@ t1234_valid, t5678_valid, t12345678_valid,
 t1_valid_c34, t2_valid_c34, t3_valid_c34, t4_valid_c34, t5_valid_c34, t6_valid_c34, t7_valid_c34, t8_valid_c34,
 t12_valid_c35, t34_valid_c35, t56_valid_c35, t78_valid_c35,
 t1234_valid_c36, t5678_valid_c36, t12345678_valid_c37, t_old_valid, t_int_valid, t_old_smaller, t_res1_valid,
-smaller_numbers, start1, start2, start3, start4, start5, start6, start7, start8, t_int_valid_c54,
+smaller_numbers, start1, start2, start3, start4, start5, start6, start7, start8,
 copy_c2, copy_c21, copy_c22,valid_c2
 : std_logic;
 
@@ -155,8 +144,6 @@ t12_sp_c35, t34_sp_c35, t56_sp_c35, t78_sp_c35, t1234_sp_c36, t5678_sp_c36, t123
 	: std_logic_vector(2 DOWNTO 0);
 
 signal t_res1_sp, t_old_sp:  std_logic_vector(3 downto 0);
-
-signal t_int_sp, t_int_sp_c54 : std_logic_vector(3 DOWNTO 0);
 
 constant TIME_MIN : std_logic_vector(31 downto 0) := x"0000199A";
 
@@ -184,12 +171,10 @@ rad2_in8 <= relevantScene.spheres(7).radius2 when smaller_numbers = '1' else rel
 t_min_a(31) <= subwire0_a_t_min(63);
 t_min_a(30 downto 0) <= subwire0_a_t_min(46 downto 16);
 
-one_over_a(31)    <= sub_wire0_oneovera(47);
-one_over_a(30 DOWNTO 0) <= sub_wire0_oneovera(30 DOWNTO 0);
-
 
 a_t_min_calc_c1t2 : lpm_mult GENERIC MAP (
-		lpm_hint => "ONE_INPUT_IS_CONSTANT=YES",
+		lpm_hint => "MAXIMIZE_SPEED=9", --, ONE_INPUT_IS_CONSTANT=YES",
+		--lpm_hint => "ONE_INPUT_IS_CONSTANT=YES",
 		lpm_pipeline => 2,
 		lpm_representation => "SIGNED",
 		lpm_type => "LPM_MULT",
@@ -227,8 +212,8 @@ source(0)=>copy_c2, dest(0)=>copy_c21);
 copy_delay_3 : delay_element generic map (WIDTH => 1, DEPTH => 1) port map (clk=>clk, clken=>'1', reset => reset, 
 source(0)=>copy_c21, dest(0)=>copy_c22);
 
-smaller_numbers <= copy_c2 OR NOT(relevantScene.num_spheres(3));
-start1 <= valid_c2 AND ((smaller_numbers AND relevantScene.activeSpheres(0)) OR relevantScene.activeSpheres(8));
+smaller_numbers <= NOT(copy_c2) OR NOT(relevantScene.num_spheres(3));
+start1 <= valid_c2 AND ((smaller_numbers AND relevantScene.activeSpheres(0)) OR (NOT(smaller_numbers) AND relevantScene.activeSpheres(8)));
 comp1_c7t33 : sphereDistance port map(
 	clk => clk, reset => reset, clk_en => clk_en, 
 	start => start1,
@@ -241,7 +226,7 @@ comp1_c7t33 : sphereDistance port map(
 	t => t1,
 	t_valid => t1_valid
 );
-start2 <= valid_c2 AND ((smaller_numbers AND relevantScene.activeSpheres(1)) OR relevantScene.activeSpheres(9));
+start2 <= valid_c2 AND ((smaller_numbers AND relevantScene.activeSpheres(1)) OR (NOT(smaller_numbers) AND relevantScene.activeSpheres(9)));
 comp2_c7t33 : sphereDistance port map(
 	clk => clk, reset => reset, clk_en => clk_en,
 	start => start2,
@@ -254,7 +239,7 @@ comp2_c7t33 : sphereDistance port map(
 	t => t2,
 	t_valid => t2_valid
 );
-start3 <= valid_c2 AND ((smaller_numbers AND relevantScene.activeSpheres(2)) OR relevantScene.activeSpheres(10));
+start3 <= valid_c2 AND ((smaller_numbers AND relevantScene.activeSpheres(2)) OR (NOT(smaller_numbers) AND relevantScene.activeSpheres(10)));
 comp3_c7t33 : sphereDistance port map(
 	clk => clk, reset => reset, clk_en => clk_en, 
 	start => start3,
@@ -267,7 +252,7 @@ comp3_c7t33 : sphereDistance port map(
 	t => t3,
 	t_valid => t3_valid
 );
-start4 <= valid_c2 AND ((smaller_numbers AND relevantScene.activeSpheres(3)) OR relevantScene.activeSpheres(11));
+start4 <= valid_c2 AND ((smaller_numbers AND relevantScene.activeSpheres(3)) OR (NOT(smaller_numbers) AND relevantScene.activeSpheres(11)));
 comp4_c7t33 : sphereDistance port map(
 	clk => clk, reset => reset, clk_en => clk_en, 
 	start => start4,
@@ -280,7 +265,7 @@ comp4_c7t33 : sphereDistance port map(
 	t => t4,
 	t_valid => t4_valid
 );
-start5 <= valid_c2 AND ((smaller_numbers AND relevantScene.activeSpheres(4)) OR relevantScene.activeSpheres(12));
+start5 <= valid_c2 AND ((smaller_numbers AND relevantScene.activeSpheres(4)) OR (NOT(smaller_numbers) AND relevantScene.activeSpheres(12)));
 comp5_c7t33 : sphereDistance port map(
 	clk => clk, reset => reset, clk_en => clk_en, 
 	start => start5,
@@ -293,7 +278,7 @@ comp5_c7t33 : sphereDistance port map(
 	t => t5,
 	t_valid => t5_valid
 );
-start6 <= valid_c2 AND ((smaller_numbers AND relevantScene.activeSpheres(5)) OR relevantScene.activeSpheres(13));
+start6 <= valid_c2 AND ((smaller_numbers AND relevantScene.activeSpheres(5)) OR (NOT(smaller_numbers) AND relevantScene.activeSpheres(13)));
 comp6_c7t33 : sphereDistance port map(
 	clk => clk, reset => reset, clk_en => clk_en, 
 	start => start6,
@@ -306,7 +291,7 @@ comp6_c7t33 : sphereDistance port map(
 	t => t6,
 	t_valid => t6_valid
 );
-start7 <= valid_c2 AND ((smaller_numbers AND relevantScene.activeSpheres(6)) OR relevantScene.activeSpheres(14));
+start7 <= valid_c2 AND ((smaller_numbers AND relevantScene.activeSpheres(6)) OR (NOT(smaller_numbers) AND relevantScene.activeSpheres(14)));
 comp7_c7t33 : sphereDistance port map(
 	clk => clk, reset => reset, clk_en => clk_en, 
 	start => start7,
@@ -319,7 +304,7 @@ comp7_c7t33 : sphereDistance port map(
 	t => t7,
 	t_valid => t7_valid
 );
-start8 <= valid_c2 AND ((smaller_numbers AND relevantScene.activeSpheres(7)) OR relevantScene.activeSpheres(15));
+start8 <= valid_c2 AND ((smaller_numbers AND relevantScene.activeSpheres(7)) OR (NOT(smaller_numbers) AND relevantScene.activeSpheres(15)));
 comp8_c7t33 : sphereDistance port map(
 	clk => clk, reset => reset, clk_en => clk_en,
 	start => start8,
@@ -467,7 +452,7 @@ compare_old_c37 : LPM_COMPARE
 delay_t1 : delay_element generic map(WIDTH => 33, DEPTH => 1) port map (
 clk => clk, clken => clk_en, reset => reset, 
 source(32) => t1_valid, 
-source(31 downto 0) => t12,
+source(31 downto 0) => t1,
 dest(32) => t1_valid_c34,
 dest(31 downto 0) => t1_c34
 );
@@ -613,8 +598,8 @@ dest(35 downto 33) => t12345678_sp_c37
 );
 
 t_res1 <= t_old when (copy_c21 AND t_old_valid AND t_old_smaller) = '1' else t12345678;
-t_res1_valid <= t_old_valid when ((copy_c21 AND t_old_valid) OR t12345678_valid) = '1' else t12345678_valid;
-t_res1_sp <= t_old_sp when (copy_c21 AND t_old_valid AND t_old_smaller) = '1' else (copy_c21 XOR relevantScene.num_spheres(3)) & t12345678_sp;
+t_res1_valid <= t_old_valid when (copy_c21 AND t_old_valid AND t_old_smaller) = '1' else t12345678_valid;
+t_res1_sp <= t_old_sp when (copy_c21 AND t_old_valid AND t_old_smaller) = '1' else copy_c21 & t12345678_sp;
 
 
 shift : process(clk, clk_en, reset) is begin

@@ -57,7 +57,7 @@ entity colorUpdate is
     sphere_i : std_logic_vector(3 downto 0);
 
     valid_ray_in : std_logic;
-    copy_ray_in : std_logic;
+    --copy_ray_in : std_logic;
 
     -- Kugeldaten: Farbe, ws nicht emitting
 
@@ -65,8 +65,8 @@ entity colorUpdate is
     
     color_out : out vector;
     valid_color : out std_logic;
-    valid_ray_out : out std_logic;
-    copy_ray_out : out std_logic
+    valid_ray_out : out std_logic
+    --copy_ray_out : out std_logic
   );
 end entity;
 
@@ -75,7 +75,7 @@ architecture beh of colorUpdate is
   signal index : natural;
   signal hitColor : vector;
   --signal color_out_next : vector;
-  signal validities_in_vec, validities_out_vec : std_logic_vector(2 downto 0);
+  signal validities_in_vec, validities_out_vec : std_logic_vector(1 downto 0);
   --signal valid_ray_in_vec, valid_ray_out_vec : std_logic_vector(0 downto 0);
   --signal valid_color_next : std_logic;
 
@@ -107,9 +107,9 @@ begin
 
   validities_in_vec(0) <= valid_t;
   validities_in_vec(1) <= valid_ray_in;
-  validities_in_vec(2) <= copy_ray_in;
+  --validities_in_vec(2) <= copy_ray_in;
 
-  delay_validities: delay_element generic map(WIDTH => 3, DEPTH => 2) 
+  delay_validities: delay_element generic map(WIDTH => 2, DEPTH => 2) 
   port map (
     clk => clk, clken => clk_en, reset => reset, 
     source => validities_in_vec,
@@ -119,7 +119,7 @@ begin
 --  valid_color_next <= valid_color_vec(0);
   valid_color <= validities_out_vec(0);
   valid_ray_out <= validities_out_vec(1);
-  copy_ray_out <= validities_out_vec(2);
+  --copy_ray_out <= validities_out_vec(2);
 
 
   index <= natural(to_integer(unsigned(sphere_i)));

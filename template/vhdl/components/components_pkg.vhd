@@ -119,7 +119,7 @@ component colorUpdate is
     sphere_i : std_logic_vector(3 downto 0);
 
     valid_ray_in : std_logic;
-    copy_ray_in : std_logic;
+    --copy_ray_in : std_logic;
 
     -- Kugeldaten: Farbe, ws nicht emitting
 
@@ -140,6 +140,7 @@ port(
     hold 	: in std_logic;
     reset 	: in std_logic;
     start 	: in std_logic;
+    valid_data	: in std_logic;
 
     frame	: in std_logic_vector(1 downto 0);
 
@@ -375,8 +376,8 @@ end component;
 component picture_data is
 	port(
 	w : in std_logic;
-	address : std_logic_vector(15 downto 0);
-	writedata : std_logic_vector(31 downto 0);
+	address : in std_logic_vector(15 downto 0);
+	writedata : in std_logic_vector(31 downto 0);
 	frames : out frame_array;
 	sc : out scene;
 	write_poss : out std_logic;
@@ -384,7 +385,8 @@ component picture_data is
 	reset : in std_logic;
 	clk_en : in std_logic;
 	next_frame : in std_logic;
-	start : out std_logic
+	start : out std_logic;
+	valid_data : out std_logic
 	);
 end component;
 

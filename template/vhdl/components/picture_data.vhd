@@ -8,8 +8,8 @@ use work.operations_pkg.all;
 entity picture_data is
 	port(
 	w : in std_logic;
-	address : std_logic_vector(15 downto 0);
-	writedata : std_logic_vector(31 downto 0);
+	address : in std_logic_vector(15 downto 0);
+	writedata : in std_logic_vector(31 downto 0);
 	frames : out frame_array;
 	sc : out scene;
 	write_poss : out std_logic;
@@ -17,7 +17,8 @@ entity picture_data is
 	reset : in std_logic;
 	clk_en : in std_logic;
 	next_frame : in std_logic;
-	start : out std_logic
+	start : out std_logic;
+	valid_data : out std_logic
 	);
 end entity;
 
@@ -30,10 +31,15 @@ constant initial_frame : frame_info := (all_info => '0',
 	addition_hor => zero_vector,
 	addition_ver => zero_vector,
 	frame_no => (OTHERS => '0'));
-signal sc_sig : scene;
-signal frames_sig, frames_out : frame_array := (OTHERS => initial_frame);
-signal number_filled : natural := 0;
-signal start_sig : std_logic := '0';
+constant initial_sphere : sphere := (center => zero_vector, colour => zero_vector, radius => zero, radius2 => zero, emitting => '0');
+constant initial_spheres : sphere_array := (OTHERS => initial_sphere);
+constant initial_scene : scene := (num_spheres => (OTHERS => '0'), num_reflects=> (OTHERS => '0'), num_samples=> (OTHERS => '0'),
+	spheres => initial_spheres, sphere_enable => (OTHERS => '0'));
+signal frames_out, frames_sig : frame_array;
+--signal number_filled : natural := 0;
+signal start_sig, start_out : std_logic;
+
+signal sc_sig, sc_out : scene;
 
 signal t, sphere, elem, coord : std_logic_vector(3 downto 0);
 
@@ -63,116 +69,343 @@ sphere <= address(11 downto 8);
 elem <= address(7 downto 4);
 coord <= address(3 downto 0);
 
-write_poss <= '1' when number_filled < 2 else '0';
-async_update : process(address, w, writedata, next_frame) is begin
+write_poss <= frames_out(1).all_info NAND frames_out(0).all_info;
+valid_data <= frames_out(0).all_info;
+
+
+async_write : process(sc_out, frames_out, w, address, writedata, next_frame, t, sphere, elem, coord) is begin
 start_sig <= '0';
-if w = '1' then
-	if t = finish_frame then
-		--the current frame has all data
-		frames_sig(number_filled).all_info <= '1';
-		number_filled <= number_filled + 1;
-	elsif t = change_spheres then
+frames_sig <= frames_out;
+sc_sig <= sc_out;
+	if w = '1' then
+		--start <= '0';
+		if t = finish_frame then
+			--the current frame has all data
+			if frames_out(0).all_info = '0' then
+				frames_sig(0).all_info <= '1';
+			else
+				frames_sig(1).all_info <= '1';
+			end if;
+		elsif t = change_spheres then
 		---change a parameter of a sphere
 		if elem = radius then
-			sc_sig.spheres(to_integer(unsigned(sphere))).radius <= writedata;
+			case sphere is
+				when "0000" => sc_sig.spheres(0).radius <= writedata;
+				when "0001" => sc_sig.spheres(1).radius <= writedata;
+				when "0010" => sc_sig.spheres(2).radius <= writedata;
+				when "0011" => sc_sig.spheres(3).radius <= writedata;
+				when "0100" => sc_sig.spheres(4).radius <= writedata;
+				when "0101" => sc_sig.spheres(5).radius <= writedata;
+				when "0110" => sc_sig.spheres(6).radius <= writedata;
+				when "0111" => sc_sig.spheres(7).radius <= writedata;
+				when "1000" => sc_sig.spheres(8).radius <= writedata;
+				when "1001" => sc_sig.spheres(9).radius <= writedata;
+				when "1010" => sc_sig.spheres(10).radius <= writedata;
+				when "1011" => sc_sig.spheres(11).radius <= writedata;
+				when "1100" => sc_sig.spheres(12).radius <= writedata;
+				when "1101" => sc_sig.spheres(13).radius <= writedata;
+				when "1110" => sc_sig.spheres(14).radius <= writedata;
+				when "1111" => sc_sig.spheres(15).radius <= writedata;
+				when others =>
+					null;
+			end case;
+			--sc_sig.spheres(to_integer(unsigned(sphere))).radius <= writedata;
 		elsif elem = radius2 then
-			sc_sig.spheres(to_integer(unsigned(sphere))).radius2 <= writedata;
+			case sphere is
+				when "0000" => sc_sig.spheres(0).radius2 <= writedata;
+				when "0001" => sc_sig.spheres(1).radius2 <= writedata;
+				when "0010" => sc_sig.spheres(2).radius2 <= writedata;
+				when "0011" => sc_sig.spheres(3).radius2 <= writedata;
+				when "0100" => sc_sig.spheres(4).radius2 <= writedata;
+				when "0101" => sc_sig.spheres(5).radius2 <= writedata;
+				when "0110" => sc_sig.spheres(6).radius2 <= writedata;
+				when "0111" => sc_sig.spheres(7).radius2 <= writedata;
+				when "1000" => sc_sig.spheres(8).radius2 <= writedata;
+				when "1001" => sc_sig.spheres(9).radius2 <= writedata;
+				when "1010" => sc_sig.spheres(10).radius2 <= writedata;
+				when "1011" => sc_sig.spheres(11).radius2 <= writedata;
+				when "1100" => sc_sig.spheres(12).radius2 <= writedata;
+				when "1101" => sc_sig.spheres(13).radius2 <= writedata;
+				when "1110" => sc_sig.spheres(14).radius2 <= writedata;
+				when "1111" => sc_sig.spheres(15).radius2 <= writedata;
+				when others =>
+					null;
+			end case;
+			--sc_sig.spheres(to_integer(unsigned(sphere))).radius2 <= writedata;
 		elsif elem = center then
 			if coord = x then
-				sc_sig.spheres(to_integer(unsigned(sphere))).center.x <= writedata;
-			elsif coord = y then
-				sc_sig.spheres(to_integer(unsigned(sphere))).center.y <= writedata;
-			elsif coord = z then
-				sc_sig.spheres(to_integer(unsigned(sphere))).center.z <= writedata;
+				case sphere is
+					when "0000" => sc_sig.spheres(0).center.x <= writedata;
+					when "0001" => sc_sig.spheres(1).center.x <= writedata;
+					when "0010" => sc_sig.spheres(2).center.x <= writedata;
+					when "0011" => sc_sig.spheres(3).center.x <= writedata;
+					when "0100" => sc_sig.spheres(4).center.x <= writedata;
+					when "0101" => sc_sig.spheres(5).center.x <= writedata;
+					when "0110" => sc_sig.spheres(6).center.x <= writedata;
+					when "0111" => sc_sig.spheres(7).center.x <= writedata;
+					when "1000" => sc_sig.spheres(8).center.x <= writedata;
+					when "1001" => sc_sig.spheres(9).center.x <= writedata;
+					when "1010" => sc_sig.spheres(10).center.x <= writedata;
+					when "1011" => sc_sig.spheres(11).center.x <= writedata;
+					when "1100" => sc_sig.spheres(12).center.x <= writedata;
+					when "1101" => sc_sig.spheres(13).center.x <= writedata;
+					when "1110" => sc_sig.spheres(14).center.x <= writedata;
+					when "1111" => sc_sig.spheres(15).center.x <= writedata;
+					when others =>
+						null;
+				end case;
+				elsif coord = y then
+					case sphere is
+					when "0000" => sc_sig.spheres(0).center.y <= writedata;
+					when "0001" => sc_sig.spheres(1).center.y <= writedata;
+					when "0010" => sc_sig.spheres(2).center.y <= writedata;
+					when "0011" => sc_sig.spheres(3).center.y <= writedata;
+					when "0100" => sc_sig.spheres(4).center.y <= writedata;
+					when "0101" => sc_sig.spheres(5).center.y <= writedata;
+					when "0110" => sc_sig.spheres(6).center.y <= writedata;
+					when "0111" => sc_sig.spheres(7).center.y <= writedata;
+					when "1000" => sc_sig.spheres(8).center.y <= writedata;
+					when "1001" => sc_sig.spheres(9).center.y <= writedata;
+					when "1010" => sc_sig.spheres(10).center.y <= writedata;
+					when "1011" => sc_sig.spheres(11).center.y <= writedata;
+					when "1100" => sc_sig.spheres(12).center.y <= writedata;
+					when "1101" => sc_sig.spheres(13).center.y <= writedata;
+					when "1110" => sc_sig.spheres(14).center.y <= writedata;
+					when "1111" => sc_sig.spheres(15).center.y <= writedata;
+					when others =>
+						null;
+					end case;
+				elsif coord = z then
+					case sphere is
+					when "0000" => sc_sig.spheres(0).center.z <= writedata;
+					when "0001" => sc_sig.spheres(1).center.z <= writedata;
+					when "0010" => sc_sig.spheres(2).center.z <= writedata;
+					when "0011" => sc_sig.spheres(3).center.z <= writedata;
+					when "0100" => sc_sig.spheres(4).center.z <= writedata;
+					when "0101" => sc_sig.spheres(5).center.z <= writedata;
+					when "0110" => sc_sig.spheres(6).center.z <= writedata;
+					when "0111" => sc_sig.spheres(7).center.z <= writedata;
+					when "1000" => sc_sig.spheres(8).center.z <= writedata;
+					when "1001" => sc_sig.spheres(9).center.z <= writedata;
+					when "1010" => sc_sig.spheres(10).center.z <= writedata;
+					when "1011" => sc_sig.spheres(11).center.z <= writedata;
+					when "1100" => sc_sig.spheres(12).center.z <= writedata;
+					when "1101" => sc_sig.spheres(13).center.z <= writedata;
+					when "1110" => sc_sig.spheres(14).center.z <= writedata;
+					when "1111" => sc_sig.spheres(15).center.z <= writedata;
+					when others =>
+						null;
+					end case;
+					--sc_sig.spheres(to_integer(unsigned(sphere))).center.z <= writedata;
+				end if;
+			elsif elem = color then
+				if coord = x then
+					case sphere is
+					when "0000" => sc_sig.spheres(0).colour.x <= writedata;
+					when "0001" => sc_sig.spheres(1).colour.x <= writedata;
+					when "0010" => sc_sig.spheres(2).colour.x <= writedata;
+					when "0011" => sc_sig.spheres(3).colour.x <= writedata;
+					when "0100" => sc_sig.spheres(4).colour.x <= writedata;
+					when "0101" => sc_sig.spheres(5).colour.x <= writedata;
+					when "0110" => sc_sig.spheres(6).colour.x <= writedata;
+					when "0111" => sc_sig.spheres(7).colour.x <= writedata;
+					when "1000" => sc_sig.spheres(8).colour.x <= writedata;
+					when "1001" => sc_sig.spheres(9).colour.x <= writedata;
+					when "1010" => sc_sig.spheres(10).colour.x <= writedata;
+					when "1011" => sc_sig.spheres(11).colour.x <= writedata;
+					when "1100" => sc_sig.spheres(12).colour.x <= writedata;
+					when "1101" => sc_sig.spheres(13).colour.x <= writedata;
+					when "1110" => sc_sig.spheres(14).colour.x <= writedata;
+					when "1111" => sc_sig.spheres(15).colour.x <= writedata;
+					when others =>
+						null;
+					end case;
+					--sc_sig.spheres(to_integer(unsigned(sphere))).center.x <= writedata;
+				elsif coord = y then
+					case sphere is
+					when "0000" => sc_sig.spheres(0).colour.y <= writedata;
+					when "0001" => sc_sig.spheres(1).colour.y <= writedata;
+					when "0010" => sc_sig.spheres(2).colour.y <= writedata;
+					when "0011" => sc_sig.spheres(3).colour.y <= writedata;
+					when "0100" => sc_sig.spheres(4).colour.y <= writedata;
+					when "0101" => sc_sig.spheres(5).colour.y <= writedata;
+					when "0110" => sc_sig.spheres(6).colour.y <= writedata;
+					when "0111" => sc_sig.spheres(7).colour.y <= writedata;
+					when "1000" => sc_sig.spheres(8).colour.y <= writedata;
+					when "1001" => sc_sig.spheres(9).colour.y <= writedata;
+					when "1010" => sc_sig.spheres(10).colour.y <= writedata;
+					when "1011" => sc_sig.spheres(11).colour.y <= writedata;
+					when "1100" => sc_sig.spheres(12).colour.y <= writedata;
+					when "1101" => sc_sig.spheres(13).colour.y <= writedata;
+					when "1110" => sc_sig.spheres(14).colour.y <= writedata;
+					when "1111" => sc_sig.spheres(15).colour.y <= writedata;
+					when others =>
+						null;
+					end case;
+					--sc_sig.spheres(to_integer(unsigned(sphere))).center.y <= writedata;
+				elsif coord = z then
+					case sphere is
+					when "0000" => sc_sig.spheres(0).colour.z <= writedata;
+					when "0001" => sc_sig.spheres(1).colour.z <= writedata;
+					when "0010" => sc_sig.spheres(2).colour.z <= writedata;
+					when "0011" => sc_sig.spheres(3).colour.z <= writedata;
+					when "0100" => sc_sig.spheres(4).colour.z <= writedata;
+					when "0101" => sc_sig.spheres(5).colour.z <= writedata;
+					when "0110" => sc_sig.spheres(6).colour.z <= writedata;
+					when "0111" => sc_sig.spheres(7).colour.z <= writedata;
+					when "1000" => sc_sig.spheres(8).colour.z <= writedata;
+					when "1001" => sc_sig.spheres(9).colour.z <= writedata;
+					when "1010" => sc_sig.spheres(10).colour.z <= writedata;
+					when "1011" => sc_sig.spheres(11).colour.z <= writedata;
+					when "1100" => sc_sig.spheres(12).colour.z <= writedata;
+					when "1101" => sc_sig.spheres(13).colour.z <= writedata;
+					when "1110" => sc_sig.spheres(14).colour.z <= writedata;
+					when "1111" => sc_sig.spheres(15).colour.z <= writedata;
+					when others =>
+						null;
+					end case;
+					--sc_sig.spheres(to_integer(unsigned(sphere))).center.z <= writedata;
+				end if;
+			elsif elem = emitting then
+				case sphere is
+					when "0000" => sc_sig.spheres(0).emitting <= writedata(0);
+					when "0001" => sc_sig.spheres(1).emitting <= writedata(0);
+					when "0010" => sc_sig.spheres(2).emitting <= writedata(0);
+					when "0011" => sc_sig.spheres(3).emitting <= writedata(0);
+					when "0100" => sc_sig.spheres(4).emitting <= writedata(0);
+					when "0101" => sc_sig.spheres(5).emitting <= writedata(0);
+					when "0110" => sc_sig.spheres(6).emitting <= writedata(0);
+					when "0111" => sc_sig.spheres(7).emitting <= writedata(0);
+					when "1000" => sc_sig.spheres(8).emitting <= writedata(0);
+					when "1001" => sc_sig.spheres(9).emitting <= writedata(0);
+					when "1010" => sc_sig.spheres(10).emitting <= writedata(0);
+					when "1011" => sc_sig.spheres(11).emitting <= writedata(0);
+					when "1100" => sc_sig.spheres(12).emitting <= writedata(0);
+					when "1101" => sc_sig.spheres(13).emitting <= writedata(0);
+					when "1110" => sc_sig.spheres(14).emitting <= writedata(0);
+					when "1111" => sc_sig.spheres(15).emitting <= writedata(0);
+					when others =>
+						null;
+					end case;
+				--sc_sig.spheres(to_integer(unsigned(sphere))).emitting <= writedata(0);
 			end if;
-		elsif elem = color then
-			if coord = x then
-				sc_sig.spheres(to_integer(unsigned(sphere))).colour.x <= writedata;
-			elsif coord = y then
-				sc_sig.spheres(to_integer(unsigned(sphere))).colour.y <= writedata;
-			elsif coord = z then
-				sc_sig.spheres(to_integer(unsigned(sphere))).colour.z <= writedata;
+		elsif t = change_general then
+			--update the general data
+			sc_sig.num_spheres <= X"0" & writedata(31 downto 28);
+			sc_sig.num_reflects <= X"0" & writedata(27 downto 24);
+			sc_sig.num_samples <= writedata(23 downto 16);
+			sc_sig.sphere_enable <= writedata(15 downto 0);
+		elsif t = change_frame then
+			--set a param in the camera position
+			if elem = camera_origin then
+				if coord = x then
+					if frames_out(0).all_info = '0' then
+						frames_sig(0).camera_origin.x <= writedata;
+					else
+						frames_sig(1).camera_origin.x <= writedata;
+					end if;
+				elsif coord = y then
+					if frames_out(0).all_info = '0' then
+						frames_sig(0).camera_origin.y <= writedata;
+					else
+						frames_sig(1).camera_origin.y <= writedata;
+					end if;
+				elsif coord = z then
+					if frames_out(0).all_info = '0' then
+						frames_sig(0).camera_origin.z <= writedata;
+					else
+						frames_sig(1).camera_origin.z <= writedata;
+					end if;
+				end if;
+			elsif elem = addition_base then
+				if coord = x then
+					if frames_out(0).all_info = '0' then
+						frames_sig(0).addition_base.x <= writedata;
+					else
+						frames_sig(1).addition_base.x <= writedata;
+					end if;
+				elsif coord = y then
+					if frames_out(0).all_info = '0' then
+						frames_sig(0).addition_base.y <= writedata;
+					else
+						frames_sig(1).addition_base.y <= writedata;
+					end if;
+				elsif coord = z then
+					if frames_out(0).all_info = '0' then
+						frames_sig(0).addition_base.z <= writedata;
+					else
+						frames_sig(1).addition_base.z <= writedata;
+					end if;
+				end if;
+			elsif elem = addition_hor then
+				if coord = x then
+					if frames_out(0).all_info = '0' then
+						frames_sig(0).addition_hor.x <= writedata;
+					else
+						frames_sig(1).addition_hor.x <= writedata;
+					end if;
+				elsif coord = y then
+					if frames_out(0).all_info = '0' then
+						frames_sig(0).addition_hor.y <= writedata;
+					else
+						frames_sig(1).addition_hor.y <= writedata;
+					end if;
+				elsif coord = z then
+					if frames_out(0).all_info = '0' then
+						frames_sig(0).addition_hor.z <= writedata;
+					else
+						frames_sig(1).addition_hor.z <= writedata;
+					end if;
+				end if;
+			elsif elem = addition_ver then
+				if coord = x then
+					if frames_out(0).all_info = '0' then
+						frames_sig(0).addition_ver.x <= writedata;
+					else
+						frames_sig(1).addition_ver.x <= writedata;
+					end if;
+				elsif coord = y then
+					if frames_out(0).all_info = '0' then
+						frames_sig(0).addition_ver.y <= writedata;
+					else
+						frames_sig(1).addition_ver.y <= writedata;
+					end if;
+				elsif coord = z then
+					if frames_out(0).all_info = '0' then
+						frames_sig(0).addition_ver.z <= writedata;
+					else
+						frames_sig(1).addition_ver.z <= writedata;
+					end if;
+				end if;
+			elsif elem = frame_no then
+				if frames_out(0).all_info = '0' then
+				frames_sig(0).frame_no <= writedata(1 downto 0);
+				else
+				frames_sig(1).frame_no <= writedata(1 downto 0);
+				end if;
+			--frames_out(number_filled).frame_no <= writedata(1 downto 0);
 			end if;
-		elsif elem = emitting then
-			sc_sig.spheres(to_integer(unsigned(sphere))).emitting <= writedata(0);
 		end if;
-	elsif t = change_general then
-		--update the general data
-		sc_sig.num_spheres <= writedata(31 downto 24);
-		sc_sig.num_reflects <= writedata(23 downto 16);
-		sc_sig.num_samples <= writedata(15 downto 8);
-		sc_sig.sphere_enable(15) <= (writedata(27) AND writedata(26) AND writedata(25) AND writedata(24));
-		sc_sig.sphere_enable(14) <= (writedata(27) AND writedata(26) AND writedata(25));
-		sc_sig.sphere_enable(13) <= (writedata(27) AND writedata(26) AND (writedata(24) OR writedata(25)));
-		sc_sig.sphere_enable(12) <= (writedata(27) AND writedata(26));
-		sc_sig.sphere_enable(11) <= (writedata(27) AND (writedata(26) OR (writedata(25) AND writedata(26))));
-		sc_sig.sphere_enable(10) <= (writedata(27) AND (writedata(26) OR writedata(25)));
-		sc_sig.sphere_enable(9) <= (writedata(27) AND (writedata(26) OR writedata(25) OR writedata(24)));
-		sc_sig.sphere_enable(8) <= writedata(27);
-		sc_sig.sphere_enable(7) <= writedata(27) OR (writedata(26) AND writedata(25) AND writedata(24));
-		sc_sig.sphere_enable(6) <= writedata(27) OR (writedata(26) AND writedata(25));
-		sc_sig.sphere_enable(5) <= writedata(27) OR (writedata(26) AND (writedata(24) OR writedata(25)));
-		sc_sig.sphere_enable(4) <= writedata(27) OR (writedata(26));
-		sc_sig.sphere_enable(3) <= writedata(27) OR (writedata(26) OR (writedata(25) AND writedata(24)));
-		sc_sig.sphere_enable(2) <= writedata(3) OR (writedata(26) OR writedata(25));
-		sc_sig.sphere_enable(1) <= writedata(27) OR (writedata(26) OR writedata(25) OR writedata(24));
-		sc_sig.sphere_enable(0) <= '1';
-	elsif t = change_frame then
-		--set a param in the camera position
-		if elem = camera_origin then
-			if coord = x then
-				frames_sig(number_filled).camera_origin.x <= writedata;
-			elsif coord = y then
-				frames_sig(number_filled).camera_origin.y <= writedata;
-			elsif coord = z then
-				frames_sig(number_filled).camera_origin.z <= writedata;
-			end if;
-		elsif elem = addition_base then
-			if coord = x then
-				frames_sig(number_filled).addition_base.x <= writedata;
-			elsif coord = y then
-				frames_sig(number_filled).addition_base.y <= writedata;
-			elsif coord = z then
-				frames_sig(number_filled).addition_base.z <= writedata;
-			end if;
-		elsif elem = addition_hor then
-			if coord = x then
-				frames_sig(number_filled).addition_hor.x <= writedata;
-			elsif coord = y then
-				frames_sig(number_filled).addition_hor.y <= writedata;
-			elsif coord = z then
-				frames_sig(number_filled).addition_hor.z <= writedata;
-			end if;
-		elsif elem = addition_ver then
-			if coord = x then
-				frames_sig(number_filled).addition_ver.x <= writedata;
-			elsif coord = y then
-				frames_sig(number_filled).addition_ver.y <= writedata;
-			elsif coord = z then
-				frames_sig(number_filled).addition_ver.z <= writedata;
-			end if;
-		elsif elem = frame_no then
-			frames_sig(number_filled).frame_no <= writedata(1 downto 0);
-		end if;
+	elsif next_frame = '1' then
+		start_sig <= '1';
+		frames_sig(0) <= frames_out(1);
+		frames_sig(1) <= initial_frame;
 	end if;
-
-elsif next_frame = '1' then
-	frames_sig(0) <= frames_out(1);
-	frames_sig(1) <= initial_frame;
-	start_sig <= '1';
-end if;
 end process;
 
 output : process(clk, reset, clk_en) is begin
 if reset = '1' then
-	---
-elsif rising_edge(clk) and clk_en = '1' then
+	sc_out <= initial_scene;
+	frames_out <= (OTHERS => initial_frame);
+	start_out <= '0';
+elsif rising_edge(clk) then
+	sc_out <= sc_sig;
 	frames_out <= frames_sig;
-	sc <= sc_sig;
-	start <= start_sig;
+	start_out <= start_sig;
 end if;
 end process;
 
 frames <= frames_out;
-
+sc <= sc_out;
+start <= start_out;
 end architecture;
