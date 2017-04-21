@@ -226,7 +226,7 @@ delay_dir_gcs_c1t4 : delay_element generic map (DEPTH => 4, WIDTH => 194)
 port map (clk => clk, reset => res_n, clken => '1', source(193 downto 98) => to_std_logic(rightRay.direction),
 source(97 downto 2) => to_std_logic(rightRay.origin), source(1) => rightRay.copy, source(0) => rightRay.valid, dest => gcsInputRay);
 
-gcs_c5t37 : closestSphereNew port map (
+gcs_c5t38 : closestSphereNew port map (
 	clk => clk,
 	reset => res_n,
 	clk_en => '1',
@@ -309,7 +309,7 @@ port map(
 aclr => res_n, clken => '1', clock => clk, 
 denom => a, numer => one48, quotient => one_over_a, remain => open);
 
-delay_t_min_a_c38t52 : delay_element generic map (WIDTH => 32, DEPTH => 15) 
+delay_t_min_a_c39t52 : delay_element generic map (WIDTH => 32, DEPTH => 14) 
 port map (clk => clk, clken => '1', reset => res_n, source => t_times_a, dest => mult_input)
 ;
 mult_c53t54 : lpm_mult
@@ -331,23 +331,20 @@ mult_c53t54 : lpm_mult
 			result	=> subwire_t
 	);
 
-delay_t_c55 : delay_element generic map(DEPTH => 1, WIDTH => 32)
+delay_t_c55t56 : delay_element generic map(DEPTH => 2, WIDTH => 32)
 port map (clk => clk, reset => res_n, clken => '1',
 source(31) => subwire_t(63), source(30 downto 0) => subwire_t(46 downto 16),
 dest => ref_t);
 
-anyref_rayDelay_c1t37 : delay_element generic map(DEPTH => 37, WIDTH => 7)
+anyref_rayDelay_c1t38 : delay_element generic map(DEPTH => 38, WIDTH => 7)
 port map (clk => clk, reset => res_n, clken => '1', source(6) => rightRay.eob, source(5) => rightRay.sob, source(4) => rightRay.valid,
 source(3) => rightRay.pseudo_refl, source(2 downto 0) => rightRay.remaining_reflects,
 dest(6) => anyref_ray_endOfBundle, dest(5) => anyref_ray_startOfBundle, dest(4) => anyref_ray_valid,
 dest(3) => anyref_ray_pseudo_refl, dest(2 downto 0) => anyref_ray_rem_ref);
 
---anyref_cspDelay : delay_element generic map (DEPTH =>7, WIDTH => 2)
---port map (clk => clk, reset => res_n, clken => '1', source(1) => gcsp_emmiting, source(0) => valid_t, dest(1) => anyref_csp_emitting, dest(0) => anyref_csp_valid_t);
-
 anyref_valid_t <= NOT(anyref_ray_pseudo_refl) AND valid_t;
 
-anyref_38t69 : anyRefl port map (clk => clk,
+anyref_39t70 : anyRefl port map (clk => clk,
     clk_en => '1',
     reset => res_n,
    
@@ -370,12 +367,12 @@ anyref_38t69 : anyRefl port map (clk => clk,
     startOfBundle_out => anyrefo_sob,
     endOfBundle_out => anyrefo_eob);
 
-ref_ray_delay_c1t55 : delay_element generic map (WIDTH => 194, DEPTH => 55)
+ref_ray_delay_c1t56 : delay_element generic map (WIDTH => 194, DEPTH => 56)
 port map (clk => clk, clken => '1', reset => res_n, 
 source(193) => rightRay.valid, source(192) => rightRay.copy, source(191 DOWNTO 96) => to_std_logic(rightRay.direction), source(95 downto 0) => to_std_logic(rightRay.origin),
 dest(193) => ref_valid, dest(192) => ref_copy, dest(191 downto 96) => ref_dir, dest(95 downto 0) => ref_origin);
 
-ref_gcs_delay_c38t55 : delay_element generic map (WIDTH => 5, DEPTH => 18) port map(
+ref_gcs_delay_c39t56 : delay_element generic map (WIDTH => 5, DEPTH => 18) port map(
 clk => clk, clken => '1', reset => res_n, source(4) => valid_t, source(3 downto 0) => closestSphere, dest(4) => ref_valid_t, dest(3 downto 0) => ref_sphere_i);
 
 one_over_rs <= (0 => toscalar(sc.spheres(0).radius), 
@@ -411,7 +408,7 @@ centers <= (0 => sc.spheres(0).center,
 14 => sc.spheres(14).center, 
 15 => sc.spheres(15).center);
 
-refl_c56t69 : reflect
+refl_c57t70 : reflect
   port map
   (
     clk => clk,
@@ -441,7 +438,7 @@ refl_c56t69 : reflect
     copy_ray_out => ref_out_copy
   );
 
-colUp_c68t69 : colorUpdate  port map
+colUp_c69t70 : colorUpdate  port map
   (
     clk => clk, clk_en => '1', reset => res_n,
     color_in => tovector(colUp_color_in), valid_t => colUp_valid_t_in, sphere_i => colUp_sphere, valid_ray_in => colUp_valid,
@@ -456,15 +453,15 @@ colUp_c68t69 : colorUpdate  port map
     valid_ray_out => updatedColorRayValid
   );
 
-colUp_par_color_c68t69 : delay_element  generic map (WIDTH => 96, DEPTH => 2) port map (clk => clk, clken => '1', reset => res_n, source => colUp_color_in, dest => old_color);
+colUp_par_color_c69t70 : delay_element  generic map (WIDTH => 96, DEPTH => 2) port map (clk => clk, clken => '1', reset => res_n, source => colUp_color_in, dest => old_color);
 
 colUp_valid_t_in <= colUp_valid_t AND NOT(colUp_pseudo);
 
-colUp_ray_delay_c1t67 : delay_element generic map (DEPTH => 67, WIDTh => 98) port map (clk => clk, clken => '1', reset => res_n,
+colUp_ray_delay_c1t68 : delay_element generic map (DEPTH => 68, WIDTh => 98) port map (clk => clk, clken => '1', reset => res_n,
 source(97) => rightRay.valid, source(96) => rightRay.pseudo_refl, source(95 downto 0) => to_std_logic(rightRay.color),
 dest(97) => colUp_valid, dest(96) => colUp_pseudo, dest(95 downto 0) => colUp_color_in);
 
-colUp_gcs_delay_c38t67 : delay_element generic map (DEPTH => 30, WIDTH => 5) port map (clk => clk, clken=> '1', reset => res_n,
+colUp_gcs_delay_c39t68 : delay_element generic map (DEPTH => 30, WIDTH => 5) port map (clk => clk, clken=> '1', reset => res_n,
 source(4) => valid_t, source(3 downto 0) => closestSphere, dest(4) => colUp_valid_t, dest(3 downto 0) => colUp_sphere);
 
 colUp_colors <= (0 => sc.spheres(0).colour, 
@@ -491,7 +488,7 @@ backend_ray.valid <= '0';
 
 if anyrefo_pseudo = '1' then
 	reflected_ray.pseudo_refl <= anyrefo_pseudo AND NOT(anyrefo_isRef);
-	reflected_ray.valid <= updatedColorRayValid;
+	reflected_ray.valid <= anyrefo_valid_ray;--updatedColorRayValid;
 	if updatedColorValid = '1' then 
         	reflected_ray.color <= updatedColor;
 	else reflected_ray.color <= tovector(old_color);
@@ -519,10 +516,10 @@ else
 	backend_ray.copy <= ref_out_copy;
 end if;
 end process;
-rem_ref_delay_c38t69 : delay_element generic map (WIDTH => 3, DEPTH => 32) port map (clk => clk, clken => '1', reset => res_n, source => anyref_ray_rem_ref, dest => rem_reflects_old);
-position_delay_c1t69 : delay_element generic map (WIDTH => 22, DEPTH => 69) port map (clk => clk, clken=> '1', reset => res_n, source => rightRay.position, dest => old_position);
+rem_ref_delay_c39t70 : delay_element generic map (WIDTH => 3, DEPTH => 32) port map (clk => clk, clken => '1', reset => res_n, source => anyref_ray_rem_ref, dest => rem_reflects_old);
+position_delay_c1t70 : delay_element generic map (WIDTH => 22, DEPTH => 70) port map (clk => clk, clken=> '1', reset => res_n, source => rightRay.position, dest => old_position);
 
-reflectDelay_c70t96 : rayDelay generic map (DELAY_LENGTH => 27)
+reflectDelay_c71t96 : rayDelay generic map (DELAY_LENGTH => 26)
 port map(clk => clk, reset => res_n, clk_en => '1',
 inputRay => reflected_ray, outputRay => delayed_reflected_ray);
 

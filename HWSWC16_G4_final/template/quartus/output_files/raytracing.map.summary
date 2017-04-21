@@ -1,0 +1,14 @@
+Analysis & Synthesis Status : Successful - Fri Apr 21 18:23:42 2017
+Quartus Prime Version : 16.0.2 Build 222 07/20/2016 SJ Standard Edition
+Revision Name : raytracing
+Top-level Entity Name : top
+Family : Cyclone IV E
+Total logic elements : 85,919
+    Total combinational functions : 69,515
+    Dedicated logic registers : 56,669
+Total registers : 56669
+Total pins : 88
+Total virtual pins : 0
+Total memory bits : 1,532,137
+Embedded Multiplier 9-bit elements : 398
+Total PLLs : 1

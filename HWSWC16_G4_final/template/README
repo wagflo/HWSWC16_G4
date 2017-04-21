@@ -1,0 +1,80 @@
+
+HW/SW Codesign - build environment
+----------------------------------
+
+This is the template project of the HW/SW build environment. It should contain 
+the following files and directories.
+
+template
+  |- quartus
+     |- Makefile
+     |- .qpf .qsf                 Quartus project files
+     |- .qsys                     Qsys system
+     |- .sdc                      timing constraint file
+     |- .tcl                      Qsys custom components
+  |- software
+     |- Makefile
+     |- settings.bsp              board support package settings
+     |- src                       your C code goes here
+     |- bsp                       the automatically created BSP
+     |- build                     object/ELF file(s) of your project
+  |- vhdl                         your VHDL code goes here
+  |- eclipse                      your Eclipse projects (if used)
+  |- Makefile                     master Makefile
+  |- README
+
+The hardware project is located in the ./quartus directory. The makefile in this
+directory provides the following targets:
+
+make              runs Quartus synthesis (this includes the Qsys system 
+                  generation) 
+make download     downloads the SOF file to the board
+make quartus_gui  starts the Quartus GUI and loads the Quartus project
+make qsys_gui     starts the Qsys GUI and loads the Qsys project
+make clean        deletes all files, which are generated during the build
+                  process. REMEMBER to clean your project before submission!!
+
+Note that you can also start the synthesis and download process using the 
+Quartus GUI.
+
+The VHDL code of your submission MUST be placed in the ./vhdl directory. 
+
+
+The software project is located in the ./software directory. The makefile in 
+this folder builds the BSP- and application project and provides the 
+following targets:
+
+make            creates BSP and application makefile (if necessary) and creates 
+                the ELF file. No download is performed.
+make download   downloads the ELF file to the Nios II processor
+make term       starts the nios2-terminal (JTAG UART) and connects to the Nios II
+                processor
+make edit_bsp   opens the BSP settings GUI editor (for settings.bsp)
+make run        builds and downloads ELF file and starts nios2-terminal 
+                (JTAG UART)
+make clean      deletes all files, which are generated during the build
+                process. REMEMBER to clean your project before submission!!
+
+All your C source/header files MUST be placed in the ./software/src directory.
+
+IMPORTANT:
+You have to run "make" in the software folder from the nios2_command_shell, 
+otherwise an error will be raised. To execute the nios2_command_shell run 
+/path/to/altera_dir/nios2eds/nios2_command_shell.sh.
+To find the path to the nios2_command_shell you can run the command 
+"which quartus". This should give you "/path/to/altera_dir/quartus/bin/quartus"
+
+
+The master makefile starts the whole build process. This includes the Quartus
+synthesis and download of the SOF file to the board as well as the software 
+build and download of the ELF file to the Nios II processor. When successful the 
+nios2-terminal is started. 
+We will ONLY use this makefile when we check your submission. This means that a
+simple make in the project directory must successfully run the aforementioned 
+process. So keep in mind that if you change the build environment or use the
+Eclipse IDE, this "feature" must still be functioning! If you are working on 
+your own computer make sure that the build works on the TI lab computers! 
+However, during the implementation process of your solution you are of free to 
+use the graphical interface of Quartus/Qsys as well as Eclipse for software 
+development (this can especially be useful if you what to use the debugger). 
+

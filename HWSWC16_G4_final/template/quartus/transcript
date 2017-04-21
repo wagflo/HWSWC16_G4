@@ -1,0 +1,126 @@
+# //  ModelSim SE-64 10.4c Jul 19 2015 Linux 3.10.0-514.2.2.el7.x86_64
+# //
+# //  Copyright 1991-2015 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  THIS WORK CONTAINS TRADE SECRET AND PROPRIETARY INFORMATION
+# //  WHICH IS THE PROPERTY OF MENTOR GRAPHICS CORPORATION OR ITS
+# //  LICENSORS AND IS SUBJECT TO LICENSE TERMS.
+# //  THIS DOCUMENT CONTAINS TRADE SECRETS AND COMMERCIAL OR FINANCIAL
+# //  INFORMATION THAT ARE PRIVILEGED, CONFIDENTIAL, AND EXEMPT FROM
+# //  DISCLOSURE UNDER THE FREEDOM OF INFORMATION ACT, 5 U.S.C. SECTION 552.
+# //  FURTHERMORE, THIS INFORMATION IS PROHIBITED FROM DISCLOSURE UNDER
+# //  THE TRADE SECRETS ACT, 18 U.S.C. SECTION 1905.
+# //
+# ** Warning: Multiple occurences of ini variable altera are found, only first occurence will be considered.
+# ** Warning: Multiple occurences of ini variable altera are found, only first occurence will be considered.
+# ** Warning: Multiple occurences of ini variable altera_mf are found, only first occurence will be considered.
+# ** Warning: Multiple occurences of ini variable altera_mf are found, only first occurence will be considered.
+# ** Warning: Multiple occurences of ini variable cycloneive are found, only first occurence will be considered.
+# ** Warning: Multiple occurences of ini variable cycloneive are found, only first occurence will be considered.
+# ** Warning: Multiple occurences of ini variable altera are found, only first occurence will be considered.
+# ** Warning: Multiple occurences of ini variable altera are found, only first occurence will be considered.
+# ** Warning: Multiple occurences of ini variable altera_mf are found, only first occurence will be considered.
+# ** Warning: Multiple occurences of ini variable altera_mf are found, only first occurence will be considered.
+# ** Warning: Multiple occurences of ini variable cycloneive are found, only first occurence will be considered.
+# ** Warning: Multiple occurences of ini variable cycloneive are found, only first occurence will be considered.
+# Loading project test2
+# reading /opt/mentor_modelsim-10.4c/modeltech/linux_x86_64/../modelsim.ini
+# ** Warning: Multiple occurences of ini variable altera are found, only first occurence will be considered.
+# ** Warning: Multiple occurences of ini variable altera are found, only first occurence will be considered.
+# ** Warning: Multiple occurences of ini variable altera_mf are found, only first occurence will be considered.
+# ** Warning: Multiple occurences of ini variable altera_mf are found, only first occurence will be considered.
+# ** Warning: Multiple occurences of ini variable cycloneive are found, only first occurence will be considered.
+# ** Warning: Multiple occurences of ini variable cycloneive are found, only first occurence will be considered.
+file mkdir /homes/a0426419/Desktop/HWSWC16_G4_final/modelsim
+# ** Warning: Multiple occurences of ini variable altera are found, only first occurence will be considered.
+# ** Warning: Multiple occurences of ini variable altera are found, only first occurence will be considered.
+# ** Warning: Multiple occurences of ini variable altera_mf are found, only first occurence will be considered.
+# ** Warning: Multiple occurences of ini variable altera_mf are found, only first occurence will be considered.
+# ** Warning: Multiple occurences of ini variable cycloneive are found, only first occurence will be considered.
+# ** Warning: Multiple occurences of ini variable cycloneive are found, only first occurence will be considered.
+# ** Warning: Multiple occurences of ini variable altera are found, only first occurence will be considered.
+# ** Warning: Multiple occurences of ini variable altera are found, only first occurence will be considered.
+# ** Warning: Multiple occurences of ini variable altera_mf are found, only first occurence will be considered.
+# ** Warning: Multiple occurences of ini variable altera_mf are found, only first occurence will be considered.
+# ** Warning: Multiple occurences of ini variable cycloneive are found, only first occurence will be considered.
+# ** Warning: Multiple occurences of ini variable cycloneive are found, only first occurence will be considered.
+# Loading project test1
+# Compile of delay_pkg.vhd was successful.
+# Compile of lfsr.vhd was successful.
+# Compile of lpm_util.vhd was successful.
+# Compile of math_pkg.vhd was successful.
+# Compile of operations_pkg.vhd was successful.
+# Compile of picture_data.vhd was successful.
+# Compile of rayDelay.vhd was successful.
+# Compile of rayDelay_pkg.vhd was successful.
+# Compile of reflect.vhd was successful.
+# Compile of scalarMul.vhd was successful.
+# Compile of sphereDistance.vhd was successful.
+# Compile of sqrt.vhd was successful.
+# Compile of vecMulS.vhd was successful.
+# Compile of vector_add_sub.vhd was successful.
+# Compile of vector_dot.vhd was successful.
+# Compile of vector_square.vhd was successful.
+# Compile of alt_fwft_fifo.vhd was successful.
+# Compile of anyRefl.vhd was successful.
+# Compile of backend.vhd was successful.
+# Compile of closestSphere.vhd was successful.
+# Compile of closestSphereNew.vhd was successful.
+# Compile of closestSpherePrep.vhd was successful.
+# Compile of colorUpdate.vhd was successful.
+# Compile of components_pkg.vhd was successful.
+# Compile of delay.vhd was successful.
+# Compile of getRayDir.vhd was successful.
+# Compile of getRayDir_pkg.vhd was successful.
+# Compile of getRayDirAlt.vhd was successful.
+# Compile of getRayDirOpt.vhd was successful.
+# Compile of raytracing_mm.vhd was successful.
+# Compile of readInterface.vhd was successful.
+# Compile of writeInterface.vhd was successful.
+add wave -position insertpoint library
+# Compile of alt_fwft_fifo.vhd was successful.
+# Compile of anyRefl.vhd was successful.
+# Compile of backend.vhd was successful.
+# Compile of closestSphere.vhd was successful.
+# Compile of closestSphereNew.vhd was successful.
+# Compile of closestSpherePrep.vhd was successful.
+# Compile of colorUpdate.vhd was successful.
+# Compile of components_pkg.vhd was successful.
+# Compile of delay.vhd was successful.
+# Compile of delay_pkg.vhd was successful.
+# Compile of getRayDir.vhd was successful.
+# Compile of getRayDir_pkg.vhd was successful.
+# Compile of getRayDirAlt.vhd was successful.
+# Compile of getRayDirOpt.vhd was successful.
+# Compile of lfsr.vhd was successful.
+# Compile of lpm_util.vhd was successful.
+# Compile of math_pkg.vhd was successful.
+# Compile of operations_pkg.vhd was successful.
+# Compile of picture_data.vhd was successful.
+# Compile of rayDelay.vhd was successful.
+# Compile of rayDelay_pkg.vhd was successful.
+# Compile of raytracing_mm.vhd was successful.
+# Compile of readInterface.vhd was successful.
+# Compile of reflect.vhd was successful.
+# Compile of scalarMul.vhd was successful.
+# Compile of sphereDistance.vhd was successful.
+# Compile of sqrt.vhd was successful.
+# Compile of vecMulS.vhd was successful.
+# Compile of vector_add_sub.vhd was successful.
+# Compile of vector_dot.vhd was successful.
+# Compile of vector_square.vhd was successful.
+# Compile of writeInterface.vhd was successful.
+# Compile of raytracing_mm.vhd failed with 132 errors.
+# Compile of raytracing_mm.vhd failed with 3 errors.
+# Compile of raytracing_mm.vhd failed with 2 errors.
+# Compile of raytracing_mm.vhd failed with 3 errors.
+# Compile of raytracing_mm.vhd failed with 3 errors.
+# Compile of raytracing_mm.vhd failed with 2 errors.
+# Compile of raytracing_mm.vhd was successful.
+# Compile of raytracing_mm.vhd was successful.
+# Compile of getRayDirAlt.vhd was successful.
+# Compile of raytracing_mm.vhd was successful.
+# 2 compiles, 0 failed with no errors.
+# Compile of raytracing_mm.vhd was successful.
+# Compile of raytracing_mm.vhd was successful.
