@@ -312,7 +312,7 @@ denom => a, numer => one48, quotient => one_over_a, remain => open);
 delay_t_min_a_c38t52 : delay_element generic map (WIDTH => 32, DEPTH => 15) 
 port map (clk => clk, clken => '1', reset => res_n, source => t_times_a, dest => mult_input)
 ;
-mult_c53t55 : lpm_mult
+mult_c53t54 : lpm_mult
 	GENERIC MAP (
 		lpm_hint => "UNUSED",
 		lpm_pipeline => 2,
@@ -331,7 +331,7 @@ mult_c53t55 : lpm_mult
 			result	=> subwire_t
 	);
 
-delay_t_c56 : delay_element generic map(DEPTH => 1, WIDTH => 32)
+delay_t_c55 : delay_element generic map(DEPTH => 1, WIDTH => 32)
 port map (clk => clk, reset => res_n, clken => '1',
 source(31) => subwire_t(63), source(30 downto 0) => subwire_t(46 downto 16),
 dest => ref_t);
