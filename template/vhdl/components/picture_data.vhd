@@ -47,6 +47,7 @@ constant finish_frame : std_logic_vector(3 downto 0) := X"F";
 constant change_spheres : std_logic_vector(3 downto 0) := X"1";
 constant change_general : std_logic_vector(3 downto 0) := X"2";
 constant change_frame : std_logic_vector(3 downto 0) := X"3";
+constant change_address : std_logic_vector(3 downto 0) := X"4";
 constant radius : std_logic_vector(3 downto 0) := X"1";
 constant radius2 : std_logic_vector(3 downto 0) := X"2";
 constant center : std_logic_vector(3 downto 0) := X"3";
@@ -60,6 +61,8 @@ constant addition_base : std_logic_vector(3 downto 0) := X"2";
 constant addition_hor : std_logic_vector(3 downto 0) := X"3";
 constant addition_ver : std_logic_vector(3 downto 0) := X"4";
 constant frame_no : std_logic_vector(3 downto 0) := X"5";
+constant address1 : std_logic_vector(3 downto 0) := X"1";
+constant address2 : std_logic_vector(3 downto 0) := X"2";
 
 
 begin
@@ -85,6 +88,12 @@ sc_sig <= sc_out;
 				frames_sig(0).all_info <= '1';
 			else
 				frames_sig(1).all_info <= '1';
+			end if;
+		elsif t = change_address then
+			if elem = address1 then
+				sc_sig.address1 <= writedata;
+			elsif elem = address2 then
+				sc_sig.address2 <= writedata;
 			end if;
 		elsif t = change_spheres then
 		---change a parameter of a sphere
