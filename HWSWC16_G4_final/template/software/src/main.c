@@ -55,7 +55,7 @@ static void init (
  * @param lookat   Observer direction
  * @param vfov     Vertical field of view in degrees
  */
-static void setCamera (vec3_t *lookfrom, vec3_t *lookat, fix16_t vfov);
+static void setCamera (vec3_t *lookfrom, vec3_t *lookat, fix16_t vfov, uint8_t frame_address);
 
 /** 
  * @brief Start raytracer
@@ -73,19 +73,22 @@ main (void)
 	init (TEST_SCENE_SIZE, test_spheres, TEST_NUM_REFLECTS, TEST_NUM_SAMPLES);
 	while (1)
 	{
-		vec3_t lookfrom, lookat;
-		fix16_t vfov;
-		showFramebuffer (fb);
-		fb ^= 0x01;
-		selectFramebuffer (fb);
-		testGetNextCamera (&lookfrom, &lookat, &vfov);
-		setCamera (&lookfrom, &lookat, vfov);
-
-		alt_timestamp_start ();
-
-		renderFrame ();
-
-		printf ("Output: %llu\n", alt_timestamp ());
+		if (TEST_SCENE_SIZE > 0) {
+			vec3_t lookfrom, lookat;
+			fix16_t vfov;
+			//showFramebuffer (fb);
+			fb = 0x11 & (fb + 1);
+			
+			//selectFramebuffer (fb);
+			testGetNextCamera (&lookfrom, &lookat, &vfov);
+			setCamera (&lookfrom, &lookat, vfov, fb);
+			//alt_timestamp_start ();
+	
+			//renderFrame ();
+	
+			//printf ("Output: %llu\n", alt_timestamp ());
+		}
+		
 	}
 	return 0;
 }
@@ -111,9 +114,9 @@ init (
 }
 
 static void
-setCamera (vec3_t *lookfrom, vec3_t *lookat, fix16_t vfov)
+setCamera (vec3_t *lookfrom, vec3_t *lookat, fix16_t vfov, uint8_t frame_address)
 {
-	rtSetCamera (lookfrom, lookat, vfov);
+	rtSetCamera (lookfrom, lookat, vfov, frame_address);
 }
 
 static void

@@ -73,6 +73,8 @@ package operations_pkg is
 	num_spheres, num_reflects, num_samples : std_logic_vector(7 downto 0);
 	spheres : sphere_array;
 	sphere_enable : std_logic_vector(15 downto 0);
+	address2 : std_logic_vector(31 downto 0);
+	address1 : std_logic_vector(31 downto 0);
   end record;
 
  function to_scInput(input : scene) return scInput;

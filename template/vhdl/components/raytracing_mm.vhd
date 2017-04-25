@@ -563,9 +563,9 @@ writeIF : writeInterface
 
 pixel_address_async : process(back_out_address) is begin
 if back_out_address(21 downto 20) = "00" OR back_out_address(21 downto 20) = "10" then
-	pixel_address_writeIF <= std_logic_vector(to_unsigned(to_integer(unsigned(base_address1)) +to_integer(unsigned(back_out_address(19 downto 0))) ,32));
+	pixel_address_writeIF <= std_logic_vector(to_unsigned(to_integer(unsigned(sc.address1)) +to_integer(unsigned(back_out_address(19 downto 0))) ,32));
 elsif back_out_address(21 downto 20) = "01" OR back_out_address(21 downto 20) = "11" then 
-	pixel_address_writeIF <= std_logic_vector(to_unsigned(to_integer(unsigned(base_address2)) +to_integer(unsigned(back_out_address(19 downto 0))) ,32));
+	pixel_address_writeIF <= std_logic_vector(to_unsigned(to_integer(unsigned(sc.address2)) +to_integer(unsigned(back_out_address(19 downto 0))) ,32));
 end if;
 end process;
 end architecture;
