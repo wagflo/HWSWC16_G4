@@ -125,9 +125,10 @@ rtSetCamera (vec3_t *lookfrom, vec3_t *lookat, fix16_t vfov, uint8_t frame_addre
 	vec3Sub (&camera.lower_left_corner, lookfrom, &u);
 	vec3Sub (&camera.lower_left_corner, &camera.lower_left_corner, &v);
 	vec3Sub (&camera.lower_left_corner, &camera.lower_left_corner, &w);
-	//wait until write is possible
+	
+	//wait until there is an empty space in the array (this exists fo deensive reasons ONLY! - should immediately return 0xFFFFFFFF)
 	while (IORD(RAYTRACING_MM_BASE, 0x0000) == 0x00000000)
-		;
+
 	//write the frame data
 	vec3_t camera_base;
 	vec3MulS(&camera.vertical, fix16_from_int(480), &camera_base);
