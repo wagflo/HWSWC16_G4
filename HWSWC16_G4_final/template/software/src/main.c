@@ -68,25 +68,41 @@ main (void)
 {
 	setupHW ();
 	uint8_t fb = 0;
+	uint8_t start = 0;
 	selectFramebuffer (fb);
 	displayClear (0);
+	showFramebuffer (fb & 0x01);
 	init (TEST_SCENE_SIZE, test_spheres, TEST_NUM_REFLECTS, TEST_NUM_SAMPLES);
 	while (1)
 	{
 		if (TEST_SCENE_SIZE > 0) {
 			vec3_t lookfrom, lookat;
 			fix16_t vfov;
-			//showFramebuffer (fb);
 			fb = 0x11 & (fb + 1);
+			//if there are "old pictures)
+			if (start >=2) {
+			  //wait until the old picture is written
+			  while (IORD(RAYTRACING_MM_BASE, 0xFF00 | (fb & 0x01)) == 0x00000000) {
+			  }
+			  //show the time if the picture is the first one
+			  if (fb & 0x01 == 0) {
+			    printf ("Output: %llu\n", alt_timestamp ());
+			  }
+			  //show the picture;
+			  showFramebuffer (fb & 0x01);
+			  
+			}
+			else {
+			  start++;
+			}
+			
 			
 			//selectFramebuffer (fb);
 			testGetNextCamera (&lookfrom, &lookat, &vfov);
 			setCamera (&lookfrom, &lookat, vfov, fb);
-			//alt_timestamp_start ();
-	
-			//renderFrame ();
-	
-			//printf ("Output: %llu\n", alt_timestamp ());
+			if (fb & 0x01 == 0) {
+			  alt_timestamp_start ();
+			}
 		}
 		
 	}
