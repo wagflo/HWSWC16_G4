@@ -37,7 +37,9 @@ end component;
 component writeInterface is
   generic
   (
-    FIFOSIZE : positive := 8 -- 256 => whole m9k block, zum testen 4 
+    FIFOSIZE : positive := 8; -- 256 => whole m9k block, zum testen 4 
+    MAXWIDTH : natural := 800;
+    MAXHEIGHT : natural := 480
   );
   port
   (
@@ -52,6 +54,7 @@ component writeInterface is
     valid_data    : in std_logic;
 
     stall 	  : out std_logic;
+    finished	  : out std_logic;
     
     master_address   : out  std_logic_vector(31 downto 0);
     --write     : in  std_logic;

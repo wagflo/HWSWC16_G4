@@ -8,7 +8,10 @@ use work.components_pkg.all;
 entity writeInterface is
   generic
   (
-    FIFOSIZE : positive := 8 -- 256 => whole m9k block, zum testen 4 
+    FIFOSIZE : positive := 8; -- 256 => whole m9k block, zum testen 4 
+    MAXWIDTH : natural := 800;
+    MAXHEIGHT : natural := 480
+
   );
   port
   (
@@ -23,6 +26,10 @@ entity writeInterface is
     valid_data    : in std_logic;
 
     stall 	  : out std_logic;
+
+    --start_counter : in std_logic;
+    finished	  : out std_logic; -- uses readreq_for_second fifo for counting => delay of second FIFO!
+				   -- BUT : all pixels of current frame have already passed!
     
     master_address   : out  std_logic_vector(31 downto 0);
     --write     : in  std_logic;
@@ -46,6 +53,11 @@ signal fifoback_address, fifoback_colordata : std_logic_vector(31 downto 0);
 
 signal second_empty_delayed_1 : std_logic;
 signal second_empty_delayed_2 : std_logic;
+
+signal counter : integer range 0 to MAXWIDTH*MAXHEIGHT - 1;
+signal counter_next : integer range 0 to MAXWIDTH*MAXHEIGHT - 1;
+
+signal finished_next : std_logic;
 
 begin
 
@@ -91,6 +103,27 @@ fifoback_colordata(31 downto 24) <= (others => '0');
 
 -- to conform to Avalon-MM timing:
 
+async : process(counter, readreq_for_second_fifo)
+begin
+
+finished_next <= '0';
+if readreq_for_second_fifo = '1' then
+  
+  
+  if counter = MAXWIDTH*MAXHEIGHT - 1 then
+    counter_next <= 0;
+    finished_next <= '1';
+  else
+    counter_next <= counter + 1;
+    finished_next <= '0';
+  end if;
+else
+  counter_next <= counter;
+end if;
+
+end process;
+
+
 sync : process(clk, reset)
 begin
 if reset = '1' then
@@ -102,6 +135,8 @@ if reset = '1' then
   data_delayed_2 <= (others => '0');
   second_empty_delayed_1 <= '0';
   second_empty_delayed_2 <= '0';
+  counter <= 0;
+  finished <= '0';
 elsif rising_edge(clk) then
 
   slave_waitreq_registered <= slave_waitreq;
@@ -111,10 +146,12 @@ elsif rising_edge(clk) then
   data_delayed_2 <= data_delayed_1;
   second_empty_delayed_1 <= second_empty;
   second_empty_delayed_2 <= second_empty_delayed_1;
+  counter <= counter_next;
+  finished <= finished_next;
 end if;
 end process;
 
-readreq_for_second_fifo <= (not slave_waitreq) and (not second_empty);
+readreq_for_second_fifo <= inertial (not slave_waitreq) and (not second_empty) after 2 ns; -- delay against waitreq glitches
 --(not slave_waitreq_registered) and (not second_empty);
 
 --readreq_for_second_fifo <= (not slave_waitreq) and (not second_empty) after 1 ns;

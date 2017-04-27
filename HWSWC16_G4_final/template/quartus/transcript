@@ -24,44 +24,17 @@
 # ** Warning: Multiple occurences of ini variable altera_mf are found, only first occurence will be considered.
 # ** Warning: Multiple occurences of ini variable cycloneive are found, only first occurence will be considered.
 # ** Warning: Multiple occurences of ini variable cycloneive are found, only first occurence will be considered.
-# Loading project test2
-# reading /opt/mentor_modelsim-10.4c/modeltech/linux_x86_64/../modelsim.ini
-# ** Warning: Multiple occurences of ini variable altera are found, only first occurence will be considered.
-# ** Warning: Multiple occurences of ini variable altera are found, only first occurence will be considered.
-# ** Warning: Multiple occurences of ini variable altera_mf are found, only first occurence will be considered.
-# ** Warning: Multiple occurences of ini variable altera_mf are found, only first occurence will be considered.
-# ** Warning: Multiple occurences of ini variable cycloneive are found, only first occurence will be considered.
-# ** Warning: Multiple occurences of ini variable cycloneive are found, only first occurence will be considered.
-file mkdir /homes/a0426419/Desktop/HWSWC16_G4_final/modelsim
-# ** Warning: Multiple occurences of ini variable altera are found, only first occurence will be considered.
-# ** Warning: Multiple occurences of ini variable altera are found, only first occurence will be considered.
-# ** Warning: Multiple occurences of ini variable altera_mf are found, only first occurence will be considered.
-# ** Warning: Multiple occurences of ini variable altera_mf are found, only first occurence will be considered.
-# ** Warning: Multiple occurences of ini variable cycloneive are found, only first occurence will be considered.
-# ** Warning: Multiple occurences of ini variable cycloneive are found, only first occurence will be considered.
-# ** Warning: Multiple occurences of ini variable altera are found, only first occurence will be considered.
-# ** Warning: Multiple occurences of ini variable altera are found, only first occurence will be considered.
-# ** Warning: Multiple occurences of ini variable altera_mf are found, only first occurence will be considered.
-# ** Warning: Multiple occurences of ini variable altera_mf are found, only first occurence will be considered.
-# ** Warning: Multiple occurences of ini variable cycloneive are found, only first occurence will be considered.
-# ** Warning: Multiple occurences of ini variable cycloneive are found, only first occurence will be considered.
 # Loading project test1
-# Compile of delay_pkg.vhd was successful.
-# Compile of lfsr.vhd was successful.
-# Compile of lpm_util.vhd was successful.
-# Compile of math_pkg.vhd was successful.
-# Compile of operations_pkg.vhd was successful.
-# Compile of picture_data.vhd was successful.
-# Compile of rayDelay.vhd was successful.
-# Compile of rayDelay_pkg.vhd was successful.
-# Compile of reflect.vhd was successful.
-# Compile of scalarMul.vhd was successful.
-# Compile of sphereDistance.vhd was successful.
-# Compile of sqrt.vhd was successful.
-# Compile of vecMulS.vhd was successful.
-# Compile of vector_add_sub.vhd was successful.
-# Compile of vector_dot.vhd was successful.
-# Compile of vector_square.vhd was successful.
+vsim work.writeiftest
+# vsim work.writeiftest 
+# Start time: 13:12:52 on Apr 27,2017
+# ** Note: (vsim-3812) Design is being optimized...
+# ** Error (suppressible): /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_michael/writeInterfaceTest.vhd(111): (vopt-1127) Entity work.writeinterface was not selected for default binding because it is out of date relative to dependency work.components_pkg. 
+# ** Warning: /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_michael/writeInterfaceTest.vhd(111): (vopt-3473) Component instance "/writeIFTest/dut : writeInterface" is not bound.
+# Optimization failed
+# Error loading design
+# End time: 13:12:52 on Apr 27,2017, Elapsed time: 0:00:00
+# Errors: 1, Warnings: 1
 # Compile of alt_fwft_fifo.vhd was successful.
 # Compile of anyRefl.vhd was successful.
 # Compile of backend.vhd was successful.
@@ -69,24 +42,6 @@ file mkdir /homes/a0426419/Desktop/HWSWC16_G4_final/modelsim
 # Compile of closestSphereNew.vhd was successful.
 # Compile of closestSpherePrep.vhd was successful.
 # Compile of colorUpdate.vhd was successful.
-# Compile of components_pkg.vhd was successful.
-# Compile of delay.vhd was successful.
-# Compile of getRayDir.vhd was successful.
-# Compile of getRayDir_pkg.vhd was successful.
-# Compile of getRayDirAlt.vhd was successful.
-# Compile of getRayDirOpt.vhd was successful.
-# Compile of raytracing_mm.vhd was successful.
-# Compile of readInterface.vhd was successful.
-# Compile of writeInterface.vhd was successful.
-add wave -position insertpoint library
-# Compile of alt_fwft_fifo.vhd was successful.
-# Compile of anyRefl.vhd was successful.
-# Compile of backend.vhd was successful.
-# Compile of closestSphere.vhd was successful.
-# Compile of closestSphereNew.vhd was successful.
-# Compile of closestSpherePrep.vhd was successful.
-# Compile of colorUpdate.vhd was successful.
-# Compile of components_pkg.vhd was successful.
 # Compile of delay.vhd was successful.
 # Compile of delay_pkg.vhd was successful.
 # Compile of getRayDir.vhd was successful.
@@ -110,17 +65,654 @@ add wave -position insertpoint library
 # Compile of vector_add_sub.vhd was successful.
 # Compile of vector_dot.vhd was successful.
 # Compile of vector_square.vhd was successful.
+# Compile of components_pkg.vhd was successful.
 # Compile of writeInterface.vhd was successful.
-# Compile of raytracing_mm.vhd failed with 132 errors.
-# Compile of raytracing_mm.vhd failed with 3 errors.
-# Compile of raytracing_mm.vhd failed with 2 errors.
-# Compile of raytracing_mm.vhd failed with 3 errors.
-# Compile of raytracing_mm.vhd failed with 3 errors.
-# Compile of raytracing_mm.vhd failed with 2 errors.
-# Compile of raytracing_mm.vhd was successful.
-# Compile of raytracing_mm.vhd was successful.
+# Compile of writeInterfaceTest.vhd was successful.
+vsim work.writeiftest
+# vsim work.writeiftest 
+# Start time: 13:13:17 on Apr 27,2017
+# ** Note: (vsim-3812) Design is being optimized...
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.operations_pkg(body)
+# Loading work.components_pkg
+# Loading work.writeiftest(arch)#1
+# Loading altera_mf.altera_mf_components
+# Loading work.math_pkg(body)
+# Loading work.alt_fwft_fifo(syn)#1
+# Loading ieee.std_logic_arith(body)
+# Loading ieee.std_logic_unsigned(body)
+# Loading altera_mf.altera_device_families(body)
+# Loading altera_mf.scfifo(behavior)#1
+add wave -position insertpoint  \
+sim:/writeiftest/clk \
+sim:/writeiftest/counter \
+sim:/writeiftest/input_address \
+sim:/writeiftest/input_color \
+sim:/writeiftest/output_address \
+sim:/writeiftest/output_color \
+sim:/writeiftest/output_write \
+sim:/writeiftest/pipeline \
+sim:/writeiftest/pipeline_counter \
+sim:/writeiftest/res \
+sim:/writeiftest/slave_counter \
+sim:/writeiftest/stall \
+sim:/writeiftest/waitreq
+run
+# ** Fatal: (vsim-3421) Value 12 is out of range 0 to 11.
+#    Time: 1840 ns  Iteration: 1  Process: /writeiftest/dut/async File: /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/writeInterface.vhd
+# Fatal error in Process async at /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/writeInterface.vhd line 111
+# 
+# HDL call sequence:
+# Stopped at /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/writeInterface.vhd 111 Process async
+# 
+# Compile of writeInterfaceTest.vhd was successful.
+vsim work.writeiftest
+# End time: 13:14:51 on Apr 27,2017, Elapsed time: 0:01:34
+# Errors: 2, Warnings: 0
+# vsim work.writeiftest 
+# Start time: 13:14:51 on Apr 27,2017
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.operations_pkg(body)
+# Loading work.components_pkg
+# Loading work.writeiftest(arch)#1
+# Loading altera_mf.altera_mf_components
+# Loading work.math_pkg(body)
+# Loading work.alt_fwft_fifo(syn)#1
+# Loading ieee.std_logic_arith(body)
+# Loading ieee.std_logic_unsigned(body)
+# Loading altera_mf.altera_device_families(body)
+# Loading altera_mf.scfifo(behavior)#1
+add wave -position insertpoint  \
+sim:/writeiftest/clk \
+sim:/writeiftest/counter \
+sim:/writeiftest/finished \
+sim:/writeiftest/input_address \
+sim:/writeiftest/input_color \
+sim:/writeiftest/output_address \
+sim:/writeiftest/output_color \
+sim:/writeiftest/output_write \
+sim:/writeiftest/pipeline \
+sim:/writeiftest/pipeline_counter \
+sim:/writeiftest/res \
+sim:/writeiftest/slave_counter \
+sim:/writeiftest/stall \
+sim:/writeiftest/waitreq
+run
+# ** Error: Assertion violation.
+#    Time: 0 ps  Iteration: 0  Instance: /writeiftest
+# ** Fatal: (vsim-3421) Value 12 is out of range 0 to 11.
+#    Time: 1840 ns  Iteration: 1  Process: /writeiftest/dut/async File: /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/writeInterface.vhd
+# Fatal error in Process async at /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/writeInterface.vhd line 111
+# 
+# HDL call sequence:
+# Stopped at /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/writeInterface.vhd 111 Process async
+# 
+run
+# Cannot continue because of fatal error.
+# HDL call sequence:
+# Stopped at /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/writeInterface.vhd 111 Process async
+# 
+run
+# Cannot continue because of fatal error.
+# HDL call sequence:
+# Stopped at /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/writeInterface.vhd 111 Process async
+# 
+run
+# Cannot continue because of fatal error.
+# HDL call sequence:
+# Stopped at /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/writeInterface.vhd 111 Process async
+# 
+# Compile of alt_fwft_fifo.vhd was successful.
+# Compile of anyRefl.vhd was successful.
+# Compile of backend.vhd was successful.
+# Compile of closestSphere.vhd was successful.
+# Compile of closestSphereNew.vhd was successful.
+# Compile of closestSpherePrep.vhd was successful.
+# Compile of colorUpdate.vhd was successful.
+# Compile of delay.vhd was successful.
+# Compile of delay_pkg.vhd was successful.
+# Compile of getRayDir.vhd was successful.
+# Compile of getRayDir_pkg.vhd was successful.
 # Compile of getRayDirAlt.vhd was successful.
+# Compile of getRayDirOpt.vhd was successful.
+# Compile of lfsr.vhd was successful.
+# Compile of lpm_util.vhd was successful.
+# Compile of math_pkg.vhd was successful.
+# Compile of operations_pkg.vhd was successful.
+# Compile of picture_data.vhd was successful.
+# Compile of rayDelay.vhd was successful.
+# Compile of rayDelay_pkg.vhd was successful.
 # Compile of raytracing_mm.vhd was successful.
-# 2 compiles, 0 failed with no errors.
-# Compile of raytracing_mm.vhd was successful.
-# Compile of raytracing_mm.vhd was successful.
+# Compile of readInterface.vhd was successful.
+# Compile of reflect.vhd was successful.
+# Compile of scalarMul.vhd was successful.
+# Compile of sphereDistance.vhd was successful.
+# Compile of sqrt.vhd was successful.
+# Compile of vecMulS.vhd was successful.
+# Compile of vector_add_sub.vhd was successful.
+# Compile of vector_dot.vhd was successful.
+# Compile of vector_square.vhd was successful.
+# Compile of components_pkg.vhd was successful.
+# Compile of writeInterface.vhd was successful.
+# Compile of writeInterfaceTest.vhd was successful.
+# Compile of writeInterface.vhd was successful.
+vsim work.writeiftest
+# End time: 13:16:53 on Apr 27,2017, Elapsed time: 0:02:02
+# Errors: 6, Warnings: 0
+# vsim work.writeiftest 
+# Start time: 13:16:53 on Apr 27,2017
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.operations_pkg(body)
+# Loading work.components_pkg
+# Loading work.writeiftest(arch)#1
+# Loading altera_mf.altera_mf_components
+# Loading work.math_pkg(body)
+# Loading work.alt_fwft_fifo(syn)#1
+# Loading ieee.std_logic_arith(body)
+# Loading ieee.std_logic_unsigned(body)
+# Loading altera_mf.altera_device_families(body)
+# Loading altera_mf.scfifo(behavior)#1
+run
+# ** Error: Assertion violation.
+#    Time: 0 ps  Iteration: 0  Instance: /writeiftest
+# ** Fatal: (vsim-3421) Value 12 is out of range 0 to 11.
+#    Time: 1840 ns  Iteration: 1  Process: /writeiftest/dut/async File: /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/writeInterface.vhd
+# Fatal error in Process async at /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/writeInterface.vhd line 111
+# 
+# HDL call sequence:
+# Stopped at /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/writeInterface.vhd 111 Process async
+# 
+# Compile of writeInterfaceTest.vhd failed with 2 errors.
+# Compile of writeInterfaceTest.vhd was successful.
+vsim work.writeiftest
+# End time: 13:17:43 on Apr 27,2017, Elapsed time: 0:00:50
+# Errors: 3, Warnings: 0
+# vsim work.writeiftest 
+# Start time: 13:17:43 on Apr 27,2017
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.operations_pkg(body)
+# Loading work.components_pkg
+# Loading work.writeiftest(arch)#1
+# Loading altera_mf.altera_mf_components
+# Loading work.math_pkg(body)
+# Loading work.alt_fwft_fifo(syn)#1
+# Loading ieee.std_logic_arith(body)
+# Loading ieee.std_logic_unsigned(body)
+# Loading altera_mf.altera_device_families(body)
+# Loading altera_mf.scfifo(behavior)#1
+add wave -position insertpoint  \
+sim:/writeiftest/clk \
+sim:/writeiftest/counter \
+sim:/writeiftest/finished \
+sim:/writeiftest/input_address \
+sim:/writeiftest/input_color \
+sim:/writeiftest/output_address \
+sim:/writeiftest/output_color \
+sim:/writeiftest/output_write \
+sim:/writeiftest/pipeline \
+sim:/writeiftest/pipeline_counter \
+sim:/writeiftest/res \
+sim:/writeiftest/slave_counter \
+sim:/writeiftest/stall \
+sim:/writeiftest/waitreq
+run
+# ** Error: Assertion violation.
+#    Time: 0 ps  Iteration: 0  Instance: /writeiftest
+# ** Fatal: (vsim-3421) Value 12 is out of range 0 to 11.
+#    Time: 1840 ns  Iteration: 1  Process: /writeiftest/dut/async File: /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/writeInterface.vhd
+# Fatal error in Process async at /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/writeInterface.vhd line 111
+# 
+# HDL call sequence:
+# Stopped at /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/writeInterface.vhd 111 Process async
+# 
+run
+# Cannot continue because of fatal error.
+# HDL call sequence:
+# Stopped at /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/writeInterface.vhd 111 Process async
+# 
+# Compile of writeInterfaceTest.vhd failed with 3 errors.
+# Compile of writeInterfaceTest.vhd was successful.
+# Load canceled
+# Compile of writeInterfaceTest.vhd was successful.
+vsim work.writeiftest
+# End time: 13:19:16 on Apr 27,2017, Elapsed time: 0:01:33
+# Errors: 5, Warnings: 0
+# vsim work.writeiftest 
+# Start time: 13:19:16 on Apr 27,2017
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.operations_pkg(body)
+# Loading work.components_pkg
+# Loading work.writeiftest(arch)#1
+# Loading altera_mf.altera_mf_components
+# Loading work.math_pkg(body)
+# Loading work.alt_fwft_fifo(syn)#1
+# Loading ieee.std_logic_arith(body)
+# Loading ieee.std_logic_unsigned(body)
+# Loading altera_mf.altera_device_families(body)
+# Loading altera_mf.scfifo(behavior)#1
+add wave -position insertpoint  \
+sim:/writeiftest/FIFOSIZE \
+sim:/writeiftest/PIPEMAX \
+sim:/writeiftest/RAYCYCLESACTIVE \
+sim:/writeiftest/RAYPERIOD \
+sim:/writeiftest/clk \
+sim:/writeiftest/counter \
+sim:/writeiftest/finished \
+sim:/writeiftest/input_address \
+sim:/writeiftest/input_color \
+sim:/writeiftest/output_address \
+sim:/writeiftest/output_color \
+sim:/writeiftest/output_write \
+sim:/writeiftest/pipeline \
+sim:/writeiftest/pipeline_counter \
+sim:/writeiftest/res \
+sim:/writeiftest/slave_counter \
+sim:/writeiftest/stall \
+sim:/writeiftest/waitreq
+run
+# ** Fatal: (vsim-3421) Value 12 is out of range 0 to 11.
+#    Time: 1840 ns  Iteration: 1  Process: /writeiftest/dut/async File: /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/writeInterface.vhd
+# Fatal error in Process async at /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/writeInterface.vhd line 111
+# 
+# HDL call sequence:
+# Stopped at /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/writeInterface.vhd 111 Process async
+# 
+run
+# Cannot continue because of fatal error.
+# HDL call sequence:
+# Stopped at /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/writeInterface.vhd 111 Process async
+# 
+run
+# Cannot continue because of fatal error.
+# HDL call sequence:
+# Stopped at /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/writeInterface.vhd 111 Process async
+# 
+# Compile of writeInterfaceTest.vhd was successful.
+vsim work.writeiftest
+# End time: 13:20:57 on Apr 27,2017, Elapsed time: 0:01:41
+# Errors: 4, Warnings: 0
+# vsim work.writeiftest 
+# Start time: 13:20:57 on Apr 27,2017
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.operations_pkg(body)
+# Loading work.components_pkg
+# Loading work.writeiftest(arch)#1
+# Loading altera_mf.altera_mf_components
+# Loading work.math_pkg(body)
+# Loading work.alt_fwft_fifo(syn)#1
+# Loading ieee.std_logic_arith(body)
+# Loading ieee.std_logic_unsigned(body)
+# Loading altera_mf.altera_device_families(body)
+# Loading altera_mf.scfifo(behavior)#1
+# Compile of writeInterface.vhd was successful.
+vsim work.writeiftest
+# End time: 13:22:06 on Apr 27,2017, Elapsed time: 0:01:09
+# Errors: 0, Warnings: 0
+# vsim work.writeiftest 
+# Start time: 13:22:06 on Apr 27,2017
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.operations_pkg(body)
+# Loading work.components_pkg
+# Loading work.writeiftest(arch)#1
+# Loading altera_mf.altera_mf_components
+# Loading work.math_pkg(body)
+# Loading work.alt_fwft_fifo(syn)#1
+# Loading ieee.std_logic_arith(body)
+# Loading ieee.std_logic_unsigned(body)
+# Loading altera_mf.altera_device_families(body)
+# Loading altera_mf.scfifo(behavior)#1
+add wave -position insertpoint  \
+sim:/writeiftest/FIFOSIZE \
+sim:/writeiftest/PIPEMAX \
+sim:/writeiftest/RAYCYCLESACTIVE \
+sim:/writeiftest/RAYPERIOD \
+sim:/writeiftest/clk \
+sim:/writeiftest/counter \
+sim:/writeiftest/input_address \
+sim:/writeiftest/input_color \
+sim:/writeiftest/output_address \
+sim:/writeiftest/output_color \
+sim:/writeiftest/output_write \
+sim:/writeiftest/pipeline \
+sim:/writeiftest/pipeline_counter \
+sim:/writeiftest/res \
+sim:/writeiftest/slave_counter \
+sim:/writeiftest/stall \
+sim:/writeiftest/waitreq
+run
+# Compile of writeInterfaceTest.vhd failed with 3 errors.
+# Compile of writeInterfaceTest.vhd was successful.
+vsim work.writeiftest
+# End time: 13:23:23 on Apr 27,2017, Elapsed time: 0:01:17
+# Errors: 0, Warnings: 0
+# vsim work.writeiftest 
+# Start time: 13:23:23 on Apr 27,2017
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.operations_pkg(body)
+# Loading work.components_pkg
+# Loading work.writeiftest(arch)#1
+# Loading altera_mf.altera_mf_components
+# Loading work.math_pkg(body)
+# Loading work.alt_fwft_fifo(syn)#1
+# Loading ieee.std_logic_arith(body)
+# Loading ieee.std_logic_unsigned(body)
+# Loading altera_mf.altera_device_families(body)
+# Loading altera_mf.scfifo(behavior)#1
+add wave -position insertpoint  \
+sim:/writeiftest/FIFOSIZE \
+sim:/writeiftest/PIPEMAX \
+sim:/writeiftest/RAYCYCLESACTIVE \
+sim:/writeiftest/RAYPERIOD \
+sim:/writeiftest/clk \
+sim:/writeiftest/counter \
+sim:/writeiftest/finished \
+sim:/writeiftest/input_address \
+sim:/writeiftest/input_color \
+sim:/writeiftest/output_address \
+sim:/writeiftest/output_color \
+sim:/writeiftest/output_write \
+sim:/writeiftest/pipeline \
+sim:/writeiftest/pipeline_counter \
+sim:/writeiftest/res \
+sim:/writeiftest/slave_counter \
+sim:/writeiftest/stall \
+sim:/writeiftest/waitreq
+run
+run
+run
+run
+run
+add wave -position insertpoint  \
+sim:/writeiftest/dut/readreq_for_second_fifo
+restart
+# ** Note: (vsim-8009) Loading existing optimized design _opt1
+run
+run
+run
+run
+# Compile of writeInterface.vhd was successful.
+vsim work.writeiftest
+# End time: 13:26:12 on Apr 27,2017, Elapsed time: 0:02:49
+# Errors: 0, Warnings: 0
+# vsim work.writeiftest 
+# Start time: 13:26:12 on Apr 27,2017
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.operations_pkg(body)
+# Loading work.components_pkg
+# Loading work.writeiftest(arch)#1
+# Loading altera_mf.altera_mf_components
+# Loading work.math_pkg(body)
+# Loading work.alt_fwft_fifo(syn)#1
+# Loading ieee.std_logic_arith(body)
+# Loading ieee.std_logic_unsigned(body)
+# Loading altera_mf.altera_device_families(body)
+# Loading altera_mf.scfifo(behavior)#1
+add wave -position insertpoint  \
+sim:/writeiftest/FIFOSIZE \
+sim:/writeiftest/PIPEMAX \
+sim:/writeiftest/RAYCYCLESACTIVE \
+sim:/writeiftest/RAYPERIOD \
+sim:/writeiftest/clk \
+sim:/writeiftest/counter \
+sim:/writeiftest/finished \
+sim:/writeiftest/input_address \
+sim:/writeiftest/input_color \
+sim:/writeiftest/output_address \
+sim:/writeiftest/output_color \
+sim:/writeiftest/output_write \
+sim:/writeiftest/pipeline \
+sim:/writeiftest/pipeline_counter \
+sim:/writeiftest/res \
+sim:/writeiftest/slave_counter \
+sim:/writeiftest/stall \
+sim:/writeiftest/waitreq
+run
+run
+run
+run
+run
+add wave -position insertpoint  \
+sim:/writeiftest/dut/req_betw_fifos
+restart
+# ** Note: (vsim-8009) Loading existing optimized design _opt1
+run
+run
+run
+run
+# Compile of writeInterface.vhd was successful.
+vsim work.writeiftest
+# End time: 13:27:43 on Apr 27,2017, Elapsed time: 0:01:31
+# Errors: 0, Warnings: 0
+# vsim work.writeiftest 
+# Start time: 13:27:43 on Apr 27,2017
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.operations_pkg(body)
+# Loading work.components_pkg
+# Loading work.writeiftest(arch)#1
+# Loading altera_mf.altera_mf_components
+# Loading work.math_pkg(body)
+# Loading work.alt_fwft_fifo(syn)#1
+# Loading ieee.std_logic_arith(body)
+# Loading ieee.std_logic_unsigned(body)
+# Loading altera_mf.altera_device_families(body)
+# Loading altera_mf.scfifo(behavior)#1
+add wave -position insertpoint  \
+sim:/writeiftest/input_color
+add wave -position insertpoint  \
+sim:/writeiftest/FIFOSIZE \
+sim:/writeiftest/PIPEMAX \
+sim:/writeiftest/RAYCYCLESACTIVE \
+sim:/writeiftest/RAYPERIOD \
+sim:/writeiftest/clk \
+sim:/writeiftest/counter \
+sim:/writeiftest/finished \
+sim:/writeiftest/input_address \
+sim:/writeiftest/input_color \
+sim:/writeiftest/output_address \
+sim:/writeiftest/output_color \
+sim:/writeiftest/output_write \
+sim:/writeiftest/pipeline \
+sim:/writeiftest/pipeline_counter \
+sim:/writeiftest/res \
+sim:/writeiftest/slave_counter \
+sim:/writeiftest/stall \
+sim:/writeiftest/waitreq
+add wave -position insertpoint  \
+sim:/writeiftest/dut/readreq_for_second_fifo
+run
+run
+run
+run
+run
+run
+# Compile of writeInterface.vhd was successful.
+vsim work.writeiftest
+# End time: 13:28:47 on Apr 27,2017, Elapsed time: 0:01:04
+# Errors: 0, Warnings: 0
+# vsim work.writeiftest 
+# Start time: 13:28:47 on Apr 27,2017
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.operations_pkg(body)
+# Loading work.components_pkg
+# Loading work.writeiftest(arch)#1
+# Loading altera_mf.altera_mf_components
+# Loading work.math_pkg(body)
+# Loading work.alt_fwft_fifo(syn)#1
+# Loading ieee.std_logic_arith(body)
+# Loading ieee.std_logic_unsigned(body)
+# Loading altera_mf.altera_device_families(body)
+# Loading altera_mf.scfifo(behavior)#1
+add wave -position insertpoint  \
+sim:/writeiftest/FIFOSIZE \
+sim:/writeiftest/PIPEMAX \
+sim:/writeiftest/RAYCYCLESACTIVE \
+sim:/writeiftest/RAYPERIOD \
+sim:/writeiftest/clk \
+sim:/writeiftest/counter \
+sim:/writeiftest/finished \
+sim:/writeiftest/input_address \
+sim:/writeiftest/input_color \
+sim:/writeiftest/output_address \
+sim:/writeiftest/output_color \
+sim:/writeiftest/output_write \
+sim:/writeiftest/pipeline \
+sim:/writeiftest/pipeline_counter \
+sim:/writeiftest/res \
+sim:/writeiftest/slave_counter \
+sim:/writeiftest/stall \
+sim:/writeiftest/waitreq
+add wave -position insertpoint  \
+sim:/writeiftest/dut/readreq_for_second_fifo
+run
+run
+run
+run
+run
+run
+# Compile of writeInterface.vhd was successful.
+vsim work.writeiftest
+# End time: 13:29:26 on Apr 27,2017, Elapsed time: 0:00:39
+# Errors: 0, Warnings: 0
+# vsim work.writeiftest 
+# Start time: 13:29:26 on Apr 27,2017
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.operations_pkg(body)
+# Loading work.components_pkg
+# Loading work.writeiftest(arch)#1
+# Loading altera_mf.altera_mf_components
+# Loading work.math_pkg(body)
+# Loading work.alt_fwft_fifo(syn)#1
+# Loading ieee.std_logic_arith(body)
+# Loading ieee.std_logic_unsigned(body)
+# Loading altera_mf.altera_device_families(body)
+# Loading altera_mf.scfifo(behavior)#1
+add wave -position insertpoint  \
+sim:/writeiftest/FIFOSIZE \
+sim:/writeiftest/PIPEMAX \
+sim:/writeiftest/RAYCYCLESACTIVE \
+sim:/writeiftest/RAYPERIOD \
+sim:/writeiftest/clk \
+sim:/writeiftest/counter \
+sim:/writeiftest/finished \
+sim:/writeiftest/input_address \
+sim:/writeiftest/input_color \
+sim:/writeiftest/output_address \
+sim:/writeiftest/output_color \
+sim:/writeiftest/output_write \
+sim:/writeiftest/pipeline \
+sim:/writeiftest/pipeline_counter \
+sim:/writeiftest/res \
+sim:/writeiftest/slave_counter \
+sim:/writeiftest/stall \
+sim:/writeiftest/waitreq
+add wave -position insertpoint  \
+sim:/writeiftest/dut/readreq_for_second_fifo
+run
+run
+run
+run
+run
+# Compile of writeInterface.vhd was successful.
+vsim work.writeiftest
+# End time: 13:31:09 on Apr 27,2017, Elapsed time: 0:01:43
+# Errors: 0, Warnings: 0
+# vsim work.writeiftest 
+# Start time: 13:31:09 on Apr 27,2017
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.operations_pkg(body)
+# Loading work.components_pkg
+# Loading work.writeiftest(arch)#1
+# Loading altera_mf.altera_mf_components
+# Loading work.math_pkg(body)
+# Loading work.alt_fwft_fifo(syn)#1
+# Loading ieee.std_logic_arith(body)
+# Loading ieee.std_logic_unsigned(body)
+# Loading altera_mf.altera_device_families(body)
+# Loading altera_mf.scfifo(behavior)#1
+add wave -position insertpoint  \
+sim:/writeiftest/FIFOSIZE \
+sim:/writeiftest/PIPEMAX \
+sim:/writeiftest/RAYCYCLESACTIVE \
+sim:/writeiftest/RAYPERIOD \
+sim:/writeiftest/clk \
+sim:/writeiftest/counter \
+sim:/writeiftest/finished \
+sim:/writeiftest/input_address \
+sim:/writeiftest/input_color \
+sim:/writeiftest/output_address \
+sim:/writeiftest/output_color \
+sim:/writeiftest/output_write \
+sim:/writeiftest/pipeline \
+sim:/writeiftest/pipeline_counter \
+sim:/writeiftest/res \
+sim:/writeiftest/slave_counter \
+sim:/writeiftest/stall \
+sim:/writeiftest/waitreq
+add wave -position insertpoint  \
+sim:/writeiftest/dut/readreq_for_second_fifo
+run
+run
+run
+run
+add wave -position insertpoint  \
+sim:/writeiftest/dut/counter \
+sim:/writeiftest/dut/counter_next
+restart
+# ** Note: (vsim-8009) Loading existing optimized design _opt1
+run
+run
+run
+run
+# End time: 13:32:56 on Apr 27,2017, Elapsed time: 0:01:47
+# Errors: 0, Warnings: 0
