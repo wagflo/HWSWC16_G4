@@ -24,8 +24,8 @@ displayInit (uint32_t framebuffer0, uint32_t framebuffer1)
 	IOWR(FRAMEREADER_BASE, 16, FRAME_HEIGHT);    //frame 1 height
 
 	
-	IOWR(RAYTRACING_MM_BASE, 0x4010, framebuffer0);
-	IOWR(RAYTRACING_MM_BASE, 0x4020, framebuffer1);
+	IOWR(MM_RAYTRACING_0_BASE, 0x4010, framebuffer0);
+	IOWR(MM_RAYTRACING_0_BASE, 0x4020, framebuffer1);
 	//enable frame reader
 	IOWR(FRAMEREADER_BASE, 0, 0x1);    //control register
 

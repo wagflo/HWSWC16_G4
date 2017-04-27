@@ -86,10 +86,10 @@ main (void)
 			setCamera (&lookfrom, &lookat, vfov, fb);
 			if (start >=2) {
 			  //wait until the old picture is written
-			  while (IORD(RAYTRACING_MM_0_BASE, 0xFF00 | (fb & 0x01)) == 0x00000000) {
+			  while (IORD(MM_RAYTRACING_0_BASE, 0xFF00 | (fb & 0x01)) == 0x00000000) {
 			  }
 			  //show the time if the picture is the first one
-			  if (fb & 0x01 == 0) {
+			  if ((fb & 0x01) == 0) {
 			    printf ("Output: %llu\n", alt_timestamp ());
 			  }
 			  //show the picture;
@@ -100,7 +100,7 @@ main (void)
 			else {
 			  start++;
 			}
-			if (fb & 0x01 == 0) {
+			if ((fb & 0x01) == 0) {
 			  alt_timestamp_start ();
 			}
 		}
