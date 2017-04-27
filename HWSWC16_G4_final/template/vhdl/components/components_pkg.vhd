@@ -49,12 +49,12 @@ component writeInterface is
    
     -- kein clock enable, nehme valid
 
-    pixel_address : in std_logic_vector(31 downto 0);
+    pixel_address : in std_logic_vector(32 downto 0);
     pixel_color   : in std_logic_vector(23 downto 0);
     valid_data    : in std_logic;
 
     stall 	  : out std_logic;
-    finished	  : out std_logic;
+    finished	  : out std_logic_vector(1 downto 0);
     
     master_address   : out  std_logic_vector(31 downto 0);
     --write     : in  std_logic;
@@ -389,7 +389,8 @@ component picture_data is
 	clk_en : in std_logic;
 	next_frame : in std_logic;
 	start : out std_logic;
-	valid_data : out std_logic
+	valid_data : out std_logic;
+	frames_done : in std_logic_vector(1 downto 0)
 	);
 end component;
 

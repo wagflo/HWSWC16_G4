@@ -173,6 +173,8 @@ signal back_out_color : std_logic_vector(23 downto 0);
 
 signal pixel_address_writeIF, ref_t : std_logic_vector(31 downto 0);
 
+signal fr_done : std_logic_vector(1 downto 0);
+
 begin
 
 --next_readdata <= (OTHERS=>NOT(write_poss));
@@ -309,7 +311,8 @@ static_data : picture_data port map (
 	clk_en => '1',
 	next_frame => done_rdo,
 	start => start_picture,
-	valid_data => valid_data
+	valid_data => valid_data,
+	frames_done => fr_done
 );
 
 
@@ -568,7 +571,8 @@ writeIF : writeInterface
    
     -- kein clock enable, nehme valid
 
-    pixel_address => pixel_address_writeIF,
+    pixel_address(32) => back_out_address(20),
+    pixel_address(31 downto 0) => pixel_address_writeIF,
     pixel_color   => back_out_color,
     valid_data    => back_out_valid,
 
@@ -579,20 +583,35 @@ writeIF : writeInterface
     --writedata : in  std_logic_vector(31 downto 0);
     master_colordata => master_colordata,
     master_write     => master_write,
-    slave_waitreq    => slave_waitreq
+    slave_waitreq    => slave_waitreq,
+    finished	     => fr_done
   );
 
 pixel_address_async : process(back_out_address) is begin
 if back_out_address(21 downto 20) = "00" OR back_out_address(21 downto 20) = "10" then
-	pixel_address_writeIF <= std_logic_vector(to_unsigned(to_integer(unsigned(base_address1)) +to_integer(unsigned(back_out_address(19 downto 0))) ,32));
+	pixel_address_writeIF <= std_logic_vector(to_unsigned(to_integer(unsigned(sc.address1)) +to_integer(unsigned(back_out_address(19 downto 0))) ,32));
 elsif back_out_address(21 downto 20) = "01" OR back_out_address(21 downto 20) = "11" then 
-	pixel_address_writeIF <= std_logic_vector(to_unsigned(to_integer(unsigned(base_address2)) +to_integer(unsigned(back_out_address(19 downto 0))) ,32));
+	pixel_address_writeIF <= std_logic_vector(to_unsigned(to_integer(unsigned(sc.address2)) +to_integer(unsigned(back_out_address(19 downto 0))) ,32));
 else
-	pixel_address_writeIF <= std_logic_vector(to_unsigned(to_integer(unsigned(base_address1)) +to_integer(unsigned(back_out_address(19 downto 0))) ,32));
+	pixel_address_writeIF <= std_logic_vector(to_unsigned(to_integer(unsigned(sc.address1)) +to_integer(unsigned(back_out_address(19 downto 0))) ,32));
 end if;
 end process;
 
-
-readdata <= (others => '0'); --MK
+readdata_assign_async : process(address) is begin
+if address(15 downto 8) = x"FF" then
+	if address(0) = '1' then
+		readdata <= (OTHERS => sc.pic_done(1));
+	else
+		readdata <= (OTHERS => sc.pic_done(0));
+	end if;
+elsif address(15 downto 8) = x"01" then
+	readdata <= pixel_address_writeIF;
+elsif address(15 downto 8) = x"02" then
+	readdata <= "00000000" & back_out_color;
+else
+	readdata <= (OTHERS => write_poss);
+end if;
+end process;
+--readdata <= (others => '0'); --MK
 pixel_readdata <= (others => '0'); --MK
 end architecture;
