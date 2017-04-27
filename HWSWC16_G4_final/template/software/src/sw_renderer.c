@@ -1,6 +1,8 @@
 #include "sw_renderer.h"
 #include "display.h"
 #include <stdlib.h>
+#include <system.h>
+#include <io.h>
 
 /* Typedefs *******************************************************************/
 typedef struct
@@ -37,15 +39,15 @@ rtInit (uint8_t num_objects, sphere_t *spheres, uint16_t max_reflects, uint16_t 
 
 	fix16_t sphere_ena = 0x0000000;
 	fix16_t general_data = 0x0000000;
-	general_data = general_data | ((0x0000000F AND fix16_from_int(num_objects - 1)) << 28);
-	general_data = general_data | ((0x0000000F AND fix16_from_int(max_reflects)) << 24);
-	general_data = general_data | ((0x000000FF AND fix16_from_int(num_samples)) << 16);
+	general_data = general_data | ((0x0000000F & fix16_from_int(num_objects - 1)) << 28);
+	general_data = general_data | ((0x0000000F & fix16_from_int(max_reflects)) << 24);
+	general_data = general_data | ((0x000000FF & fix16_from_int(num_samples)) << 16);
 
 	for (uint8_t i = 0; i < num_objects; ++i) {
 		//scene.spheres[i] = spheres[i];
 		sphere_ena = sphere_ena | (0x00000001 << i);
 		uint16_t i_16 = ((uint16_t) i) << 8;
-		uint16_t spheres = 0x1000;
+		uint16_t spheres_address = 0x1000;
 		uint16_t radius2 = 0x0020;
 		uint16_t rad_inv = 0x0010;
 		uint16_t center = 0x0030;
@@ -55,36 +57,44 @@ rtInit (uint8_t num_objects, sphere_t *spheres, uint16_t max_reflects, uint16_t 
 		uint16_t y = 0x0002;
 		uint16_t z = 0x0003;
 		//Write the radius2 to the memory mapped interface
-		uint16_t address = spheres | i_16 | radius2;
-		IOWR(RAYTRACING_MM_0_BASE, address, fix16_mul(spheres[i].radius, spheres[i].radius));
+		uint16_t address = spheres_address | i_16 | radius2;
+		uint32_t data = fix16_mul(spheres[i].radius, spheres[i].radius);
+		IOWR(MM_RAYTRACING_0_BASE, address, data);
 		//write inverse rad to the memory mapped interface
-		address = spheres | i_16 | rad_inv;
-		IOWR(RAYTRACING_MM_0_BASE, address, fix16_div(0x00010000, spheres[i].radius));
+		address = spheres_address | i_16 | rad_inv;
+		data = fix16_div(0x00010000, spheres[i].radius);
+		IOWR(MM_RAYTRACING_0_BASE, address, data);
 		//write the center to the memory mapped interface
-		address = spheres | i_16 | center | x;
-		IOWR(RAYTRACING_MM_0_BASE, address, spheres[i].center.x[0]);
-		address = spheres | i_16 | center | y;
-		IOWR(RAYTRACING_MM_0_BASE, address, fspheres[i].center.x[1]);
-		address = spheres | i_16 | center | z;
-		IOWR(RAYTRACING_MM_0_BASE, address, spheres[i].center.x[2]);
+		address = spheres_address | i_16 | center | x;
+		data = spheres[i].center.x[0];
+		IOWR(MM_RAYTRACING_0_BASE, address, data);
+		address = spheres_address | i_16 | center | y;
+		data = spheres[i].center.x[1];
+		IOWR(MM_RAYTRACING_0_BASE, address, data);
+		address = spheres_address | i_16 | center | z;
+		data = spheres[i].center.x[2];
+		IOWR(MM_RAYTRACING_0_BASE, address, data);
 		//write the color to the memory mapped interface
-		address = spheres | i_16 | color | x;
-		IOWR(RAYTRACING_MM_0_BASE, address, spheres[i].color.x[0]);
-		address = spheres | i_16 | color | y;
-		IOWR(RAYTRACING_MM_0_BASE, address, fspheres[i].color.x[1]);
-		address = spheres | i_16 | color | z;
-		IOWR(RAYTRACING_MM_0_BASE, address, spheres[i].color.x[2]);
+		address = spheres_address | i_16 | color | x;
+		data = spheres[i].color.x[0];
+		IOWR(MM_RAYTRACING_0_BASE, address, data);
+		address = spheres_address | i_16 | color | y;
+		data = spheres[i].color.x[1];
+		IOWR(MM_RAYTRACING_0_BASE, address, data);
+		address = spheres_address | i_16 | color | z;
+		data = spheres[i].color.x[2];
+		IOWR(MM_RAYTRACING_0_BASE, address, data);
 		//write emitting to the memory mapped interface
-		address = spheres | i_16 | emitting;
+		address = spheres_address | i_16 | emitting;
 		if (spheres[i].mat == EMITTING) {
-			IOWR(RAYTRACING_MM_0_BASE, address, 0x00000001);
+			IOWR(MM_RAYTRACING_0_BASE, address, 0x00000001);
 		} else {
-			IOWR(RAYTRACING_MM_0_BASE, address, 0x00000000);
+			IOWR(MM_RAYTRACING_0_BASE, address, 0x00000000);
 		}
 	}
 	//write the general data to the memory mapped interface
-	general_data = general_data | (0x0000FFFF AND sphere_ena);
-	IOWR(RAYTRACING_MM_BASE, 0x02000000, general_data);
+	general_data = general_data | (0x0000FFFF & sphere_ena);
+	IOWR(MM_RAYTRACING_0_BASE, 0x02000000, general_data);
 	
 	/* set other parameters */
 	//scene.num_spheres      = num_objects;
@@ -131,31 +141,31 @@ rtSetCamera (vec3_t *lookfrom, vec3_t *lookat, fix16_t vfov, uint8_t frame_addre
 	vec3_t camera_base;
 	vec3MulS(&camera.vertical, fix16_from_int(480), &camera_base);
 	vec3Add(&camera_base, &camera.lower_left_corner, &camera_base);
-	vec3Sub(&camera_base, &camera.center, &camera_base);
+	vec3Sub(&camera_base, &camera.origin, &camera_base);
 	
 	//wait until there is an empty space in the array (this exists fo deensive reasons ONLY! - should immediately return 0xFFFFFFFF)
-	while (IORD(RAYTRACING_MM_0_BASE, 0x0000) == 0x00000000)
+	while (IORD(MM_RAYTRACING_0_BASE, 0x0000) == 0x00000000)
 	   ;
 	//write the origin
-	IOWR(RAYTRACING_MM_0_BASE, 0x3011, camera.origin.x[0]);
-	IOWR(RAYTRACING_MM_0_BASE, 0x3012, camera.origin.x[1]);
-	IOWR(RAYTRACING_MM_0_BASE, 0x3012, camera.origin.x[2]);
+	IOWR(MM_RAYTRACING_0_BASE, 0x3011, camera.origin.x[0]);
+	IOWR(MM_RAYTRACING_0_BASE, 0x3012, camera.origin.x[1]);
+	IOWR(MM_RAYTRACING_0_BASE, 0x3012, camera.origin.x[2]);
 	//write the horizontal add
-	IOWR(RAYTRACING_MM_0_BASE, 0x3031, camera.horizontal.x[0]);
-	IOWR(RAYTRACING_MM_0_BASE, 0x3032, camera.horizontal.x[1]);
-	IOWR(RAYTRACING_MM_0_BASE, 0x3033, camera.horizontal.x[2]);
+	IOWR(MM_RAYTRACING_0_BASE, 0x3031, camera.horizontal.x[0]);
+	IOWR(MM_RAYTRACING_0_BASE, 0x3032, camera.horizontal.x[1]);
+	IOWR(MM_RAYTRACING_0_BASE, 0x3033, camera.horizontal.x[2]);
 	//write the vertical add
-	IOWR(RAYTRACING_MM_0_BASE, 0x3041, camera.vertical.x[0]);
-	IOWR(RAYTRACING_MM_0_BASE, 0x3042, camera.vertical.x[1]);
-	IOWR(RAYTRACING_MM_0_BASE, 0x3043, camera.vertical.x[2]);
+	IOWR(MM_RAYTRACING_0_BASE, 0x3041, camera.vertical.x[0]);
+	IOWR(MM_RAYTRACING_0_BASE, 0x3042, camera.vertical.x[1]);
+	IOWR(MM_RAYTRACING_0_BASE, 0x3043, camera.vertical.x[2]);
 	//write the addition base
-	IOWR(RAYTRACING_MM_0_BASE, 0x3021, camera_base.x[0]);
-	IOWR(RAYTRACING_MM_0_BASE, 0x3022, camera_base.x[1]);
-	IOWR(RAYTRACING_MM_0_BASE, 0x3023, camera_base.x[2]);
+	IOWR(MM_RAYTRACING_0_BASE, 0x3021, camera_base.x[0]);
+	IOWR(MM_RAYTRACING_0_BASE, 0x3022, camera_base.x[1]);
+	IOWR(MM_RAYTRACING_0_BASE, 0x3023, camera_base.x[2]);
 	//write the frame address
-	IOWR(RAYTRACING_MM_0_BASE, 0x3050, 0x00000000 | frame_address);
+	IOWR(MM_RAYTRACING_0_BASE, 0x3050, 0x00000000 | frame_address);
 	//finish the frame
-	IOWR(RAYTRACING_MM_0_BASE, 0xFFFF, 0x00000000);
+	IOWR(MM_RAYTRACING_0_BASE, 0xFFFF, 0x00000000);
 }
 
 /* result = lower_let_corner + s*horizontal + t*vertical - origin */
