@@ -18,7 +18,8 @@ entity picture_data is
 	clk_en : in std_logic;
 	next_frame : in std_logic;
 	start : out std_logic;
-	valid_data : out std_logic
+	valid_data : out std_logic;
+	frames_done : in std_logic_vector(1 downto 0)
 	);
 end entity;
 
@@ -34,7 +35,7 @@ constant initial_frame : frame_info := (all_info => '0',
 constant initial_sphere : sphere := (center => zero_vector, colour => zero_vector, radius => zero, radius2 => zero, emitting => '0');
 constant initial_spheres : sphere_array := (OTHERS => initial_sphere);
 constant initial_scene : scene := (num_spheres => (OTHERS => '0'), num_reflects=> (OTHERS => '0'), num_samples=> (OTHERS => '0'),
-	spheres => initial_spheres, sphere_enable => (OTHERS => '0'));
+	spheres => initial_spheres, sphere_enable => (OTHERS => '0'), address1 => (OTHERS => '0'), address2 => (OTHERS => '0'), pic_done=> (OTHERS => '0'));
 signal frames_out, frames_sig : frame_array;
 --signal number_filled : natural := 0;
 signal start_sig, start_out : std_logic;
@@ -43,10 +44,15 @@ signal sc_sig, sc_out : scene;
 
 signal t, sphere, elem, coord : std_logic_vector(3 downto 0);
 
+signal last_frames_done, next_last_frames_done : std_logic_vector(1 downto 0);
+
+signal next_last_nextframe, last_nextframe : std_logic;
+
 constant finish_frame : std_logic_vector(3 downto 0) := X"F";
 constant change_spheres : std_logic_vector(3 downto 0) := X"1";
 constant change_general : std_logic_vector(3 downto 0) := X"2";
 constant change_frame : std_logic_vector(3 downto 0) := X"3";
+constant change_address : std_logic_vector(3 downto 0) := X"4";
 constant radius : std_logic_vector(3 downto 0) := X"1";
 constant radius2 : std_logic_vector(3 downto 0) := X"2";
 constant center : std_logic_vector(3 downto 0) := X"3";
@@ -60,7 +66,8 @@ constant addition_base : std_logic_vector(3 downto 0) := X"2";
 constant addition_hor : std_logic_vector(3 downto 0) := X"3";
 constant addition_ver : std_logic_vector(3 downto 0) := X"4";
 constant frame_no : std_logic_vector(3 downto 0) := X"5";
-
+constant address1 : std_logic_vector(3 downto 0) := X"1";
+constant address2 : std_logic_vector(3 downto 0) := X"2";
 
 begin
 
@@ -73,10 +80,12 @@ write_poss <= frames_out(1).all_info NAND frames_out(0).all_info;
 valid_data <= frames_out(0).all_info;
 
 
-async_write : process(sc_out, frames_out, w, address, writedata, next_frame, t, sphere, elem, coord) is begin
+async_write : process(sc_out, frames_out, w, address, writedata, next_frame, last_nextframe, frames_done, last_frames_done, t, sphere, elem, coord) is begin
 start_sig <= '0';
 frames_sig <= frames_out;
 sc_sig <= sc_out;
+next_last_nextframe <= next_frame OR last_nextframe;
+next_last_frames_done <= last_frames_done OR frames_done;
 	if w = '1' then
 		--start <= '0';
 		if t = finish_frame then
@@ -85,6 +94,12 @@ sc_sig <= sc_out;
 				frames_sig(0).all_info <= '1';
 			else
 				frames_sig(1).all_info <= '1';
+			end if;
+		elsif t = change_address then
+ 			if elem = address1 then
+				sc_sig.address1 <= writedata;
+			elsif elem = address2 then
+				sc_sig.address2 <= writedata;
 			end if;
 		elsif t = change_spheres then
 		---change a parameter of a sphere
@@ -379,17 +394,26 @@ sc_sig <= sc_out;
 				end if;
 			elsif elem = frame_no then
 				if frames_out(0).all_info = '0' then
-				frames_sig(0).frame_no <= writedata(1 downto 0);
+					frames_sig(0).frame_no <= writedata(1 downto 0);
 				else
-				frames_sig(1).frame_no <= writedata(1 downto 0);
+					frames_sig(1).frame_no <= writedata(1 downto 0);
+				end if;
+				if writedata(1 downto 0) = "01" then
+					sc_sig.pic_done(1) <= '0';
+				else 
+					sc_sig.pic_done(0) <= '0';
 				end if;
 			--frames_out(number_filled).frame_no <= writedata(1 downto 0);
 			end if;
 		end if;
-	elsif next_frame = '1' then
+	elsif next_frame = '1' OR last_nextframe = '1' then
 		start_sig <= '1';
 		frames_sig(0) <= frames_out(1);
 		frames_sig(1) <= initial_frame;
+		next_last_nextframe <= '0';
+	elsif frames_done /= "00" OR last_frames_done /= "00" then
+		sc_sig.pic_done <= sc_out.pic_done OR frames_done OR last_frames_done;
+		next_last_frames_done <= "00";
 	end if;
 end process;
 
@@ -398,10 +422,14 @@ if reset = '1' then
 	sc_out <= initial_scene;
 	frames_out <= (OTHERS => initial_frame);
 	start_out <= '0';
+	last_nextframe <= '0';
+	last_frames_done <= (OTHERS => '0');
 elsif rising_edge(clk) then
 	sc_out <= sc_sig;
 	frames_out <= frames_sig;
 	start_out <= start_sig;
+	last_nextframe <= next_last_nextframe;
+	last_frames_done <= next_last_frames_done;
 end if;
 end process;
 

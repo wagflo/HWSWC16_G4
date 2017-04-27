@@ -80,9 +80,13 @@ main (void)
 			fix16_t vfov;
 			fb = 0x11 & (fb + 1);
 			//if there are "old pictures)
+			
+			//selectFramebuffer (fb);
+			testGetNextCamera (&lookfrom, &lookat, &vfov);
+			setCamera (&lookfrom, &lookat, vfov, fb);
 			if (start >=2) {
 			  //wait until the old picture is written
-			  while (IORD(RAYTRACING_MM_BASE, 0xFF00 | (fb & 0x01)) == 0x00000000) {
+			  while (IORD(RAYTRACING_MM_0_BASE, 0xFF00 | (fb & 0x01)) == 0x00000000) {
 			  }
 			  //show the time if the picture is the first one
 			  if (fb & 0x01 == 0) {
@@ -91,15 +95,11 @@ main (void)
 			  //show the picture;
 			  showFramebuffer (fb & 0x01);
 			  
+			  
 			}
 			else {
 			  start++;
 			}
-			
-			
-			//selectFramebuffer (fb);
-			testGetNextCamera (&lookfrom, &lookat, &vfov);
-			setCamera (&lookfrom, &lookat, vfov, fb);
 			if (fb & 0x01 == 0) {
 			  alt_timestamp_start ();
 			}
