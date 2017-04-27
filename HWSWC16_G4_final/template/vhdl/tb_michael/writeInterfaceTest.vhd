@@ -59,6 +59,7 @@ signal output_color 	: std_logic_vector(31 downto 0);
 signal output_write 	: std_logic;
 
 signal stall : std_logic;
+signal finished : std_logic;
 
 signal waitreq : std_logic := '0';
 
@@ -83,7 +84,9 @@ begin
 dut : writeInterface
   generic map
   (
-    FIFOSIZE => FIFOSIZE
+    FIFOSIZE => FIFOSIZE,
+    MAXWIDTH => 4,
+    MAXHEIGHT => 3
   )
   port map
   (
@@ -98,6 +101,7 @@ dut : writeInterface
     valid_data    => pipeline(PIPEMAX - 1),
 
     stall 	  => stall,
+    finished 	  => finished,
     
     master_address  	=> output_address,
     master_colordata	=> output_color,
@@ -109,6 +113,14 @@ dut : writeInterface
 clk <= not clk after 10 ns;
 
 res <= '0' after 25 ns;
+
+--forever : process -- to get finished in wave simulation list
+--begin
+--wait;
+--assert finished = '0' or finished = '1';
+--end process;
+
+assert (finished and '0') = '0';
 
 --input <= not input after 10 ns;
 
