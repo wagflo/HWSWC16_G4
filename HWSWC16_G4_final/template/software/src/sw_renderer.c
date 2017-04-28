@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <system.h>
 #include <io.h>
+#include <stdio.h>
 
 /* Typedefs *******************************************************************/
 typedef struct
@@ -37,6 +38,8 @@ rtInit (uint8_t num_objects, sphere_t *spheres, uint16_t max_reflects, uint16_t 
 	if (num_objects > MAX_NUM_OBJECTS)
 		num_objects = MAX_NUM_OBJECTS;
 
+	printf("In rtInit\n");
+	
 	fix16_t sphere_ena = 0x0000000;
 	fix16_t general_data = 0x0000000;
 	general_data = general_data | ((0x0000000F & fix16_from_int(num_objects - 1)) << 28);
@@ -44,8 +47,10 @@ rtInit (uint8_t num_objects, sphere_t *spheres, uint16_t max_reflects, uint16_t 
 	general_data = general_data | ((0x000000FF & fix16_from_int(num_samples)) << 16);
 
 	for (uint8_t i = 0; i < num_objects; ++i) {
+		printf("Writing Sphere %d\n", i);
 		//scene.spheres[i] = spheres[i];
 		sphere_ena = sphere_ena | (0x00000001 << i);
+		printf("sphereEnable: %x\n", sphere_ena);
 		uint16_t i_16 = ((uint16_t) i) << 8;
 		uint16_t spheres_address = 0x1000;
 		uint16_t radius2 = 0x0020;
@@ -94,7 +99,8 @@ rtInit (uint8_t num_objects, sphere_t *spheres, uint16_t max_reflects, uint16_t 
 	}
 	//write the general data to the memory mapped interface
 	general_data = general_data | (0x0000FFFF & sphere_ena);
-	IOWR(MM_RAYTRACING_0_BASE, 0x02000000, general_data);
+	IOWR(MM_RAYTRACING_0_BASE, 0x0200, general_data);
+	printf("sphere0 color y: %X\n", IORD(MM_RAYTRACING_0_BASE, 0x0300));
 	
 	/* set other parameters */
 	//scene.num_spheres      = num_objects;
@@ -144,8 +150,25 @@ rtSetCamera (vec3_t *lookfrom, vec3_t *lookat, fix16_t vfov, uint8_t frame_addre
 	vec3Sub(&camera_base, &camera.origin, &camera_base);
 	
 	//wait until there is an empty space in the array (this exists fo deensive reasons ONLY! - should immediately return 0xFFFFFFFF)
-	while (IORD(MM_RAYTRACING_0_BASE, 0x0000) == 0x00000000)
-	   ;
+	uint32_t last_address;
+	uint32_t cur_address;
+	uint32_t cur_color;
+	while (IORD(MM_RAYTRACING_0_BASE, 0x0000) == 0x00000000) {
+	  cur_address = IORD(MM_RAYTRACING_0_BASE, 0x0100);
+	  cur_color = IORD(MM_RAYTRACING_0_BASE, 0x0200);
+	  if (cur_address - getAddress(0x01) < 0) {
+	    printf("Writing frame 0\n");
+	  } else {
+	    printf("Writing frame 1\n");
+	  }
+	  printf("Address: %X\n", cur_address);
+	  printf("Color: %X\n", cur_color);
+	  if (last_address == cur_address) {
+	    printf("address did not change!\n");
+	  }
+	  last_address = cur_address;
+	  
+	}
 	//write the origin
 	IOWR(MM_RAYTRACING_0_BASE, 0x3011, camera.origin.x[0]);
 	IOWR(MM_RAYTRACING_0_BASE, 0x3012, camera.origin.x[1]);
