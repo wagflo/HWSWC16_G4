@@ -41,9 +41,9 @@ architecture beh of anyRefl is
 
 signal any, anyNext : std_logic; --startOfBundle_out_next, endOfBundle_out_next: std_logic;
 
-signal reflect, next_reflect, pseudo_reflect, next_pseudo_reflect, bundle, next_bundle, eob_delay, sob_delay : std_logic_vector(32 downto 0);
+signal reflect, next_reflect, pseudo_reflect, next_pseudo_reflect, bundle, next_bundle : std_logic_vector(32 downto 0);
 
-signal anyNext_vec, eob_vec: std_logic_vector(31 downto 0);
+signal anyNext_vec, eob_vec, eob_delay, sob_delay: std_logic_vector(31 downto 0);
 signal valid_ray_in_vec, valid_ray_out_vec : std_logic_vector(0 downto 0);
 
 begin
@@ -80,15 +80,15 @@ next_pseudo_reflect(31 downto 0) <= (NOT(bundle(32 downto 1)) AND anyNext_vec) O
 
 eob_vec <= (OTHERS => endOfBundle);
 
-next_bundle(32) <= endOfBundle;
+next_bundle(32) <= endOfBundle OR NOT(valid_ray_in);
 
 next_bundle(31 downto 0) <= bundle(32 downto 1) OR eob_vec;
 
 isReflected <= reflect(0);
 pseudoReflect <= pseudo_reflect(0);
 
-startOfBundle_out <= sob_delay(32);
-endOfBundle_out <= eob_delay(32);
+startOfBundle_out <= sob_delay(31);
+endOfBundle_out <= eob_delay(31);
 
 sync : process(clk, reset)
 begin
@@ -111,8 +111,8 @@ begin
     pseudo_reflect <= next_pseudo_reflect;
     bundle <= next_bundle;
 
-    sob_delay <= sob_delay(31 downto 0) & startOfBundle;
-    eob_delay <= eob_delay(31 downto 0) & endOfBundle;
+    sob_delay <= sob_delay(30 downto 0) & startOfBundle;
+    eob_delay <= eob_delay(30 downto 0) & endOfBundle;
 
   end if;
 
