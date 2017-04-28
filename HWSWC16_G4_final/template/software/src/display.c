@@ -63,3 +63,6 @@ displayClear (uint32_t rgb)
 	}
 }
 
+uint32_t getAddress(uint8_t fb) {
+  return frame_buffers[fb & 0x01];
+}

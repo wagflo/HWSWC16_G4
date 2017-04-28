@@ -66,28 +66,42 @@ static void renderFrame (void);
 int
 main (void)
 {
+	printf("Vor setupHW\n");
 	setupHW ();
+	printf("Nach setupHW\n");
 	uint8_t fb = 0;
 	uint8_t start = 0;
 	selectFramebuffer (fb);
 	displayClear (0);
+	printf("Nach displayClear\n");
 	showFramebuffer (fb & 0x01);
+	printf("Nach showFrambuffer\n");
 	init (TEST_SCENE_SIZE, test_spheres, TEST_NUM_REFLECTS, TEST_NUM_SAMPLES);
+	printf("Nach Init\n");
 	while (1)
 	{
 		if (TEST_SCENE_SIZE > 0) {
+		  
+			printf("Test scene size should be > 0\n");
 			vec3_t lookfrom, lookat;
 			fix16_t vfov;
 			fb = 0x11 & (fb + 1);
+			printf("Use FB: %x\n", fb);
 			//if there are "old pictures)
 			
 			//selectFramebuffer (fb);
 			testGetNextCamera (&lookfrom, &lookat, &vfov);
+			printf("Nach testGetCamera\n");
 			setCamera (&lookfrom, &lookat, vfov, fb);
+			printf("Nach setCamera\n");
 			if (start >=2) {
 			  //wait until the old picture is written
+			  printf("Vor busy loop\n");
 			  while (IORD(MM_RAYTRACING_0_BASE, 0xFF00 | (fb & 0x01)) == 0x00000000) {
+			      printf("%X\n",IORD(MM_RAYTRACING_0_BASE, 0x0100));
+			      printf("%X\n",IORD(MM_RAYTRACING_0_BASE, 0x0200));
 			  }
+			  printf("Nach busy loop\n");
 			  //show the time if the picture is the first one
 			  if ((fb & 0x01) == 0) {
 			    printf ("Output: %llu\n", alt_timestamp ());

@@ -16,6 +16,7 @@ void showFramebuffer (uint8_t fb_num);
 
 void displaySetPixel (uint32_t y, uint32_t x, uint32_t rgb);
 void displayClear (uint32_t rgb);
+uint32_t getAddress(uint8_t fb);
 
 #ifdef __cplusplus
 }
