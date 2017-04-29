@@ -3,6 +3,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 use work.components_pkg.all;
+use work.operations_pkg.all;
 
 entity closestTB is
 
@@ -87,14 +88,24 @@ architecture arch of closestTB is
 signal clk, start : std_logic := '0';
 signal reset : std_logic := '1';
 signal t : std_logic_vector(31 downto 0);
-signal i : std_logic_vector(3 downto 0);
+signal closestSphere : std_logic_vector(3 downto 0);
+constant a : std_logic_vector(31 downto 0) := x"00010000";
 signal done, valid : std_logic;
 constant cycle_even_radius : std_logic_vector(31 downto 0) := (X"00040000");
 constant cycle_odd_radius : std_logic_vector(31 downto 0) := X"00010000";
-
+signal gcsInputRay : std_logic_vector(193 downto 0);
+constant gcsInputRay1 : std_logic_vector(193 downto 0) := (190 => '1', 0 => '1', OTHERS => '0');
+constant gcsInputRay2 : std_logic_vector(193 downto 0) := (190 => '1', 0 => '1', 1 => '1', OTHERS => '0');
 signal radius_in : std_logic_vector(31 downto 0) := cycle_even_radius;
 signal cycle_even : std_logic := '0';
-
+--signal gcsInput : scInput;
+constant sphere1 : sCInputSpheres := (center => (x=>x"00020000", y => x"00000000", z => x"00000000"), radius2=>x"00010000");
+constant gcsInput : scInput := (
+	spheres => (OTHERS => sphere1), 
+	activeSpheres => x"FFFF", 
+	num_spheres => x"F");
+signal t_times_a : std_logic_vector(31 downto 0);
+signal valid_t : std_logic;
 begin
 
 clk <= not(clk) after 10 ns;
@@ -102,15 +113,15 @@ reset <= '0' after 20 ns;
 
 sync : process(clk, reset) is begin
 if reset = '1' then
-radius_in <= cycle_even_radius;
-cycle_even <= '0';
+	cycle_even <= '0';
+	gcsInputRay <= gcsInputRay1;
 elsif rising_edge(clk) then
 	if cycle_even = '0' then
-	cycle_even <= '1';
-	radius_in <= cycle_odd_radius;
+		cycle_even <= '1';
+		gcsInputRay <= gcsInputRay2;
 	ELSE 
-	cycle_even <= '0';
-	radius_in <= cycle_even_radius;
+		cycle_even <= '0';
+		gcsInputRay <= gcsInputRay1;
 	end if;
 end if;
 end process;

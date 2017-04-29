@@ -153,55 +153,11 @@ rtSetCamera (vec3_t *lookfrom, vec3_t *lookat, fix16_t vfov, uint8_t frame_addre
 	vec3Add(&camera_base, &camera.lower_left_corner, &camera_base);
 	vec3Sub(&camera_base, &camera.origin, &camera_base);
 	
-	//wait until there is an empty space in the array (this exists fo deensive reasons ONLY! - should immediately return 0xFFFFFFFF)
-	uint32_t last_address;
-	uint32_t cur_address;
-	uint32_t cur_color;
-	uint32_t colBefCU[3], colAftCU[3], counter0, counter1, controls;
 	
-	// MK warum stehen wir hier??? => hat noch kein finish_frame
 	printf("Vor camera data \n");
 	
-	while (IORD(MM_RAYTRACING_0_BASE, 0x0000) == 0x00000000) { // MK
-	  //cur_address = IORD(MM_RAYTRACING_0_BASE, 0x0100);
-	  //cur_color = IORD(MM_RAYTRACING_0_BASE, 0x0200);
-	  /*
-	  colBefCU[0] = IORD(MM_RAYTRACING_0_BASE, 0x2000);
-	  colBefCU[1] = IORD(MM_RAYTRACING_0_BASE, 0x2100);
-	  colBefCU[2] = IORD(MM_RAYTRACING_0_BASE, 0x2200);
-	  
-	  colAftCU[0] = IORD(MM_RAYTRACING_0_BASE, 0x2300);
-	  colAftCU[1] = IORD(MM_RAYTRACING_0_BASE, 0x2400);
-	  colAftCU[2] = IORD(MM_RAYTRACING_0_BASE, 0x2500);
-	  */
-	  counter0 = IORD(MM_RAYTRACING_0_BASE, 0x0400);
-	  counter1 = IORD(MM_RAYTRACING_0_BASE, 0x0500);
-	  /*
-	   printf("Before: %X %X %X\n", colBefCU[0], colBefCU[1], colBefCU[2]);
+	while (IORD(MM_RAYTRACING_0_BASE, 0x0000) == 0x00000000) {
 	   
-	   printf("After:  %X %X %X\n", colAftCU[0], colAftCU[1], colAftCU[2]);
-	   */
-	  // printf("Counters: %X %X\n", counter0, counter1);
-	   
-	  
-	  //controls = IORD(MM_RAYTRACING_0_BASE, 0x0600);
-	  //printf("Controls: %X\n", controls);
-	  
-	  /*if (cur_address - getAddress(0x01) < 0) {
-	    printf("Writing frame 0\n");
-	  } else {
-	    printf("Writing frame 1\n");
-	  }
-	  printf("Address: %X\n", cur_address);
-	  printf("Color: %X\n", cur_color);
-	  */
-	  //printf("Address: %X\nColor: %X\n", cur_address, cur_color);
-	  
-	  /*if (last_address == cur_address) {
-	    printf("address did not change!\n");
-	  }
-	  last_address = cur_address;
-	  */
 	}
 	printf("Nach camera data \n");
 	
