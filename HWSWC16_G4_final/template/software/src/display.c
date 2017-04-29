@@ -22,8 +22,9 @@ displayInit (uint32_t framebuffer0, uint32_t framebuffer1)
 	IOWR(FRAMEREADER_BASE, 13, FRAME_WIDTH*FRAME_HEIGHT);
 	IOWR(FRAMEREADER_BASE, 15, FRAME_WIDTH);    //frame 1 width
 	IOWR(FRAMEREADER_BASE, 16, FRAME_HEIGHT);    //frame 1 height
-
-	
+	//reset all data in pipeline
+	IOWR(MM_RAYTRACING_0_BASE, 0x5000, 0x00000000);
+	//set base addresses
 	IOWR(MM_RAYTRACING_0_BASE, 0x4010, framebuffer0);
 	IOWR(MM_RAYTRACING_0_BASE, 0x4020, framebuffer1);
 	//enable frame reader

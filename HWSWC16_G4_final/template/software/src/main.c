@@ -94,9 +94,8 @@ main (void)
 			
 			//selectFramebuffer (fb);
 			testGetNextCamera (&lookfrom, &lookat, &vfov);
-			printf("Vor  setCamera\n");
-			setCamera (&lookfrom, &lookat, vfov, fb);
-			printf("Nach setCamera\n");
+			
+			
 			if (start >=2) {
 			  //wait until the old picture is written
 			  printf("Vor busy loop\n");
@@ -124,6 +123,9 @@ main (void)
 			else {
 			  start++;
 			}
+			printf("Vor  setCamera\n");
+			setCamera (&lookfrom, &lookat, vfov, fb);
+			printf("Nach setCamera\n");
 			if ((fb & 0x01) == 0) {
 			  alt_timestamp_start ();
 			}
