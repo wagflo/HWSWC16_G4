@@ -99,16 +99,12 @@ main (void)
 			if (start >=2) {
 			  //wait until the old picture is written
 			  printf("Vor busy loop\n");
-			  while (IORD(MM_RAYTRACING_0_BASE, 0xFF00 | (fb & 0x01)) == 0x00000000) {
-			    
-			      uint32_t temp;
-			      temp = IORD(MM_RAYTRACING_0_BASE, 0x0100);
+			  uint16_t read_base = 0xFF01;
+			  if ((fb & 01) == 0) {
+			    read_base = 0xFF00;
+			  }
+			  while (IORD(MM_RAYTRACING_0_BASE, read_base) == 0x00000000) {
 			      printf("In busy loop\n");
-			      if(temp & 0x0 == 0){
-				
-			      printf("Adress: %X\n",temp);
-			      printf("Color : %X\n",IORD(MM_RAYTRACING_0_BASE, 0x0200));
-			      }
 			  }
 			  printf("Nach busy loop\n");
 			  //show the time if the picture is the first one

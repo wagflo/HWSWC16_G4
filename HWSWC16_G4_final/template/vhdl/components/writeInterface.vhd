@@ -118,14 +118,14 @@ begin
 finished_next <= "00";
 if readreq_for_second_fifo = '1' then
   if frame = '0' then
-	if counter0 = MAXWIDTH*MAXHEIGHT - 1 then
+	if counter0 = (MAXWIDTH*MAXHEIGHT - 1) then
     		counter0_next <= 0;
     		finished_next(0) <= '1';
 	else
 		counter0_next <= counter0 + 1;
 	end if;
   else
-    	if counter1 = MAXWIDTH*MAXHEIGHT - 1 then
+    	if counter1 = (MAXWIDTH*MAXHEIGHT - 1) then
     		counter1_next <= 0;
     		finished_next(1) <= '1';
 	else

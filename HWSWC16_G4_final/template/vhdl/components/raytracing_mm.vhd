@@ -155,7 +155,8 @@ anyref_ray_pseudo_refl, gcsp_emmiting, anyref_csp_emitting, anyref_csp_valid_t,
 anyrefo_isRef, anyrefo_pseudo, anyrefo_valid_ray, anyrefo_sob, anyrefo_eob,
 anyref_valid_t, ref_valid_t, ref_valid, ref_copy, ref_out_valid, ref_out_copy, fifo_full,
 colUp_valid_t, colUp_valid_t_in, colUp_valid, updatedColorRayValid, updatedColorValid, colUp_pseudo,
-backend_valid, backend_sob, backend_eob, backend_copy, back_out_valid, valid_data, start_picture, old_valid_data
+backend_valid, backend_sob, backend_eob, backend_copy, back_out_valid, valid_data, start_picture, old_valid_data, 
+old_pseudo, gcsp_emmiting_old, valid_t_old
  : std_logic;
 
 signal anyref_ray_rem_ref, rem_reflects_old : std_logic_vector(2 downto 0);
@@ -203,13 +204,7 @@ signal counter1_debug 	: std_logic_vector(18 downto 0);
 
 
 begin
-reset_assign : process(res_n, t, write) is begin
-if t = reset_data then
-	reset <= res_n OR write;
-else
-	reset <= res_n;
-end if;
-end process;
+reset <= res_n when t /= reset_data else res_n OR read;
 
 --next_readdata <= (OTHERS=>NOT(write_poss));
 --number_filled_v <= (1 => frames(0).all_info AND frames(1).all_info, 0 => frames(0).all_info XOR frames(1).all_info);
@@ -427,6 +422,11 @@ anyref_39t70 : anyRefl port map (clk => clk,
     startOfBundle_out => anyrefo_sob,
     endOfBundle_out => anyrefo_eob);
 
+anyref_par_scp_emitting : delay_element generic map (WIDTH => 2, DEPTH => 32)
+port map (clk => clk, clken => '1', reset => reset, 
+source(0) => gcsp_emmiting, source(1) => valid_t,
+dest(0) => gcsp_emmiting_old, dest(1) => valid_t_old);
+
 ref_ray_delay_c1t56 : delay_element generic map (WIDTH => 194, DEPTH => 56)
 port map (clk => clk, clken => '1', reset => reset, 
 source(193) => rightRay.valid, source(192) => rightRay.copy, source(191 DOWNTO 96) => to_std_logic(rightRay.direction), source(95 downto 0) => to_std_logic(rightRay.origin),
@@ -513,7 +513,9 @@ colUp_c69t70 : colorUpdate  port map
     valid_ray_out => updatedColorRayValid
   );
 
-colUp_par_color_c69t70 : delay_element  generic map (WIDTH => 96, DEPTH => 2) port map (clk => clk, clken => '1', reset => reset, source => colUp_color_in, dest => old_color);
+colUp_par_color_c69t70 : delay_element  generic map (WIDTH => 97, DEPTH => 2) port map (clk => clk, clken => '1', reset => reset, 
+	source(96) =>colUp_pseudo, source(95 downto 0) => colUp_color_in, 
+	dest(96) => old_pseudo, dest(95 downto 0) => old_color);
 
 colUp_valid_t_in <= colUp_valid_t AND NOT(colUp_pseudo);
 
@@ -554,8 +556,14 @@ if anyrefo_pseudo = '1' then
 	reflected_ray.pseudo_refl <= anyrefo_pseudo AND NOT(anyrefo_isRef);
 	reflected_ray.valid <= anyrefo_valid_ray;--updatedColorRayValid;
 	if updatedColorValid = '1' then 
+		--if we really had a genuine hit, update the color
         	reflected_ray.color <= updatedColor;
-	else reflected_ray.color <= tovector(old_color);
+	elsif old_pseudo = '0' then
+		--if the ray was not pseudo reflected AND it missed all spheres, set the color to black
+		reflected_ray.color <= (OTHERS => (OTHERS => '0'));
+	else
+		--if the ray was pseudo reflected, keep the old color
+		reflected_ray.color <= tovector(old_color);
 	end if;
 	reflected_ray.origin <= ref_out_origin;
 	reflected_ray.direction <= ref_out_dir;
@@ -571,8 +579,11 @@ if anyrefo_pseudo = '1' then
 else
 	backend_ray.position <= old_position;
 	backend_ray.valid <= updatedColorRayValid;
-	if updatedColorValid = '1' then 
+	if (updatedColorValid  AND (gcsp_emmiting OR NOT(valid_t_old))) = '1' then 
         	backend_ray.color <= updatedColor;
+	elsif old_pseudo = '0' then
+		--if the ray was not pseudo reflected AND it missed all spheres, set the color to black
+		backend_ray.color <= (OTHERS => (OTHERS => '0'));
 	else backend_ray.color <= tovector(old_color);
 	end if;
 	backend_ray.sob <= anyrefo_sob;
@@ -644,7 +655,7 @@ else
 end if;
 end process;
 
-readdata_assign_async : process(address, read) is begin
+readdata_assign_async : process(address, read, write_poss, sc, frames) is begin
 if read = '0' then
 	readdata <= (OTHERS => '0');
 elsif address = x"0000" then

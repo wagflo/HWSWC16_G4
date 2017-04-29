@@ -185,7 +185,7 @@ signal valid_cycle27, valid, t1_valid, t2_valid, t2_smaller
 signal subwire0_b2, subwire0_ac : std_logic_vector(63 downto 0);
 signal sub_wire0_discr_after : std_logic_vector(23 downto 0);
 
-signal start_shift : std_logic_vector(27 downto 0);
+signal start_shift : std_logic_vector(26 downto 0);
 begin
 
 b2(31) <= subwire0_b2(63);
@@ -195,7 +195,7 @@ ac(30 downto 0) <= subwire0_ac(46 downto 16);
 discr_after(31 downto 24) <= (OTHERS => '0');
 discr_after(23 downto 0) <= sub_wire0_discr_after(23 downto 0);
 t_inputb <= std_logic_vector(signed(NOT(b_c25)) + 1);
-start_shift(26) <= NOT(reset) AND start;
+--start_shift(26) <= NOT(reset) AND start;
 
 sub_oc_c1 : vector_add_sub
 generic map(DATA_WIDTH => 32)
@@ -495,9 +495,9 @@ end process;
 
 shift : process(clk_en, clk, reset) is begin
 if reset = '1' then
-	start_shift (25 downto 0) <= (OTHERS=>'0');
+	start_shift <= (OTHERS=>'0');
 elsif clk_en = '1' AND rising_edge(clk) then
-	start_shift (25 downto 0) <= start_shift(26 downto 1);
+	start_shift <= start & start_shift(26 downto 1);
  end if;
 end process;
 

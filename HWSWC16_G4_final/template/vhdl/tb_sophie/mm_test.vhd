@@ -56,7 +56,7 @@ type signal_array is array (natural range <>) of std_logic_vector(15 downto 0);
 type data_signal_array is array (natural range <>) of std_logic_vector(31 downto 0);
 
 
-constant address_array : signal_array(62 downto 18)  := (
+constant address_array : signal_array(63 downto 18)  := (
 --general data
 20 => X"2000", 
 --first sphere inverse rad, rad2
@@ -81,12 +81,13 @@ constant address_array : signal_array(62 downto 18)  := (
 55 => X"3031", 56=>X"3032", 57=>X"3033", 58 => X"3041", 59=>X"3042", 60=>X"3043",
 --finish the frame
 61 => X"3050", 62 => X"F000",
+63 => X"FF00",
 -- base addresses
 
 18 => X"4010", 19 => X"4020"
 );
 
-constant data_array : data_signal_array(62 downto 18)  := (
+constant data_array : data_signal_array(63 downto 18)  := (
 --general data
 20 => X"27010007", 
 --first sphere inverse rad, rad2
@@ -111,7 +112,7 @@ constant data_array : data_signal_array(62 downto 18)  := (
 55 => X"0000_0089", 56=>X"00000000", 57=>X"00000000", 58 => X"00000000", 59=>X"0000_00A4", 60=>X"00000000",
 --finish the frame
 61 => X"00000000", 62 => X"00000000",
-
+63 => X"00000000",
 -- base addresses
 18 => X"00000000", 19 => X"00400000"
 );
@@ -132,8 +133,8 @@ res_n <= '0' after 10 ns;
 mm : raytracing_mm 
 generic map(
 
-	MAXWIDTH => 7,
-	MAXHEIGHT => 5
+	MAXWIDTH => 10,
+	MAXHEIGHT => 10
 )
 port map (clk => clk, res_n => res_n, 
 		address		=> address,
@@ -172,12 +173,8 @@ elsif  rising_edge(clk) then
 	write <= '0';
 	read <= '0';
 	j <= j + 1;
-	if i /= 48 AND i < address_array'high AND i /= 47 then
-		write <= '1';
-		if  j > 1 then
-			i <= i + 1;
-		end if;
-	elsif i = 47 then
+	
+	if i = 47 then
 		read <= '1';
 		if  j > 1 then
 			i <= i + 1;
@@ -191,9 +188,24 @@ elsif  rising_edge(clk) then
 		else read <= '1';
 			i <= i;
 		end if;
-	elsif i >= address_array'high then
-		i <= 48;
+	elsif i = 62 then
 		read <= '1';
+		if  j > 1 then
+			i <= i + 1;
+		end if;
+	elsif i >= address_array'high then
+		if readdata /= X"00000000" then
+			i <= 49;
+			write <= '1';
+		else
+			read <= '1';
+			i <= i;
+		end if;
+	elsif i < address_array'high then
+		write <= '1';
+		if  j > 1 then
+			i <= i + 1;
+		end if;
 	end if;
 
 end if;

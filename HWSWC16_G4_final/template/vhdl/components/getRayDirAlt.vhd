@@ -51,7 +51,7 @@ constant blackVector : vector := (x => zero, y => zero, z => zero);
 
 signal next_done, next_copyRay, next_valid : std_logic;
 
-signal next_sob, next_eob : std_logic;
+signal next_sob, next_eob, start_hold, next_start_hold : std_logic;
 
 signal ver_base, next_result, next_result_hold, result_hold, next_ver_base, ran_add, next_ran_add : vector;
 signal next_i, j, next_j, i, samples, next_samples : natural;
@@ -80,7 +80,7 @@ l1 : lfsr port map(cout => ran(31 downto 24), clk => clk, reset => reset, enable
 l2 : lfsr port map(cout => ran(23 downto 16), clk => clk, reset => reset, enable => clk_en);
 l3 : lfsr port map(cout => ran(15 downto 8), clk => clk, reset => reset, enable => clk_en);
 l4 : lfsr port map(cout => ran(7 downto 0), clk => clk, reset => reset, enable => clk_en);
-async : process(j, i, start, addition_ver, frame, hold, addition_hor, result_hold, ran_add, ran, num_samples, address, ver_base, addition_base) is begin
+async : process(j, i, start, addition_ver, frame, hold, addition_hor, result_hold, ran_add, ran, num_samples, address, ver_base, addition_base, start_hold, clk_en) is begin
 next_frame_no <= frame;
 next_copyRay <= hold;
 next_done <= '0';
@@ -89,6 +89,8 @@ next_eob <= '0';
 next_ran_add <= addition_ver + addition_hor;
 next_result <= result_hold;
 next_result_hold <= result_hold;
+
+next_start_hold <= (start_hold OR start) AND (NOT(clk_en) OR hold);
 
 next_ver_base <= ver_base; --MK
 next_j <= j;	--MK
@@ -103,7 +105,7 @@ if valid_data = '0' then
 	next_i <= 0;
 else 
 	next_valid <= '1';
-	if start =  '1' then
+	if start =  '1' OR start_hold = '1' then
 		next_j <= 0;
 		next_i <= 0;
 		next_result <= addition_base;
@@ -186,31 +188,35 @@ if reset = '1' then
 	valid <= '0';
 	address <= 0;
 	outputRay.copy <= '0';
-elsif rising_edge(clk) AND clk_en = '1' then
-	outputRay.copy <= next_copyRay;
-	if hold = '0' then
-		samples <= next_samples;
-		i <= next_i;
-		j <= next_j;
-		outputRay.direction <= next_result;
-		outputRay.sob <= next_sob;
-		outputRay.eob <= next_eob;
-		outputRay.position(21 downto 20) <= next_frame_no;
-		--outputRay.position(19 downto 10) <= std_logic_vector(to_unsigned(next_i, 10));
-		--outputRay.position(9 downto 0) <= std_logic_vector(to_unsigned(next_j, 10));
-		outputRay.position(19 downto 0) <= std_logic_vector(to_unsigned(next_address, 20));
-		outputRay.origin <= camera_center;
-		outputRay.color <= basisColourVector;
-		outputRay.remaining_reflects <= num_reflects;
-		--outputRay.copy <= next_copy;
-		outputRay.valid <= next_valid;
-		result_hold <= next_result_hold;
-		ver_base <= next_ver_base;
-		valid <= next_valid;
-		done <= next_done;
-		ran_add <= next_ran_add;
-		outputRay.pseudo_refl <= '0';
-		address <= next_address;
+	start_hold <= '0';
+elsif rising_edge(clk) then
+	start_hold <= next_start_hold;
+	if clk_en = '1' then
+		outputRay.copy <= next_copyRay;
+		if hold = '0' then
+			samples <= next_samples;
+			i <= next_i;
+			j <= next_j;
+			outputRay.direction <= next_result;
+			outputRay.sob <= next_sob;
+			outputRay.eob <= next_eob;
+			outputRay.position(21 downto 20) <= next_frame_no;
+			--outputRay.position(19 downto 10) <= std_logic_vector(to_unsigned(next_i, 10));
+			--outputRay.position(9 downto 0) <= std_logic_vector(to_unsigned(next_j, 10));
+			outputRay.position(19 downto 0) <= std_logic_vector(to_unsigned(next_address, 20));
+			outputRay.origin <= camera_center;
+			outputRay.color <= basisColourVector;
+			outputRay.remaining_reflects <= num_reflects;
+			--outputRay.copy <= next_copy;
+			outputRay.valid <= next_valid;
+			result_hold <= next_result_hold;
+			ver_base <= next_ver_base;
+			valid <= next_valid;
+			done <= next_done;
+			ran_add <= next_ran_add;
+			outputRay.pseudo_refl <= '0';
+			address <= next_address;
+		end if;
 	end if;
 end if;
 end process;
