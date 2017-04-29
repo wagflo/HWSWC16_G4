@@ -41,7 +41,7 @@ architecture beh of anyRefl is
 
 signal any, anyNext : std_logic; --startOfBundle_out_next, endOfBundle_out_next: std_logic;
 
-signal reflect, next_reflect, pseudo_reflect, next_pseudo_reflect, bundle, next_bundle : std_logic_vector(32 downto 0);
+signal reflect, next_reflect, pseudo_reflect, next_pseudo_reflect, bundle, next_bundle : std_logic_vector(31 downto 0);
 
 signal anyNext_vec, eob_vec, eob_delay, sob_delay: std_logic_vector(31 downto 0);
 signal valid_ray_in_vec, valid_ray_out_vec : std_logic_vector(0 downto 0);
@@ -66,23 +66,23 @@ anyNext <= --(valid_ray_in and (
 	   ((valid_t and (remaining_reflects(0) or remaining_reflects(1) or remaining_reflects(2)) and not emitting_sphere) or any))
 	   ;--));
 
-next_reflect(32) <= (valid_ray_in and (
+next_reflect(31) <= (valid_ray_in and (
 	   valid_t and (remaining_reflects(0) OR remaining_reflects(1) or remaining_reflects(2)) and not emitting_sphere
 	   ));
 
-next_reflect(31 downto 0) <= reflect(32 downto 1);
+next_reflect(30 downto 0) <= reflect(31 downto 1);
 
-next_pseudo_reflect(32) <= anyNext;
+next_pseudo_reflect(31) <= anyNext;
 
 anyNext_vec <= (OTHERS => anyNext);
 
-next_pseudo_reflect(31 downto 0) <= (NOT(bundle(32 downto 1)) AND anyNext_vec) OR (bundle(32 downto 1) AND pseudo_reflect(32 downto 1));
+next_pseudo_reflect(30 downto 0) <= (NOT(bundle(31 downto 1)) AND anyNext_vec(31 downto 1)) OR (bundle(31 downto 1) AND pseudo_reflect(31 downto 1));
 
 eob_vec <= (OTHERS => endOfBundle);
 
-next_bundle(32) <= endOfBundle OR NOT(valid_ray_in);
+next_bundle(31) <= endOfBundle OR NOT(valid_ray_in);
 
-next_bundle(31 downto 0) <= bundle(32 downto 1) OR eob_vec;
+next_bundle(30 downto 0) <= bundle(31 downto 1) OR eob_vec(31 downto 1);
 
 isReflected <= reflect(0);
 pseudoReflect <= pseudo_reflect(0);

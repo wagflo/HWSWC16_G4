@@ -40,8 +40,10 @@ rtInit (uint8_t num_objects, sphere_t *spheres, uint16_t max_reflects, uint16_t 
 
 	printf("In rtInit\n");
 	
-	fix16_t sphere_ena = 0x0000000;
-	fix16_t general_data = 0x0000000;
+	IOWR(MM_RAYTRACING_0_BASE, 0x0400, 0x00000000);
+	
+	uint32_t sphere_ena = 0x00000000;
+	uint32_t general_data = 0x00000000;
 	general_data = general_data | ((0x0000000F & fix16_from_int(num_objects - 1)) << 28);
 	general_data = general_data | ((0x0000000F & fix16_from_int(max_reflects)) << 24);
 	general_data = general_data | ((0x000000FF & fix16_from_int(num_samples)) << 16);
@@ -99,8 +101,11 @@ rtInit (uint8_t num_objects, sphere_t *spheres, uint16_t max_reflects, uint16_t 
 	}
 	//write the general data to the memory mapped interface
 	general_data = general_data | (0x0000FFFF & sphere_ena);
-	IOWR(MM_RAYTRACING_0_BASE, 0x0200, general_data);
+	IOWR(MM_RAYTRACING_0_BASE, 0x2000, general_data);		// MK hier war 0x0200
 	printf("sphere0 color y: %X\n", IORD(MM_RAYTRACING_0_BASE, 0x0300));
+	
+	//IOWR(MM_RAYTRACING_0_BASE, 0xFFFF, 0x123); // MK	
+	//IOWR(MM_RAYTRACING_0_BASE, 0xFFFF, 0x123); // MK		
 	
 	/* set other parameters */
 	//scene.num_spheres      = num_objects;
@@ -153,22 +158,54 @@ rtSetCamera (vec3_t *lookfrom, vec3_t *lookat, fix16_t vfov, uint8_t frame_addre
 	uint32_t last_address;
 	uint32_t cur_address;
 	uint32_t cur_color;
-	while (IORD(MM_RAYTRACING_0_BASE, 0x0000) == 0x00000000) {
-	  cur_address = IORD(MM_RAYTRACING_0_BASE, 0x0100);
-	  cur_color = IORD(MM_RAYTRACING_0_BASE, 0x0200);
-	  if (cur_address - getAddress(0x01) < 0) {
+	uint32_t colBefCU[3], colAftCU[3], counter0, counter1, controls;
+	
+	// MK warum stehen wir hier??? => hat noch kein finish_frame
+	printf("Vor camera data \n");
+	
+	while (IORD(MM_RAYTRACING_0_BASE, 0x0000) == 0x00000000) { // MK
+	  //cur_address = IORD(MM_RAYTRACING_0_BASE, 0x0100);
+	  //cur_color = IORD(MM_RAYTRACING_0_BASE, 0x0200);
+	  /*
+	  colBefCU[0] = IORD(MM_RAYTRACING_0_BASE, 0x2000);
+	  colBefCU[1] = IORD(MM_RAYTRACING_0_BASE, 0x2100);
+	  colBefCU[2] = IORD(MM_RAYTRACING_0_BASE, 0x2200);
+	  
+	  colAftCU[0] = IORD(MM_RAYTRACING_0_BASE, 0x2300);
+	  colAftCU[1] = IORD(MM_RAYTRACING_0_BASE, 0x2400);
+	  colAftCU[2] = IORD(MM_RAYTRACING_0_BASE, 0x2500);
+	  */
+	  counter0 = IORD(MM_RAYTRACING_0_BASE, 0x0400);
+	  counter1 = IORD(MM_RAYTRACING_0_BASE, 0x0500);
+	  /*
+	   printf("Before: %X %X %X\n", colBefCU[0], colBefCU[1], colBefCU[2]);
+	   
+	   printf("After:  %X %X %X\n", colAftCU[0], colAftCU[1], colAftCU[2]);
+	   */
+	  // printf("Counters: %X %X\n", counter0, counter1);
+	   
+	  
+	  //controls = IORD(MM_RAYTRACING_0_BASE, 0x0600);
+	  //printf("Controls: %X\n", controls);
+	  
+	  /*if (cur_address - getAddress(0x01) < 0) {
 	    printf("Writing frame 0\n");
 	  } else {
 	    printf("Writing frame 1\n");
 	  }
 	  printf("Address: %X\n", cur_address);
 	  printf("Color: %X\n", cur_color);
-	  if (last_address == cur_address) {
+	  */
+	  //printf("Address: %X\nColor: %X\n", cur_address, cur_color);
+	  
+	  /*if (last_address == cur_address) {
 	    printf("address did not change!\n");
 	  }
 	  last_address = cur_address;
-	  
+	  */
 	}
+	printf("Nach camera data \n");
+	
 	//write the origin
 	IOWR(MM_RAYTRACING_0_BASE, 0x3011, camera.origin.x[0]);
 	IOWR(MM_RAYTRACING_0_BASE, 0x3012, camera.origin.x[1]);

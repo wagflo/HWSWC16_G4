@@ -4,7 +4,10 @@ use work.operations_pkg.all;
 use IEEE.numeric_std.all;
 
 entity getRayDirAlt is
-
+generic(
+ MAXWIDTH : natural := 800;
+    MAXHEIGHT : natural := 480
+);
 port(
 
     clk 	: in std_logic;
@@ -56,7 +59,7 @@ signal next_frame_no, frame_no : std_logic_vector(1 downto 0);
 signal ran : std_logic_vector(31 downto 0) := x"00000000";
 
 signal address : natural := 0;
-signal next_address : natural := 1;
+signal next_address : natural;
 
 component lfsr is
   port (
@@ -68,9 +71,9 @@ component lfsr is
 end component;
 
 
-constant max_width : natural := 799;
+constant max_width : natural := MAXWIDTH - 1;
 
-constant max_height : natural := 479;
+constant max_height : natural := MAXHEIGHT - 1;
 
 begin
 l1 : lfsr port map(cout => ran(31 downto 24), clk => clk, reset => reset, enable => clk_en);
@@ -120,6 +123,9 @@ else
 			next_sob <= '1';
 			if num_samples = "00001" then
 				next_eob <= '1';
+				if j = max_height AND i = max_width -1 then
+					next_done <= '1';
+				end if;
 			end if;
 			if i >= max_width then
 				if j >= max_height then
@@ -140,9 +146,9 @@ else
 				next_ver_base <= ver_base;
 			end if;
 		else
-			if samples = unsigned(num_samples) - 1 OR unsigned(num_samples) = 1 then
+			if samples = unsigned(num_samples) - 1 then
 				next_eob <= '1';
-				if j = max_height AND i = max_width -1 then
+				if j = max_height AND i = max_width then
 					next_done <= '1';
 				end if;
 			end if;

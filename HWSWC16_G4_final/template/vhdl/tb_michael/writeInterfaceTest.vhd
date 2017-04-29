@@ -51,7 +51,7 @@ signal counter : integer := 0;
 signal pipeline_counter : integer := PIPEMAX;
 signal slave_counter : integer := 0;
 
-signal input_address 	: std_logic_vector(31 downto 0);
+signal input_address 	: std_logic_vector(32 downto 0);
 signal input_color 	: std_logic_vector(23 downto 0);
 signal input_valid 	: std_logic;
 signal output_address	: std_logic_vector(31 downto 0);
@@ -59,7 +59,7 @@ signal output_color 	: std_logic_vector(31 downto 0);
 signal output_write 	: std_logic;
 
 signal stall : std_logic;
-signal finished : std_logic;
+signal finished : std_logic_vector(1 downto 0);
 
 signal waitreq : std_logic := '0';
 
@@ -120,7 +120,7 @@ res <= '0' after 25 ns;
 --assert finished = '0' or finished = '1';
 --end process;
 
-assert (finished and '0') = '0';
+assert (finished and "00") = "00";
 
 --input <= not input after 10 ns;
 
@@ -161,7 +161,7 @@ elsif rising_edge(clk) then
     input_valid <= '0';
   end if;
   
-  input_address <= std_logic_vector(to_signed(counter, 32));
+  input_address <= '0' & std_logic_vector(to_signed(counter, 32));
   input_color <= std_logic_vector(to_signed(counter, 24));
 
 end if;

@@ -53,14 +53,18 @@ constant change_spheres : std_logic_vector(3 downto 0) := X"1";
 constant change_general : std_logic_vector(3 downto 0) := X"2";
 constant change_frame : std_logic_vector(3 downto 0) := X"3";
 constant change_address : std_logic_vector(3 downto 0) := X"4";
+constant reset_data : std_logic_vector(3 downto 0) := X"5";
+
 constant radius : std_logic_vector(3 downto 0) := X"1";
 constant radius2 : std_logic_vector(3 downto 0) := X"2";
 constant center : std_logic_vector(3 downto 0) := X"3";
 constant color : std_logic_vector(3 downto 0) := X"4";
 constant emitting : std_logic_vector(3 downto 0) := X"5";
+
 constant x : std_logic_vector(3 downto 0) := X"1";
 constant y : std_logic_vector(3 downto 0) := X"2";
 constant z : std_logic_vector(3 downto 0) := X"3";
+
 constant camera_origin : std_logic_vector(3 downto 0) := X"1";
 constant addition_base : std_logic_vector(3 downto 0) := X"2";
 constant addition_hor : std_logic_vector(3 downto 0) := X"3";

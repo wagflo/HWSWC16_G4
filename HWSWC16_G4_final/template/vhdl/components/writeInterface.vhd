@@ -1,5 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 --use work.delay_pkg.all;
 use work.components_pkg.all;
 
@@ -30,12 +31,16 @@ entity writeInterface is
     --start_counter : in std_logic;
     finished	  : out std_logic_vector(1 downto 0); -- uses readreq_for_second fifo for counting 
 				   -- all pixels of current frame have already passed!
+
+    counter0_debug 	: out std_logic_vector(18 downto 0);
+    counter1_debug 	: out std_logic_vector(18 downto 0);
     
     master_address   : out  std_logic_vector(31 downto 0);
     --write     : in  std_logic;
     --writedata : in  std_logic_vector(31 downto 0);
     master_colordata : out std_logic_vector(31 downto 0);
     master_write     : out  std_logic;
+    --byteenable : out std_logic_vector(3 downto 0);
     slave_waitreq	 : in std_logic
   );
 end entity;
@@ -103,6 +108,9 @@ stall <= stall_int;
 fifoback_colordata(31 downto 24) <= (others => '0');
 
 -- to conform to Avalon-MM timing:
+
+counter0_debug <= std_logic_vector(to_unsigned(counter0, 19));
+counter1_debug <= std_logic_vector(to_unsigned(counter1, 19));
 
 async : process(counter1, counter0, readreq_for_second_fifo, frame)
 begin
@@ -172,5 +180,7 @@ master_write <= not second_empty; --econd_empty_delayed_2;
 
 master_colordata <= fifoback_colordata;
 master_address <= fifoback_address(31 downto 0);
+
+--byteenable <= "1111";
 
 end architecture;
