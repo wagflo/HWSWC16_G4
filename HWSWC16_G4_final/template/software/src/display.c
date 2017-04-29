@@ -63,6 +63,17 @@ displayClear (uint32_t rgb)
 	}
 }
 
+void
+displayPattern (void)
+{
+	uint32_t i,j;
+	for(i = 0; i < FRAME_HEIGHT; ++i)
+	  for(j = 0; j < FRAME_WIDTH; ++i)
+	    {
+		IOWR(cur_base, (i*FRAME_WIDTH + j), 0x0f0f0f);
+	    }
+}
+
 uint32_t getAddress(uint8_t fb) {
   return frame_buffers[fb & 0x01];
 }

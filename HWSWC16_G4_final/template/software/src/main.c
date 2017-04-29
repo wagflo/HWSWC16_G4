@@ -73,6 +73,9 @@ main (void)
 	uint8_t start = 0;
 	selectFramebuffer (fb);
 	displayClear (0);
+	
+	displayClear(0xa0a000);
+	
 	printf("Nach displayClear\n");
 	showFramebuffer (fb & 0x01);
 	printf("Nach showFrambuffer\n");
@@ -91,15 +94,22 @@ main (void)
 			
 			//selectFramebuffer (fb);
 			testGetNextCamera (&lookfrom, &lookat, &vfov);
-			printf("Nach testGetCamera\n");
+			printf("Vor  setCamera\n");
 			setCamera (&lookfrom, &lookat, vfov, fb);
 			printf("Nach setCamera\n");
 			if (start >=2) {
 			  //wait until the old picture is written
 			  printf("Vor busy loop\n");
 			  while (IORD(MM_RAYTRACING_0_BASE, 0xFF00 | (fb & 0x01)) == 0x00000000) {
-			      printf("%X\n",IORD(MM_RAYTRACING_0_BASE, 0x0100));
-			      printf("%X\n",IORD(MM_RAYTRACING_0_BASE, 0x0200));
+			    
+			      uint32_t temp;
+			      temp = IORD(MM_RAYTRACING_0_BASE, 0x0100);
+			      printf("In busy loop\n");
+			      if(temp & 0x0 == 0){
+				
+			      printf("Adress: %X\n",temp);
+			      printf("Color : %X\n",IORD(MM_RAYTRACING_0_BASE, 0x0200));
+			      }
 			  }
 			  printf("Nach busy loop\n");
 			  //show the time if the picture is the first one

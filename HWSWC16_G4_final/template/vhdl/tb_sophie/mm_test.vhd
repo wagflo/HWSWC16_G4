@@ -11,6 +11,10 @@ end entity;
 architecture arch of mm_test is
 
 component raytracing_mm is
+	generic (
+		MAXWIDTH : natural;
+		MAXHEIGHT : natural
+	);
 	port (
 		clk   : in std_logic;
 		res_n : in std_logic;
@@ -52,63 +56,71 @@ type signal_array is array (natural range <>) of std_logic_vector(15 downto 0);
 type data_signal_array is array (natural range <>) of std_logic_vector(31 downto 0);
 
 
-constant address_array : signal_array(42 downto 0)  := (
+constant address_array : signal_array(62 downto 18)  := (
 --general data
-0 => X"2000", 
+20 => X"2000", 
 --first sphere inverse rad, rad2
-1=> X"1010", 2=>X"1020", 
+21=> X"1010", 22=>X"1020", 
 --first sphere center
-3=>X"1031", 4=>X"1032", 5=> X"1033",
+23=>X"1031", 24=>X"1032", 25=> X"1033",
 --first sphere color, emitting
-6=>X"1041", 7=>X"1042", 8=> X"1043", 9=> X"1050",
+26=>X"1041", 27=>X"1042", 28=> X"1043", 29=> X"1050",
 --second sphere
-10=> X"1110", 11=>X"1120", 
-12=>X"1131", 13=>X"1132", 14=> X"1133", 
-15=>X"1141", 16=>X"1142", 17=> X"1143", 18=> X"1150",
+30=> X"1110", 31=>X"1120", 
+32=>X"1131", 33=>X"1132", 34=> X"1133", 
+35=>X"1141", 36=>X"1142", 37=> X"1143", 38=> X"1150",
 --third sphere
-19=> X"1210", 20=>X"1220", 
-21=>X"1231", 22=>X"1232", 23=> X"1233",
-24=>X"1241", 25=>X"1242", 26=> X"1243", 27=> X"1250",
+39=> X"1210", 40=>X"1220", 
+41=>X"1231", 42=>X"1232", 43=> X"1233",
+44=>X"1241", 45=>X"1242", 46=> X"1243", 47=> X"1250",
 --can I write?
-28 => X"0000",
+48 => X"0000",
 --camera center + addition base
-29 => X"3011", 30=>X"3012", 31=>X"3013", 32 => X"3021", 33=>X"3022", 34=>X"3023",
+49 => X"3011", 50=>X"3012", 51=>X"3013", 52 => X"3021", 53=>X"3022", 54=>X"3023",
 --addition vectors hoizontal + vertical
-35 => X"3031", 36=>X"3032", 37=>X"3033", 38 => X"3041", 39=>X"3042", 40=>X"3043",
+55 => X"3031", 56=>X"3032", 57=>X"3033", 58 => X"3041", 59=>X"3042", 60=>X"3043",
 --finish the frame
-41 => X"3050", 42 => X"F000"
+61 => X"3050", 62 => X"F000",
+-- base addresses
+
+18 => X"4010", 19 => X"4020"
 );
 
-constant data_array : data_signal_array(42 downto 0)  := (
+constant data_array : data_signal_array(62 downto 18)  := (
 --general data
-0 => X"27010007", 
+20 => X"27010007", 
 --first sphere inverse rad, rad2
-1=> X"00010000", 2=>X"00010000", 
+21=> X"00010000", 22=>X"00010000", 
 --first sphere center
-3=>X"FFFD0000", 4=>X"00030000", 5=> X"00030000",
+23=>X"FFFD0000", 24=>X"00030000", 25=> X"00030000",
 --first sphere color, emitting
-6=>X"00010000", 7=>X"00004CCC", 8=> X"00004CCC", 9=> X"00000000",
+26=>X"00010000", 27=>X"00004CCC", 28=> X"00004CCC", 29=> X"00000000",
 --second sphere
-10=> X"00010000", 11=>X"00010000", 
-12=>X"00020000", 13=>X"FFFE0000", 14=> X"FFFE0000", 
-15=>X"00004CCC", 16=>X"00010000", 17=> X"00004CCC", 18=> X"00000001",
+30=> X"00010000", 31=>X"00010000", 
+32=>X"00020000", 33=>X"FFFE0000", 34=> X"FFFE0000", 
+35=>X"00004CCC", 36=>X"00010000", 37=> X"00004CCC", 38=> X"00000001",
 --third sphere -- copy of second
-19=> X"00010000", 20=>X"00010000", 
-21=>X"00020000", 22=>X"FFFE0000", 23=> X"FFFE0000",
-24=>X"00004CCC", 25=>X"00004CCC", 26=> X"00010000", 27=> X"00000001",
+39=> X"00010000", 40=>X"00010000", 
+41=>X"00020000", 42=>X"FFFE0000", 43=> X"FFFE0000",
+44=>X"00004CCC", 45=>X"00004CCC", 46=> X"00010000", 47=> X"00000001",
 --can I write?
-28 => X"00000000",
+48 => X"00000000",
 --camera center + addition base
-29 => X"00000000", 30=>X"00000000", 31=>X"00000000", 32 => X"FFFF0000", 33=>X"00010000", 34=>X"00010000",
+49 => X"00000000", 50=>X"00000000", 51=>X"00000000", 52 => X"FFFF0000", 53=>X"00010000", 54=>X"00010000",
 --addition vectors hoizontal + vertical
-35 => X"0000_0089", 36=>X"00000000", 37=>X"00000000", 38 => X"00000000", 39=>X"0000_00A4", 40=>X"00000000",
+55 => X"0000_0089", 56=>X"00000000", 57=>X"00000000", 58 => X"00000000", 59=>X"0000_00A4", 60=>X"00000000",
 --finish the frame
-41 => X"00000000", 42 => X"00000000"
+61 => X"00000000", 62 => X"00000000",
+
+-- base addresses
+18 => X"00000000", 19 => X"00400000"
 );
 
-signal i, j : natural;
+signal i, j : natural := 18;
 
 begin
+
+slave_waitreq <= '0';
 
 
 clk <= not(clk) after 20 ns;
@@ -116,7 +128,14 @@ res_n <= '0' after 10 ns;
 
 
 
-mm : raytracing_mm port map (clk => clk, res_n => res_n, 
+
+mm : raytracing_mm 
+generic map(
+
+	MAXWIDTH => 7,
+	MAXHEIGHT => 5
+)
+port map (clk => clk, res_n => res_n, 
 		address		=> address,
 		write 		=> write,
 		read		=> read,
@@ -145,18 +164,18 @@ cpu : process(clk, res_n) is
 begin
 
 if res_n = '1'  then
-	i <= 0;
+	i <= 18;
 	write <= '0';
 	j <= 0;
 elsif  rising_edge(clk) then
 	write <= '0';
 	j <= j + 1;
-	if i /= 28 AND i < address_array'high then
+	if i /= 48 AND i < address_array'high then
 		write <= '1';
 		if  j > 1 then
 			i <= i + 1;
 		end if;
-	elsif i = 28 AND readdata /= X"00000000" then
+	elsif i = 48 AND readdata /= X"00000000" then
 		if  j > 1 then
 			i <= i + 1;
 		end if;
@@ -179,4 +198,5 @@ end process;
 
 address <= address_array(i);
 writedata <= data_array(i);
+
 end architecture;

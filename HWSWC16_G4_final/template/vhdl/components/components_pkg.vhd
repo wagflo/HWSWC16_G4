@@ -56,6 +56,10 @@ component writeInterface is
     stall 	  : out std_logic;
     finished	  : out std_logic_vector(1 downto 0);
     
+    counter0_debug 	: out std_logic_vector(18 downto 0);
+    counter1_debug 	: out std_logic_vector(18 downto 0);
+    
+
     master_address   : out  std_logic_vector(31 downto 0);
     --write     : in  std_logic;
     --writedata : in  std_logic_vector(31 downto 0);
@@ -135,7 +139,10 @@ component colorUpdate is
 end component;
 
 component getRayDirAlt is
-
+generic (
+ 	MAXWIDTH : natural := 800;
+    MAXHEIGHT : natural := 480
+);
 port(
 
     clk 	: in std_logic;

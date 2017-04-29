@@ -15,6 +15,10 @@ use lpm.lpm_components.all;
 
 
 entity raytracing_mm is
+	generic (
+    		MAXWIDTH : natural := 800;
+    		MAXHEIGHT : natural := 480
+	);
 	port (
 		clk   : in std_logic;
 		res_n : in std_logic;
@@ -100,25 +104,39 @@ constant zero_ray : ray := (
 signal sc, sc_next : scene;
 signal frames, frames_next : frame_array := (OTHERS => initial_frame);
 
-constant can_write : std_logic_vector(31 downto 0) := X"00000000";
+--readtypes
+constant can_write : std_logic_vector(15 downto 0) := X"0000";
+
+--t addresses (write)
 constant finish_frame : std_logic_vector(3 downto 0) := X"F";
 constant change_spheres : std_logic_vector(3 downto 0) := X"1";
 constant change_general : std_logic_vector(3 downto 0) := X"2";
 constant change_frame : std_logic_vector(3 downto 0) := X"3";
+constant change_address : std_logic_vector(3 downto 0) := X"4";
+constant reset_data : std_logic_vector(3 downto 0) := X"5";
+
+--elem addresses
+--sphere elem addresses
 constant radius : std_logic_vector(3 downto 0) := X"1";
 constant radius2 : std_logic_vector(3 downto 0) := X"2";
 constant center : std_logic_vector(3 downto 0) := X"3";
-constant x : std_logic_vector(3 downto 0) := X"1";
-constant y : std_logic_vector(3 downto 0) := X"2";
-constant z : std_logic_vector(3 downto 0) := X"3";
+--frame elem addresses
 constant camera_origin : std_logic_vector(3 downto 0) := X"1";
 constant addition_base : std_logic_vector(3 downto 0) := X"2";
 constant addition_hor : std_logic_vector(3 downto 0) := X"3";
 constant addition_ver : std_logic_vector(3 downto 0) := X"4";
 constant frame_no : std_logic_vector(3 downto 0) := X"5";
+--address elem addresses
+constant address1 : std_logic_vector(3 downto 0) := X"1";
+constant address2 : std_logic_vector(3 downto 0) := X"2";
+
+--coord addresses
+constant x : std_logic_vector(3 downto 0) := X"1";
+constant y : std_logic_vector(3 downto 0) := X"2";
+constant z : std_logic_vector(3 downto 0) := X"3";
 constant one48 : std_logic_vector(47 downto 0) := (32 => '1', OTHERS => '0');
-constant base_address1 : std_logic_vector(31 downto 0) := (x"00000000");
-constant base_address2 : std_logic_vector(31 downto 0) := (x"00000000");
+--constant base_address1 : std_logic_vector(31 downto 0) := (x"00000000");
+--constant base_address2 : std_logic_vector(31 downto 0) := (x"00000000");
 
 --signal next_readdata : std_logic_vector(31 downto 0);
 signal t, elem, coord, sphere : std_logic_vector(3 downto 0);
@@ -128,6 +146,8 @@ signal t_times_a : std_logic_vector(31 downto 0);
 signal one_over_a : std_logic_vector(47 downto 0);
 signal mult_input : std_logic_vector(31 downto 0);
 signal ref_dir, ref_origin, colUp_color_in : std_logic_vector(95 downto 0);
+
+signal pixel_byte_address : std_logic_vector(21 downto 0);
 
 signal can_feed, start_rdo, start_rdo_next, done_rdo, copyRay_rdo,
 anyref_ray_endOfBundle, anyref_ray_startOfBundle, anyref_ray_valid, 
@@ -177,9 +197,19 @@ signal pixel_address_writeIF, ref_t : std_logic_vector(31 downto 0);
 
 signal fr_done : std_logic_vector(1 downto 0);
 
-begin
+signal counter0_debug 	: std_logic_vector(18 downto 0);
+signal counter1_debug 	: std_logic_vector(18 downto 0);
+    
 
-reset <= res_n;
+
+begin
+reset_assign : process(res_n, t, write) is begin
+if t = reset_data then
+	reset <= res_n OR write;
+else
+	reset <= res_n;
+end if;
+end process;
 
 --next_readdata <= (OTHERS=>NOT(write_poss));
 --number_filled_v <= (1 => frames(0).all_info AND frames(1).all_info, 0 => frames(0).all_info XOR frames(1).all_info);
@@ -212,7 +242,13 @@ start_rdo <= (valid_data AND NOT(old_valid_data)) OR start_picture;
 can_feed <= frames(0).all_info AND NOT(stall);
 stall <= delayed_reflected_ray.valid OR fifo_full;
 
-rdo : getRayDirAlt port map (
+rdo : getRayDirAlt 
+	generic map(
+
+	MAXWIDTH => MAXWIDTH,
+	MAXHEIGHT => MAXHEIGHT
+	)
+	port map (
     clk => clk,
     clk_en => can_feed,
     reset => reset,
@@ -567,7 +603,9 @@ backend_par : delay_element generic map (WIDTH => 22, DEPTH => 17) port map (clk
 writeIF : writeInterface 
   generic map
   (
-    FIFOSIZE => 128--256
+    FIFOSIZE => 128,--256
+    MAXWIDTH => MAXWIDTH,
+    MAXHEIGHT => MAXHEIGHT
   )
   port map
   (
@@ -582,6 +620,9 @@ writeIF : writeInterface
 
     stall 	  => fifo_full,
     
+    counter0_debug => counter0_debug,
+    counter1_debug => counter1_debug,
+
     master_address   => master_address,
     --write     : in  std_logic;
     --writedata : in  std_logic_vector(31 downto 0);
@@ -591,13 +632,15 @@ writeIF : writeInterface
     finished	     => fr_done
   );
 
+pixel_byte_address <= back_out_address(19 downto 0) & "00";
+
 pixel_address_async : process(back_out_address) is begin
 if back_out_address(21 downto 20) = "00" OR back_out_address(21 downto 20) = "10" then
-	pixel_address_writeIF <= std_logic_vector(to_unsigned(to_integer(unsigned(sc.address1)) +to_integer(unsigned(back_out_address(19 downto 0))) ,32));
+	pixel_address_writeIF <= std_logic_vector(to_unsigned(to_integer(unsigned(sc.address1)) +to_integer(unsigned(pixel_byte_address)) ,32));
 elsif back_out_address(21 downto 20) = "01" OR back_out_address(21 downto 20) = "11" then 
-	pixel_address_writeIF <= std_logic_vector(to_unsigned(to_integer(unsigned(sc.address2)) +to_integer(unsigned(back_out_address(19 downto 0))) ,32));
+	pixel_address_writeIF <= std_logic_vector(to_unsigned(to_integer(unsigned(sc.address2)) +to_integer(unsigned(pixel_byte_address)) ,32));
 else
-	pixel_address_writeIF <= std_logic_vector(to_unsigned(to_integer(unsigned(sc.address1)) +to_integer(unsigned(back_out_address(19 downto 0))) ,32));
+	pixel_address_writeIF <= std_logic_vector(to_unsigned(to_integer(unsigned(sc.address1)) +to_integer(unsigned(pixel_byte_address)) ,32));
 end if;
 end process;
 
@@ -614,6 +657,85 @@ elsif address(15 downto 8) = x"02" then
 	readdata <= "00000000" & back_out_color;
 elsif address(15 downto 8) = x"03" then
 	readdata <= sc.spheres(0).colour.y;
+
+elsif address(15 downto 8) = x"04" then
+	readdata <= x"000" & "0" & counter0_debug;
+elsif address(15 downto 8) = x"05" then
+	readdata <= x"000" & "0" & counter1_debug;
+
+-- controls
+elsif address(15 downto 8) = x"06" then
+	readdata <= x"000000" & "000" & stall & fr_done & sc.pic_done;
+
+
+-- output rdo
+elsif address(15 downto 8) = x"10" then
+	readdata <= outputRay_rdo.color.x;
+elsif address(15 downto 8) = x"11" then
+	readdata <= outputRay_rdo.color.y;
+elsif address(15 downto 8) = x"12" then
+	readdata <= outputRay_rdo.color.z;
+elsif address(15 downto 8) = x"13" then
+	readdata <= outputRay_rdo.origin.x;
+elsif address(15 downto 8) = x"14" then
+	readdata <= outputRay_rdo.origin.y;
+elsif address(15 downto 8) = x"15" then
+	readdata <= outputRay_rdo.origin.z;
+elsif address(15 downto 8) = x"16" then
+	readdata <= outputRay_rdo.direction.x;
+elsif address(15 downto 8) = x"17" then
+	readdata <= outputRay_rdo.direction.y;
+elsif address(15 downto 8) = x"18" then
+	readdata <= outputRay_rdo.direction.z;
+elsif address(15 downto 8) = x"19" then
+	readdata <= outputRay_rdo.remaining_reflects &	
+		outputRay_rdo.sob &
+		outputRay_rdo.eob & 
+		outputRay_rdo.copy &
+ 		outputRay_rdo.pseudo_refl &
+		outputRay_rdo.valid & x"000000";
+
+-- delayed reflected ray
+elsif address(15 downto 8) = x"20" then
+	readdata <= delayed_reflected_ray.color.x;
+elsif address(15 downto 8) = x"21" then
+	readdata <= delayed_reflected_ray.color.y;
+elsif address(15 downto 8) = x"22" then
+	readdata <= delayed_reflected_ray.color.z;
+elsif address(15 downto 8) = x"23" then
+	readdata <= delayed_reflected_ray.origin.x;
+elsif address(15 downto 8) = x"24" then
+	readdata <= delayed_reflected_ray.origin.y;
+elsif address(15 downto 8) = x"25" then
+	readdata <= delayed_reflected_ray.origin.z;
+elsif address(15 downto 8) = x"26" then
+	readdata <= delayed_reflected_ray.direction.x;
+elsif address(15 downto 8) = x"27" then
+	readdata <= delayed_reflected_ray.direction.y;
+elsif address(15 downto 8) = x"28" then
+	readdata <= delayed_reflected_ray.direction.z;
+elsif address(15 downto 8) = x"29" then
+	readdata <= delayed_reflected_ray.remaining_reflects &	
+		delayed_reflected_ray.sob &
+		delayed_reflected_ray.eob & 
+		delayed_reflected_ray.copy &
+ 		delayed_reflected_ray.pseudo_refl &
+		delayed_reflected_ray.valid & x"000000";
+
+-- color vor und nach colUpdate
+elsif address(15 downto 8) = x"20" then
+	readdata <= tovector(colUp_color_in).x;
+elsif address(15 downto 8) = x"21" then
+	readdata <= tovector(colUp_color_in).y;
+elsif address(15 downto 8) = x"22" then
+	readdata <= tovector(colUp_color_in).z;
+elsif address(15 downto 8) = x"23" then
+	readdata <= updatedColor.x;
+elsif address(15 downto 8) = x"24" then
+	readdata <= updatedColor.y;
+elsif address(15 downto 8) = x"25" then
+	readdata <= updatedColor.z;
+
 else
 	readdata <= (OTHERS => write_poss);
 end if;
