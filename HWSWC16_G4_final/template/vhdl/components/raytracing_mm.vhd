@@ -644,8 +644,12 @@ else
 end if;
 end process;
 
-readdata_assign_async : process(address) is begin
-if address(15 downto 8) = x"FF" then
+readdata_assign_async : process(address, read) is begin
+if read = '0' then
+	readdata <= (OTHERS => '0');
+elsif address = x"0000" then
+	readdata <= (OTHERS => write_poss);
+elsif address(15 downto 8) = x"FF" then
 	if address(0) = '1' then
 		readdata <= (OTHERS => sc.pic_done(1));
 	else
@@ -694,7 +698,6 @@ elsif address(15 downto 8) = x"19" then
 		outputRay_rdo.copy &
  		outputRay_rdo.pseudo_refl &
 		outputRay_rdo.valid & x"000000";
-
 -- delayed reflected ray
 elsif address(15 downto 8) = x"20" then
 	readdata <= delayed_reflected_ray.color.x;
@@ -736,8 +739,6 @@ elsif address(15 downto 8) = x"24" then
 elsif address(15 downto 8) = x"25" then
 	readdata <= updatedColor.z;
 
-else
-	readdata <= (OTHERS => write_poss);
 end if;
 end process;
 --readdata <= (others => '0'); --MK

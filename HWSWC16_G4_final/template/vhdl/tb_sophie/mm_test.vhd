@@ -166,20 +166,34 @@ begin
 if res_n = '1'  then
 	i <= 18;
 	write <= '0';
+	read <= '0';
 	j <= 0;
 elsif  rising_edge(clk) then
 	write <= '0';
+	read <= '0';
 	j <= j + 1;
-	if i /= 48 AND i < address_array'high then
+	if i /= 48 AND i < address_array'high AND i /= 47 then
 		write <= '1';
 		if  j > 1 then
 			i <= i + 1;
 		end if;
-	elsif i = 48 AND readdata /= X"00000000" then
+	elsif i = 47 then
+		read <= '1';
 		if  j > 1 then
 			i <= i + 1;
 		end if;
-		write <= '1';
+	elsif i = 48 then
+		if readdata /= X"00000000" then
+			if  j > 1 then
+				i <= i + 1;
+			end if;
+			write <= '1';
+		else read <= '1';
+			i <= i;
+		end if;
+	elsif i >= address_array'high then
+		i <= 48;
+		read <= '1';
 	end if;
 
 end if;

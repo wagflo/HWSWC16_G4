@@ -40,7 +40,6 @@ rtInit (uint8_t num_objects, sphere_t *spheres, uint16_t max_reflects, uint16_t 
 
 	printf("In rtInit\n");
 	
-	IOWR(MM_RAYTRACING_0_BASE, 0x0400, 0x00000000);
 	
 	uint32_t sphere_ena = 0x00000000;
 	uint32_t general_data = 0x00000000;

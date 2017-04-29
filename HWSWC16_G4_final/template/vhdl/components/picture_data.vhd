@@ -80,7 +80,7 @@ sphere <= address(11 downto 8);
 elem <= address(7 downto 4);
 coord <= address(3 downto 0);
 
-write_poss <= frames_out(1).all_info NAND frames_out(0).all_info;
+write_poss <= NOT(frames_out(1).all_info) OR NOT(frames_out(0).all_info);
 valid_data <= frames_out(0).all_info;
 
 
