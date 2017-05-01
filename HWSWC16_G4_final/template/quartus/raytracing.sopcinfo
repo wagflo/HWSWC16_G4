@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="raytracing" kind="raytracing" version="1.0" fabric="QSYS">
  <!-- Format version 16.0 222 (Future versions may contain additional information.) -->
- <!-- 2017.04.29.22:33:56 -->
+ <!-- 2017.05.01.19:27:11 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1493498036</value>
+  <value>1493659631</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -5468,6 +5468,22 @@ parameters are a RESULT of the module parameters. -->
    path="mm_raytracing_0">
   <!-- Describes a single module. Module parameters are
 the requested settings for a module instance. -->
+  <parameter name="MAXWIDTH">
+   <type>int</type>
+   <value>800</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="MAXHEIGHT">
+   <type>int</type>
+   <value>480</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
   <parameter name="deviceFamily">
    <type>java.lang.String</type>
    <value>UNKNOWN</value>
@@ -6224,6 +6240,12 @@ parameters are a RESULT of the module parameters. -->
     <direction>Input</direction>
     <width>1</width>
     <role>waitrequest</role>
+   </port>
+   <port>
+    <name>byteenable</name>
+    <direction>Output</direction>
+    <width>4</width>
+    <role>byteenable</role>
    </port>
    <memoryBlock>
     <isBridge>false</isBridge>

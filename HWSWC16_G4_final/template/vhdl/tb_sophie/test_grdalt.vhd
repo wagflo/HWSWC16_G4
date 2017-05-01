@@ -18,7 +18,7 @@ constant zero_ray : ray := (direction => zero_vec, origin => zero_vec,
 	color => zero_vec, remaining_reflects=> (OTHERS => '0'), 
 	position=> (OTHERS => '0'), OTHERS => '0');
 
-signal clk, stall, hold, reset, done, valid, valid_data, start, clk_en : std_logic := '1';
+signal clk, stall, hold, reset, done, valid, valid_data, start, clk_en, fifo_full : std_logic := '1';
 signal output_ray, right_ray : ray;
 
 signal i : natural := 0;
@@ -32,6 +32,7 @@ grdald : getRayDirAlt port map
     clk => clk, clk_en  => clk_en, hold =>'0', reset => reset, 
     start => start, 
     valid_data => valid_data,
+    fifo_full => fifo_full,
 
     frame => "01",
 
@@ -74,6 +75,11 @@ sync_update : process(clk, reset, i) is begin
 			stall <= '1';
 		else
 			stall <= '0';
+		end if;
+		if (i mod 3 = 0) then
+			fifo_full <= '0';
+		else
+			fifo_full <= '1';
 		end if;
 	end if;
 end process;
