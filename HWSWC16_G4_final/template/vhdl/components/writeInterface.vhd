@@ -114,27 +114,25 @@ counter1_debug <= std_logic_vector(to_unsigned(counter1, 19));
 
 async : process(counter1, counter0, readreq_for_second_fifo, frame)
 begin
-
+counter0_next <= counter0;
+counter1_next <= counter1;
 finished_next <= "00";
 if readreq_for_second_fifo = '1' then
   if frame = '0' then
-	if counter0 = (MAXWIDTH*MAXHEIGHT - 1) then
+	if counter0 >= (MAXWIDTH*MAXHEIGHT - 1) then
     		counter0_next <= 0;
     		finished_next(0) <= '1';
 	else
 		counter0_next <= counter0 + 1;
 	end if;
   else
-    	if counter1 = (MAXWIDTH*MAXHEIGHT - 1) then
+    	if counter1 >= (MAXWIDTH*MAXHEIGHT - 1) then
     		counter1_next <= 0;
     		finished_next(1) <= '1';
 	else
 		counter1_next <= counter1 + 1;
 	end if;
   end if;
-else
-  counter0_next <= counter0;
-  counter1_next <= counter1;
 end if;
 
 end process;

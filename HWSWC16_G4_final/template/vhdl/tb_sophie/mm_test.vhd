@@ -102,7 +102,8 @@ constant data_array : data_signal_array(63 downto 18)  := (
 35=>X"00004CCC", 36=>X"00010000", 37=> X"00004CCC", 38=> X"00000001",
 --third sphere -- copy of second
 39=> X"00010000", 40=>X"00010000", 
-41=>X"00020000", 42=>X"FFFE0000", 43=> X"FFFE0000",
+41=>X"00030000", 42=>X"FFFD0000", 43=> X"FFFD0000", --MK
+--41=>X"FFFF0000", 42=>X"00010000", 43=> X"00010000",
 44=>X"00004CCC", 45=>X"00004CCC", 46=> X"00010000", 47=> X"00000001",
 --can I write?
 48 => X"00000000",
@@ -133,8 +134,8 @@ res_n <= '0' after 10 ns;
 mm : raytracing_mm 
 generic map(
 
-	MAXWIDTH => 10,
-	MAXHEIGHT => 10
+	MAXWIDTH => 5,
+	MAXHEIGHT => 7
 )
 port map (clk => clk, res_n => res_n, 
 		address		=> address,

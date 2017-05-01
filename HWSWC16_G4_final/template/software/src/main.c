@@ -96,15 +96,56 @@ main (void)
 			testGetNextCamera (&lookfrom, &lookat, &vfov);
 			
 			
-			if (start >=2) {
+			if (start >=1) {
 			  //wait until the old picture is written
 			  printf("Vor busy loop\n");
 			  uint16_t read_base = 0xFF01;
-			  if ((fb & 01) == 0) {
+			  if ((fb & 01) == 1) {
 			    read_base = 0xFF00;
 			  }
+			  
+			  uint32_t countFirst = 0; 
+			  uint32_t counter0, counter1, controls;
+			  uint32_t rdoDirx, rdoDiry, rdoDirz, rdoData, oldRdoData;
+			  uint32_t delReflDirx, delReflDiry, delReflDirz, delReflData;
+			  uint32_t colInX, colInY, colInZ;
+			  oldRdoData = 0x00000000;
 			  while (IORD(MM_RAYTRACING_0_BASE, read_base) == 0x00000000) {
-			      printf("In busy loop\n");
+			      if(countFirst < 30){
+				
+				
+				if(1){
+				  
+				  counter0 = IORD(MM_RAYTRACING_0_BASE, 0x0400);
+				  counter1 = IORD(MM_RAYTRACING_0_BASE, 0x0500);
+				  controls = IORD(MM_RAYTRACING_0_BASE, 0x0600);
+				  printf("Counter0: %d counter1: %d controls (0: 27, stall, fr_done: 2, sc.pic_done: 2) %x \n", counter0, counter1, controls);
+				  
+				  
+				  rdoDirx = IORD(MM_RAYTRACING_0_BASE, 0x1600);
+				  rdoDiry = IORD(MM_RAYTRACING_0_BASE, 0x1700);
+				  rdoDirz = IORD(MM_RAYTRACING_0_BASE, 0x1800);
+				  rdoData = IORD(MM_RAYTRACING_0_BASE, 0x1900);
+				  if (rdoData != oldRdoData) {
+				    printf("GetRayDir    Dir x: %x dir y: %x dir z: %x data (remrefl:3, sob, eob, copy, pseudo, valid, 0:24) %x \n", rdoDirx, rdoDiry, rdoDirz, rdoData);
+				  }
+				  oldRdoData = rdoData;
+				  /*
+				  delReflDirx = IORD(MM_RAYTRACING_0_BASE, 0x2600);
+				  delReflDiry = IORD(MM_RAYTRACING_0_BASE, 0x2700);
+				  delReflDirz = IORD(MM_RAYTRACING_0_BASE, 0x2800);
+				  delReflData = IORD(MM_RAYTRACING_0_BASE, 0x2900);
+				  printf("Delayed Refl Dir x: %x dir y: %x dir z: %x data (remrefl:3, sob, eob, copy, pseudo, valid, 0:24) %x \n", rdoDirx, rdoDiry, rdoDirz, rdoData);
+				  */
+				  /*
+				  colInX = IORD(MM_RAYTRACING_0_BASE, 0x2000);
+				  colInY = IORD(MM_RAYTRACING_0_BASE, 0x2100);
+				  colInZ = IORD(MM_RAYTRACING_0_BASE, 0x2200);
+				  printf("Color in x: %x y: %x z: %x \n", colInX, colInY, colInZ);
+				  */
+				}
+			      }
+			      //printf("In busy loop\n");
 			  }
 			  printf("Nach busy loop\n");
 			  //show the time if the picture is the first one
@@ -125,6 +166,8 @@ main (void)
 			if ((fb & 0x01) == 0) {
 			  alt_timestamp_start ();
 			}
+			
+			
 		}
 		
 	}
@@ -141,6 +184,12 @@ setupHW (void)
 	void *framebuffers = malloc (FRAME_HEIGHT * FRAME_WIDTH * sizeof (uint32_t) * 2);
 	displayInit ((uint32_t) framebuffers,
 		(uint32_t) framebuffers + FRAME_HEIGHT * FRAME_WIDTH * sizeof (uint32_t));
+	// HW Reset hopefully
+	IORD(MM_RAYTRACING_0_BASE, 0x5000);
+	IORD(MM_RAYTRACING_0_BASE, 0x5000);
+	IORD(MM_RAYTRACING_0_BASE, 0x5000);
+	IORD(MM_RAYTRACING_0_BASE, 0x5000);
+	IORD(MM_RAYTRACING_0_BASE, 0x5000);
 }
 
 static void

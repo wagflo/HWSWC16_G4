@@ -75,8 +75,8 @@ architecture beh of reflect is
   signal dot_prod_res, dot_prod_input : std_logic_vector(31 downto 0) := x"0000_0000"; -- one more because of factor 2
   signal origin_delayed_std_logic, new_origin_std_logic : std_logic_vector(95 downto 0);
   signal origin_delayed: vector;
-  signal scaled_dir_std_logic_delay_4, scaled_dir_std_logic_delay_10 : std_logic_vector(95 downto 0);
-  signal scaled_dir_delay_4, scaled_dir_delay_10 : vector;
+  signal dir_std_logic_delay_c6, dir_std_logic_delay_c12 : std_logic_vector(95 downto 0);
+  signal dir_delay_c6, dir_delay_c12 : vector;
   signal unit_normal_vec_delayed_std_logic : std_logic_vector(95 downto 0);
   signal unit_normal_vec_delayed : vector;
   signal valid_ray_in_vec, valid_ray_out_vec : std_logic_vector(0 downto 0);
@@ -94,7 +94,7 @@ begin
   valid_other_in_vec(0) <= valid_ray_in;
   valid_other_in_vec(1) <= copy_ray_in;
 
-  delay_other_validities: delay_element generic map(WIDTH => 2, DEPTH => 14) port map (
+  delay_other_validities_c1t14: delay_element generic map(WIDTH => 2, DEPTH => 14) port map (
   clk => clk, clken => clk_en, reset => reset, 
   source => valid_other_in_vec,
   dest => valid_other_out_vec
@@ -103,7 +103,7 @@ begin
   valid_ray_out <= valid_other_out_vec(0);
   copy_ray_out <= valid_other_out_vec(1);
 
-  delay_sphere_i_for_center: delay_element generic map(WIDTH => 5, DEPTH => 3) 
+  delay_sphere_i_for_center_c1t3: delay_element generic map(WIDTH => 5, DEPTH => 3) 
   port map (
     clk => clk, clken => clk_en, reset => reset, 
     source(4 downto 1) => sphere_i,
@@ -112,7 +112,7 @@ begin
     dest(0) => valid_t_for_center
   );
 
-  delay_sphere_i_for_one_over_r: delay_element generic map(WIDTH => 5, DEPTH => 1) 
+  delay_sphere_i_for_one_over_r_c4: delay_element generic map(WIDTH => 5, DEPTH => 1) 
   port map (
     clk => clk, clken => clk_en, reset => reset, 
     source(4 downto 1) => sphere_i_for_center,
@@ -122,7 +122,7 @@ begin
   );
 
 
-  delay_validity: delay_element generic map(WIDTH => 1, DEPTH => 9) port map (
+  delay_validity_c5t13: delay_element generic map(WIDTH => 1, DEPTH => 9) port map (
   clk => clk, clken => clk_en, reset => reset, 
   source(0) => valid_t_for_one_over_r,
   dest(0) => valid_refl_next
@@ -148,7 +148,7 @@ begin
     end if;
   end process;
 
-  sync : process(clk, clk_en, reset)
+  sync : process(clk, clk_en, reset) --************************ AM ENDE NOCHMAL GELATCHT ***********************
 
   begin
 
@@ -164,7 +164,7 @@ begin
   end process;
 
 
-  mulDir : vecMulS
+  mulDir_c1t2 : vecMulS
   port map(
 
     clk => clk,
@@ -185,7 +185,7 @@ begin
 
   valid_ray_in_vec(0) <= valid_ray_in;
 
-  delay_ray_validity: delay_element generic map(WIDTH => 1, DEPTH => 14) 
+  delay_ray_validity_c1t14: delay_element generic map(WIDTH => 1, DEPTH => 14) 
   port map (
     clk => clk, clken => clk_en, reset => reset, 
     source => valid_ray_in_vec,
@@ -194,17 +194,17 @@ begin
 
   valid_ray_out <= valid_ray_out_vec(0);
 
-  delay_scaled_dir_for_dot_product: delay_element generic map(WIDTH => 96, DEPTH => 4) 
+  delay_dir_for_dot_product_c1t6: delay_element generic map(WIDTH => 96, DEPTH => 6) 
   port map (
     clk => clk, clken => clk_en, reset => reset, 
-    source => to_std_logic(scaled_dir),
-    dest => scaled_dir_std_logic_delay_4
+    source => to_std_logic(direction),
+    dest => dir_std_logic_delay_c6
   );
 
-  scaled_dir_delay_4 <= tovector(scaled_dir_std_logic_delay_4);
+  dir_delay_c6 <= tovector(dir_std_logic_delay_c6);
 
 
-  delay_origin_for_add2origin: delay_element generic map(WIDTH => 96, DEPTH => 2) 
+  delay_origin_for_add2origin_c1t2: delay_element generic map(WIDTH => 96, DEPTH => 2) 
   port map (
     clk => clk, clken => clk_en, reset => reset, 
     source => to_std_logic(origin),
@@ -215,14 +215,14 @@ begin
 
 
 
-  add2origin : vector_add_sub 
+  add2origin_c3 : vector_add_sub 
   port map (
 
     clk => clk,
     clk_en => clk_en,
     reset => reset,
 
-    add_sub => '1',
+    add_sub => '1', --MK
 
     x1 => origin_delayed.x,
     y1 => origin_delayed.y,
@@ -237,7 +237,7 @@ begin
     z => hitpoint.z
   );
 
-  delay_hitpoint: delay_element generic map(WIDTH => 96, DEPTH => 10) port map (
+  delay_hitpoint_c4t13 : delay_element generic map(WIDTH => 96, DEPTH => 10) port map (
   
     clk => clk, clken => clk_en, reset => reset, 
     source => to_std_logic(hitpoint),
@@ -246,7 +246,7 @@ begin
 
   new_origin_next <= tovector(new_origin_std_logic);
 
-  normalVec : vector_add_sub 
+  normalVec_c4 : vector_add_sub 
   port map (
 
     clk => clk,
@@ -276,7 +276,7 @@ begin
   --  dest => one_over_r_delayed
   --);
 
-  normalizeNormalVec : vecMulS
+  normalizeNormalVec_c5t6 : vecMulS
   port map(
 
     clk => clk,
@@ -297,7 +297,7 @@ begin
 
 -- in C subroutine reflect
 
-  delay_unit_normal_vec_for_scaleNormalVec: delay_element generic map(WIDTH => 96, DEPTH => 4) 
+  delay_unit_normal_vec_for_scaleNormalVec_c7t10: delay_element generic map(WIDTH => 96, DEPTH => 4) 
   port map (
     clk => clk, clken => clk_en, reset => reset, 
     source => to_std_logic(unit_normal_vec),
@@ -307,16 +307,16 @@ begin
   unit_normal_vec_delayed <= tovector(unit_normal_vec_delayed_std_logic);
 
 
-  v_dot_n : vector_dot
+  v_dot_n_c7t10 : vector_dot
   port map(
 
     clk => clk,
     clk_en => clk_en,
     reset => reset,
 
-    x_1 => scaled_dir_delay_4.x,
-    y_1 => scaled_dir_delay_4.y,
-    z_1 => scaled_dir_delay_4.z,
+    x_1 => dir_delay_c6.x,
+    y_1 => dir_delay_c6.y,
+    z_1 => dir_delay_c6.z,
 
     x_2 => unit_normal_vec.x, --unit_normal_vec_delayed.x,
     y_2 => unit_normal_vec.y, --unit_normal_vec_delayed.y,
@@ -327,7 +327,7 @@ begin
 
   dot_prod_input <= dot_prod_res(30 downto 0) & '0';
 
-  scaleNormalVec : vecMulS
+  scaleNormalVec_c11t12 : vecMulS
   port map(
 
     clk => clk,
@@ -346,31 +346,39 @@ begin
 
   );
 
-  delay_scaled_dir_for_new_dir_next : delay_element generic map(WIDTH => 96, DEPTH => 6) 
+  delay_dir_for_new_dir_next_c7t12 : delay_element generic map(WIDTH => 96, DEPTH => 6) 
   port map (
     clk => clk, clken => clk_en, reset => reset, 
-    source => scaled_dir_std_logic_delay_4,
-    dest => scaled_dir_std_logic_delay_10
+    source => dir_std_logic_delay_c6,
+    dest => dir_std_logic_delay_c12
   );
 
-  scaled_dir_delay_10 <= tovector(scaled_dir_std_logic_delay_10);
+  dir_delay_c12 <= tovector(dir_std_logic_delay_c12);
 
-  reflect_direction : vector_add_sub 
+  reflect_direction_c13 : vector_add_sub 
   port map (
 
     clk => clk,
     clk_en => clk_en,
     reset => reset,
 
-    add_sub => '0',
+    add_sub => '0', --MK
 
-    x1 => scaled_dir_delay_10.x,
-    y1 => scaled_dir_delay_10.y,
-    z1 => scaled_dir_delay_10.z,
+    --x1 => scaled_dir_delay_10.x,
+--    y1 => scaled_dir_delay_10.y,
+--    z1 => scaled_dir_delay_10.z,
 
-    x2 => scaled_normal_vec.x,
-    y2 => scaled_normal_vec.y,
-    z2 => scaled_normal_vec.z,
+--    x2 => scaled_normal_vec.x,
+--    y2 => scaled_normal_vec.y,
+--    z2 => scaled_normal_vec.z,
+
+    x2 => dir_delay_c12.x,
+    y2 => dir_delay_c12.y,
+    z2 => dir_delay_c12.z,
+
+    x1 => scaled_normal_vec.x,
+    y1 => scaled_normal_vec.y,
+    z1 => scaled_normal_vec.z,
 
     x => new_direction_next.x,
     y => new_direction_next.y,
