@@ -14,6 +14,7 @@ port(
 
     clk 	: in std_logic;
     clk_en 	: in std_logic;
+    fifo_full   : in std_logic;
     hold 	: in std_logic;
     reset 	: in std_logic;
     start 	: in std_logic;
@@ -94,7 +95,7 @@ next_ran_add <= addition_ver + addition_hor;
 next_result <= result_hold;
 next_result_hold <= result_hold;
 
-next_start_hold <= (start_hold OR start) AND NOT(clk_en);
+next_start_hold <= (start_hold OR start) AND (NOT(clk_en) OR fifo_full OR hold);
 
 next_ver_base <= ver_base; --MK
 next_j <= j;	--MK
@@ -202,7 +203,7 @@ if reset = '1' then
 	start_hold <= '0';
 elsif rising_edge(clk) then
 	start_hold <= next_start_hold;
-	if clk_en = '1' then
+	if clk_en = '1' and fifo_full = '0' then
 		outputRay.copy <= next_copyRay;
 		if hold = '0' then
 			samples <= next_samples;
@@ -228,6 +229,9 @@ elsif rising_edge(clk) then
 			outputRay.pseudo_refl <= '0';
 			address <= next_address;
 		end if;
+	elsif fifo_full = '1' AND clk_en = '1' then
+		outputRay.valid <= '0';
+		valid <= '0';
 	end if;
 end if;
 end process;

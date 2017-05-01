@@ -40,7 +40,7 @@ entity writeInterface is
     --writedata : in  std_logic_vector(31 downto 0);
     master_colordata : out std_logic_vector(31 downto 0);
     master_write     : out  std_logic;
-    --byteenable : out std_logic_vector(3 downto 0);
+    byteenable 		: out std_logic_vector(3 downto 0);
     slave_waitreq	 : in std_logic
   );
 end entity;
@@ -69,7 +69,7 @@ begin
   fifofront: alt_fwft_fifo 
     generic map(
       DATA_WIDTH => 57,
-      NUM_ELEMENTS => FIFOSIZE 
+      NUM_ELEMENTS => 150 
     )
     port map(
       aclr	=> reset,
@@ -167,13 +167,13 @@ elsif rising_edge(clk) then
 end if;
 end process;
 
-readreq_for_second_fifo <= inertial (not slave_waitreq) and (not second_empty) after 2 ns; -- delay against waitreq glitches
+readreq_for_second_fifo <= (not slave_waitreq) and (not second_empty); -- after 2 ns; -- delay against waitreq glitches
 --(not slave_waitreq_registered) and (not second_empty);
 
 --readreq_for_second_fifo <= (not slave_waitreq) and (not second_empty) after 1 ns;
 
 master_write <= not second_empty; --econd_empty_delayed_2;
-
+byteenable <= (others => not second_empty);
 --master_write <= readreq_for_second_fifo;
 
 master_colordata <= fifoback_colordata;

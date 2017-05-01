@@ -65,6 +65,7 @@ component writeInterface is
     --writedata : in  std_logic_vector(31 downto 0);
     master_colordata : out std_logic_vector(31 downto 0);
     master_write     : out  std_logic;
+    byteenable 		: out std_logic_vector(3 downto 0);
     slave_waitreq	 : in std_logic
   );
 end component;
@@ -147,6 +148,7 @@ port(
 
     clk 	: in std_logic;
     clk_en 	: in std_logic;
+    fifo_full   : in std_logic;
     hold 	: in std_logic;
     reset 	: in std_logic;
     start 	: in std_logic;

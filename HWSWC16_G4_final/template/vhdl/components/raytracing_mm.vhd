@@ -45,6 +45,7 @@ entity raytracing_mm is
 		master_write     : out  std_logic;
 		--writedata : in  std_logic_vector(31 downto 0);
 		master_colordata : out std_logic_vector(31 downto 0);
+    		byteenable 		: out std_logic_vector(3 downto 0);
 		slave_waitreq	 : in std_logic
 		
 	);
@@ -153,7 +154,7 @@ signal can_feed, start_rdo, start_rdo_next, done_rdo, copyRay_rdo,
 anyref_ray_endOfBundle, anyref_ray_startOfBundle, anyref_ray_valid, 
 anyref_ray_pseudo_refl, gcsp_emmiting, anyref_csp_emitting, anyref_csp_valid_t,
 anyrefo_isRef, anyrefo_pseudo, anyrefo_valid_ray, anyrefo_sob, anyrefo_eob,
-anyref_valid_t, ref_valid_t, ref_valid, ref_copy, ref_out_valid, ref_out_copy, fifo_full,
+anyref_valid_t, ref_valid_t, ref_valid, ref_copy, ref_out_valid, ref_out_copy, fifo_full, fifo_full_delayed,
 colUp_valid_t, colUp_valid_t_in, colUp_valid, updatedColorRayValid, updatedColorValid, colUp_pseudo,
 backend_valid, backend_sob, backend_eob, backend_copy, back_out_valid, valid_data, start_picture, old_valid_data, 
 old_pseudo, gcsp_emmiting_old, valid_t_old
@@ -234,8 +235,8 @@ syn : process(reset, clk) is begin
 end process;
 
 start_rdo <= (valid_data AND NOT(old_valid_data)) OR start_picture;
-can_feed <= frames(0).all_info AND NOT(stall);
-stall <= delayed_reflected_ray.valid OR fifo_full;
+can_feed <= frames(0).all_info AND NOT(delayed_reflected_ray.valid);
+stall <= fifo_full_delayed;
 
 rdo : getRayDirAlt 
 	generic map(
@@ -246,6 +247,7 @@ rdo : getRayDirAlt
 	port map (
     clk => clk,
     clk_en => can_feed,
+    fifo_full => stall,
     reset => reset,
     start => start_rdo,
     hold => toggle,
@@ -642,8 +644,14 @@ writeIF : writeInterface
     master_colordata => master_colordata,
     master_write     => master_write,
     slave_waitreq    => slave_waitreq,
+    byteenable 	     => byteenable,
     finished	     => fr_done
   );
+
+fifo_full_delay : delay_element generic map (WIDTH => 1, DEPTH => 2)
+port map
+(clk => clk, clken => '1', reset => reset, 
+source(0) => fifo_full, dest(0) => fifo_full_delayed);
 
 pixel_byte_address <= back_out_address(19 downto 0) & "00";
 
