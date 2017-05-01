@@ -402,12 +402,11 @@ next_last_frames_done <= last_frames_done OR frames_done;
 				else
 					frames_sig(1).frame_no <= writedata(1 downto 0);
 				end if;
-				if writedata(1 downto 0) = "01" then
-					sc_sig.pic_done(1) <= '0';
-				else 
+				if writedata(0) = '0' then --MK vl umgekehrt?
 					sc_sig.pic_done(0) <= '0';
+				else 
+					sc_sig.pic_done(1) <= '0';
 				end if;
-			--frames_out(number_filled).frame_no <= writedata(1 downto 0);
 			end if;
 		end if;
 	elsif next_frame = '1' OR last_nextframe = '1' then

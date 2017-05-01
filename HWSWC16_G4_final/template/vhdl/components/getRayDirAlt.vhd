@@ -1,7 +1,9 @@
 library ieee;
 use ieee.std_logic_1164.all;
-use work.operations_pkg.all;
 use IEEE.numeric_std.all;
+
+use work.operations_pkg.all;
+use work.lpm_util.all;
 
 entity getRayDirAlt is
 generic(
@@ -71,6 +73,7 @@ component lfsr is
 end component;
 
 
+
 constant max_width : natural := MAXWIDTH - 1;
 
 constant max_height : natural := MAXHEIGHT - 1;
@@ -81,6 +84,7 @@ l2 : lfsr port map(cout => ran(23 downto 16), clk => clk, reset => reset, enable
 l3 : lfsr port map(cout => ran(15 downto 8), clk => clk, reset => reset, enable => clk_en);
 l4 : lfsr port map(cout => ran(7 downto 0), clk => clk, reset => reset, enable => clk_en);
 async : process(j, i, start, addition_ver, frame, hold, addition_hor, result_hold, ran_add, ran, num_samples, address, ver_base, addition_base, start_hold, clk_en) is begin
+next_valid <= '0';
 next_frame_no <= frame;
 next_copyRay <= hold;
 next_done <= '0';
@@ -90,7 +94,7 @@ next_ran_add <= addition_ver + addition_hor;
 next_result <= result_hold;
 next_result_hold <= result_hold;
 
-next_start_hold <= (start_hold OR start) AND (NOT(clk_en) OR hold);
+next_start_hold <= (start_hold OR start) AND NOT(clk_en);
 
 next_ver_base <= ver_base; --MK
 next_j <= j;	--MK
@@ -104,8 +108,8 @@ if valid_data = '0' then
 	next_j <= 0;
 	next_i <= 0;
 else 
-	next_valid <= '1';
 	if start =  '1' OR start_hold = '1' then
+		next_valid <= '1';
 		next_j <= 0;
 		next_i <= 0;
 		next_result <= addition_base;
@@ -132,15 +136,22 @@ else
 			if i >= max_width then
 				if j >= max_height then
 					next_valid <= '0';
+					next_result_hold <= (OTHERS => (OTHERS => '0'));
+					next_ver_base <= (OTHERS => (OTHERS => '0'));
+					next_result <= (OTHERS => (OTHERS => '0'));
+					next_i <= i;
+					next_j <= j;
 				else
-					next_result_hold <= ver_base + addition_ver;
-					next_ver_base <= ver_base + addition_ver;
-					next_result <= ver_base + addition_ver + (ran_add and ran);
+					next_valid <= '1';
+					next_result_hold <= ver_base - addition_ver;
+					next_ver_base <= ver_base - addition_ver;
+					next_result <= ver_base - addition_ver + (ran_add and ran);
 					next_i <= 0;
 					next_j <= j + 1;
 				end if;
 				
 			else
+				next_valid <= '1';
 				next_result_hold <= result_hold + addition_hor;
 				next_result <= result_hold + addition_hor + (ran_add and ran);
 				next_i <= i + 1;

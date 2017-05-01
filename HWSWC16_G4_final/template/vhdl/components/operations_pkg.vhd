@@ -34,6 +34,9 @@ package operations_pkg is
 
   function "+"(a, b : vector) return vector;
 
+  function "-"(a, b : vector) return vector;
+
+
   type sphere is record
 	center : vector;
 	radius : std_logic_vector(31 downto 0);
@@ -286,6 +289,16 @@ begin
 	result.z := std_logic_vector(signed(a.z) + signed(b.z));
 return result;
 end "+";
+
+function "-"(a, b : vector) return vector is
+  variable result : vector;
+
+begin
+	result.x := std_logic_vector(signed(a.x) - signed(b.x));
+	result.y := std_logic_vector(signed(a.y) - signed(b.y));
+	result.z := std_logic_vector(signed(a.z) - signed(b.z));
+return result;
+end "-";
 
 
 function "and"(a : vector; b : std_logic_vector(31 downto 0)) return vector is

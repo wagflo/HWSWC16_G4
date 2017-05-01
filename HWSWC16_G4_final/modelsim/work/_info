@@ -9,10 +9,10 @@ z2
 cModel Technology
 Z0 d/homes/a0426419/Desktop/HWSWC16_G4/test2
 T_opt
-!s110 1493497724
-VUF>gzFVD=RJW]4C2EH=7Z0
+!s110 1493652324
+VR1A7o7;2X@;lIBCj2hoLI2
 04 7 4 work mm_test arch 1
-=1-1803732e0cc7-5904f77c-1675d-7a2e
+=1-1803732e0cc7-59075363-e3ccf-31a7
 Z1 o-quiet -auto_acc_if_foreign -work work
 n@_opt
 Z2 OL;O;10.4c;61
@@ -25,6 +25,7 @@ VgPS`dddh0D1V[?:z_DhXB0
 R1
 n@_opt1
 R2
+R0
 T_opt2
 !s110 1493484285
 V4R6Q<92ZLX2O8BDQo;30Q3
@@ -47,10 +48,10 @@ V]NOjzjlVLdCYni01PELd]3
 !s100 8M;:k;4kgC0M941EoLhLX3
 Z9 OL;C;10.4c;61
 32
-Z10 !s110 1493497704
+Z10 !s110 1493650182
 !i10b 1
-Z11 !s108 1493497704.000000
-Z12 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/add.vhd|
+Z11 !s108 1493650182.000000
+Z12 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/add.vhd|
 Z13 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/add.vhd|
 !i113 0
 Z14 o-work work -2002 -explicit
@@ -86,11 +87,11 @@ VV2<dG^`P`I2]CSmfV;_L93
 !s100 FnD]]]f?R88UnN3eS4_Rl3
 R9
 32
-Z18 !s110 1493497705
+R10
 !i10b 1
 R11
-Z19 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/add_sub.vhd|
-Z20 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/add_sub.vhd|
+Z18 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/add_sub.vhd|
+Z19 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/add_sub.vhd|
 !i113 0
 R14
 R15
@@ -104,40 +105,40 @@ VoiCj4@K>be19c252W1XlV1
 !s100 1^0D=zgB;2X4nE>3VdQ4E1
 R9
 32
-R18
+R10
 !i10b 1
 R11
+R18
 R19
-R20
 !i113 0
 R14
 R15
 Ealt_fwft_fifo
-Z21 w1491573878
-Z22 DPx4 work 8 math_pkg 0 22 :8G=3n:5T:beicYkUUnWH0
-Z23 DPx9 altera_mf 20 altera_mf_components 0 22 ;c6L;ME=07Qo?aCzgc8if0
+Z20 w1491573878
+Z21 DPx4 work 8 math_pkg 0 22 :8G=3n:5T:beicYkUUnWH0
+Z22 DPx9 altera_mf 20 altera_mf_components 0 22 ;c6L;ME=07Qo?aCzgc8if0
 R4
 R5
 R6
-Z24 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/alt_fwft_fifo.vhd
-Z25 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/alt_fwft_fifo.vhd
+Z23 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/alt_fwft_fifo.vhd
+Z24 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/alt_fwft_fifo.vhd
 l0
 L17
 V]Rk?Z7llK02?X1A2Qdio13
 !s100 VO9=`GIeVPY?m9d_;<8=R1
 R9
 32
-Z26 !s110 1493497701
+Z25 !s110 1493650179
 !i10b 1
-Z27 !s108 1493497701.000000
-Z28 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/alt_fwft_fifo.vhd|
-Z29 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/alt_fwft_fifo.vhd|
+Z26 !s108 1493650179.000000
+Z27 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/alt_fwft_fifo.vhd|
+Z28 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/alt_fwft_fifo.vhd|
 !i113 0
 R14
 R15
 Asyn
+R21
 R22
-R23
 R4
 R5
 DEx4 work 13 alt_fwft_fifo 0 22 ]Rk?Z7llK02?X1A2Qdio13
@@ -147,38 +148,38 @@ VFlDGX91Wd6Dzk46<F>1[g3
 !s100 <iO9Pl_XjM1SKSH4ocim12
 R9
 32
-R26
+R25
 !i10b 1
+R26
 R27
 R28
-R29
 !i113 0
 R14
 R15
 Eanyrefl
-Z30 w1493477764
-Z31 DPx4 work 9 delay_pkg 0 22 ELm8o9>ihlQl]c@YA[G=D0
+Z29 w1493477764
+Z30 DPx4 work 9 delay_pkg 0 22 ELm8o9>ihlQl]c@YA[G=D0
 R4
 R5
 R6
-Z32 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/anyRefl.vhd
-Z33 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/anyRefl.vhd
+Z31 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/anyRefl.vhd
+Z32 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/anyRefl.vhd
 l0
 L5
 VG[]>[B]?:>Cdd=2:;GPNk3
 !s100 ^N`TR^ik:z4JBLkVKGO9K2
 R9
 32
-R26
+R25
 !i10b 1
-R27
-Z34 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/anyRefl.vhd|
-Z35 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/anyRefl.vhd|
+R26
+Z33 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/anyRefl.vhd|
+Z34 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/anyRefl.vhd|
 !i113 0
 R14
 R15
 Abeh
-R31
+R30
 R4
 R5
 DEx4 work 7 anyrefl 0 22 G[]>[B]?:>Cdd=2:;GPNk3
@@ -188,42 +189,42 @@ Vi>3G6D:ISWP3:=jWWmRQh2
 !s100 4oA=_3`RkMQ_Uj>^QCij92
 R9
 32
-R26
+R25
 !i10b 1
-R27
+R26
+R33
 R34
-R35
 !i113 0
 R14
 R15
 Ebackend
-Z36 w1490962486
-R31
-Z37 DPx4 work 14 operations_pkg 0 22 UAfG]<PnLeG8gEcFSSl@83
-Z38 DPx4 ieee 11 numeric_std 0 22 :ASDNFgHXf_ih3J@9F3Ze1
+Z35 w1490962486
+R30
+Z36 DPx4 work 14 operations_pkg 0 22 hgJTI5WShERQ48Q?Z_n2J2
+Z37 DPx4 ieee 11 numeric_std 0 22 :ASDNFgHXf_ih3J@9F3Ze1
 R4
 R5
 R6
-Z39 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/backend.vhd
-Z40 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/backend.vhd
+Z38 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/backend.vhd
+Z39 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/backend.vhd
 l0
 L22
 V02UVKafFXadMzG]U@]HeA2
 !s100 dEjIBA=:mmoP`1aiYX;Gb2
 R9
 32
-Z41 !s110 1493497702
+R25
 !i10b 1
-R27
-Z42 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/backend.vhd|
-Z43 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/backend.vhd|
+R26
+Z40 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/backend.vhd|
+Z41 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/backend.vhd|
 !i113 0
 R14
 R15
 Abeh
-R31
+R30
+R36
 R37
-R38
 R4
 R5
 DEx4 work 7 backend 0 22 02UVKafFXadMzG]U@]HeA2
@@ -233,40 +234,40 @@ VH5VH;[5bZ4Xli:ZP_;j6W1
 !s100 e8Fo40TN4S8?GZk7DXDIz1
 R9
 32
-R41
+R25
 !i10b 1
-R27
-R42
-R43
+R26
+R40
+R41
 !i113 0
 R14
 R15
 Eclosestsphere
-Z44 w1487878696
-Z45 DPx3 lpm 14 lpm_components 0 22 `A_HQkO6KPLcT3SUm=1[R2
-R31
+Z42 w1487878696
+Z43 DPx3 lpm 14 lpm_components 0 22 `A_HQkO6KPLcT3SUm=1[R2
+R30
 R4
 R5
 R6
-Z46 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/closestSphere.vhd
-Z47 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/closestSphere.vhd
+Z44 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/closestSphere.vhd
+Z45 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/closestSphere.vhd
 l0
 L9
 VEc2Uk=n5V:GJ4CW;I9EB;1
 !s100 K[5]klOh?_4kUNN[6Qm6P1
 R9
 32
-R41
+R25
 !i10b 1
-Z48 !s108 1493497702.000000
-Z49 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/closestSphere.vhd|
-Z50 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/closestSphere.vhd|
+R26
+Z46 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/closestSphere.vhd|
+Z47 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/closestSphere.vhd|
 !i113 0
 R14
 R15
 Aarch
-R45
-R31
+R43
+R30
 R4
 R5
 DEx4 work 13 closestsphere 0 22 Ec2Uk=n5V:GJ4CW;I9EB;1
@@ -276,44 +277,44 @@ Vl@YJVA7`6W=n0oQz::CHT1
 !s100 66NzP]=SSVYS`j>:odeN62
 R9
 32
-R41
+R25
 !i10b 1
-R48
-R49
-R50
+R26
+R46
+R47
 !i113 0
 R14
 R15
 Eclosestspherenew
-Z51 w1493498005
-R38
+Z48 w1493498005
 R37
-R45
-R31
+R36
+R43
+R30
 R4
 R5
 R6
-Z52 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/closestSphereNew.vhd
-Z53 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/closestSphereNew.vhd
+Z49 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/closestSphereNew.vhd
+Z50 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/closestSphereNew.vhd
 l0
 L16
 VNP]hOJllRT6Sh<N^mW=S81
 !s100 zS_legF;8AHQ1L^FO8N:F2
 R9
 32
-Z54 !s110 1493498567
+R25
 !i10b 1
-Z55 !s108 1493498567.000000
-Z56 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/closestSphereNew.vhd|
-Z57 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/closestSphereNew.vhd|
+R26
+Z51 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/closestSphereNew.vhd|
+Z52 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/closestSphereNew.vhd|
 !i113 0
 R14
 R15
 Aarch
-R38
 R37
-R45
-R31
+R36
+R43
+R30
 R4
 R5
 DEx4 work 16 closestspherenew 0 22 NP]hOJllRT6Sh<N^mW=S81
@@ -323,46 +324,46 @@ VTMWEbFnZlKKF70CllCK9k0
 !s100 NcbQ=NL9kgXEo;V@EIfo42
 R9
 32
-R54
+R25
 !i10b 1
-R55
-R56
-R57
+R26
+R51
+R52
 !i113 0
 R14
 R15
 Eclosestsphereprep
-Z58 w1490962250
-R38
+Z53 w1490962250
 R37
-Z59 DPx4 work 12 raydelay_pkg 0 22 I76f5mIbB99>=Jo=ZmX4G0
-R45
-R31
+R36
+Z54 DPx4 work 12 raydelay_pkg 0 22 I76f5mIbB99>=Jo=ZmX4G0
+R43
+R30
 R4
 R5
 R6
-Z60 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/closestSpherePrep.vhd
-Z61 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/closestSpherePrep.vhd
+Z55 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/closestSpherePrep.vhd
+Z56 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/closestSpherePrep.vhd
 l0
 L13
 VoUonboUNX1GU1BB09`d<R0
 !s100 cIZ7`i3^Tzl_iWGajDSzj1
 R9
 32
-R41
+R10
 !i10b 1
-R48
-Z62 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/closestSpherePrep.vhd|
-Z63 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/closestSpherePrep.vhd|
+R11
+Z57 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/closestSpherePrep.vhd|
+Z58 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/closestSpherePrep.vhd|
 !i113 0
 R14
 R15
 Aarch
-R38
 R37
-R59
-R45
-R31
+R36
+R54
+R43
+R30
 R4
 R5
 DEx4 work 17 closestsphereprep 0 22 oUonboUNX1GU1BB09`d<R0
@@ -372,42 +373,42 @@ Vi5Rca[k7zgD<eTYfGJ4FI2
 !s100 @m^hneZoIm[<@doeC?:>m3
 R9
 32
-R41
+R10
 !i10b 1
-R48
-R62
-R63
+R11
+R57
+R58
 !i113 0
 R14
 R15
 Eclosesttb
-Z64 w1493499744
+Z59 w1493499744
+R36
+Z60 DPx4 work 14 components_pkg 0 22 2YAWC?5T_Lc3McDkjdm@?2
 R37
-Z65 DPx4 work 14 components_pkg 0 22 2YAWC?5T_Lc3McDkjdm@?2
-R38
 R4
 R5
 R6
-Z66 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/test_closestSphere.vhd
-Z67 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/test_closestSphere.vhd
+Z61 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/test_closestSphere.vhd
+Z62 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/test_closestSphere.vhd
 l0
 L8
 Vo58cGk1R@<<X=_ab1OngK2
 !s100 N_6D2618VFB[8NaZSAMUW3
 R9
 32
-Z68 !s110 1493499746
+R10
 !i10b 1
-Z69 !s108 1493499746.000000
-Z70 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/test_closestSphere.vhd|
-Z71 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/test_closestSphere.vhd|
+R11
+Z63 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/test_closestSphere.vhd|
+Z64 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/test_closestSphere.vhd|
 !i113 0
 R14
 R15
 Aarch
+R36
+R60
 R37
-R65
-R38
 R4
 R5
 DEx4 work 9 closesttb 0 22 o58cGk1R@<<X=_ab1OngK2
@@ -417,42 +418,42 @@ VoicZUXBa`5V7>8FQd<>NG2
 !s100 aR7U<DKc?:fDE2A3@g??K3
 R9
 32
-R68
+R10
 !i10b 1
-R69
-R70
-R71
+R11
+R63
+R64
 !i113 0
 R14
 R15
 Ecolorupdate
-Z72 w1493393673
-R31
+Z65 w1493393673
+R30
+R36
 R37
-R38
 R4
 R5
 R6
-Z73 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/colorUpdate.vhd
-Z74 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/colorUpdate.vhd
+Z66 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/colorUpdate.vhd
+Z67 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/colorUpdate.vhd
 l0
 L58
 VPO2JKU8GCVhHh@04kT6Kl3
 !s100 26BOF^S>zE3hY`ToRI0[K1
 R9
 32
-R41
+R25
 !i10b 1
-R48
-Z75 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/colorUpdate.vhd|
-Z76 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/colorUpdate.vhd|
+R26
+Z68 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/colorUpdate.vhd|
+Z69 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/colorUpdate.vhd|
 !i113 0
 R14
 R15
 Abeh
-R31
+R30
+R36
 R37
-R38
 R4
 R5
 DEx4 work 11 colorupdate 0 22 PO2JKU8GCVhHh@04kT6Kl3
@@ -462,11 +463,11 @@ V:VGhIRQNkBnbW5CGY4]EE2
 !s100 S9J2aCaCoU<jOG26mCn1@1
 R9
 32
-R41
+R25
 !i10b 1
-R48
-R75
-R76
+R26
+R68
+R69
 !i113 0
 R14
 R15
@@ -475,19 +476,19 @@ R3
 R4
 R5
 R6
-Z77 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/compare.vhd
-Z78 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/compare.vhd
+Z70 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/compare.vhd
+Z71 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/compare.vhd
 l0
 L43
 VBZzdR8b^>UP3gF>GYbmK_3
 !s100 1DibUW@59@oTk>jilK0?V1
 R9
 32
-R18
+R10
 !i10b 1
-Z79 !s108 1493497705.000000
-Z80 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/compare.vhd|
-Z81 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/compare.vhd|
+R11
+Z72 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/compare.vhd|
+Z73 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/compare.vhd|
 !i113 0
 R14
 R15
@@ -501,17 +502,17 @@ Vj6L8MTEI[cDaBQN5RB@e52
 !s100 QkfAB7>nh5RAm<6f_D5W91
 R9
 32
-R18
+R10
 !i10b 1
-R79
-R80
-R81
+R11
+R72
+R73
 !i113 0
 R14
 R15
 Pcomponents_pkg
-R38
 R37
+R36
 R4
 R5
 w1493475352
@@ -524,42 +525,42 @@ V2YAWC?5T_Lc3McDkjdm@?2
 !s100 3U7ajkV_0gni;ZH_B74=J1
 R9
 32
-R10
+Z74 !s110 1493650181
 !i10b 1
-R11
-!s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/components_pkg.vhd|
+Z75 !s108 1493650181.000000
+!s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/components_pkg.vhd|
 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/components_pkg.vhd|
 !i113 0
 R14
 R15
 Edelay_element
-Z82 w1490968110
-R38
+Z76 w1490968110
 R37
-R31
+R36
+R30
 R4
 R5
 R6
-Z83 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/delay.vhd
-Z84 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/delay.vhd
+Z77 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/delay.vhd
+Z78 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/delay.vhd
 l0
 L6
 Vn:>BdcdSX9QbRd21PR3zZ1
 !s100 hm9HFO=XnLOb71Mcm[0KA1
 R9
 32
-R41
+R25
 !i10b 1
-R48
-Z85 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/delay.vhd|
-Z86 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/delay.vhd|
+R26
+Z79 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/delay.vhd|
+Z80 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/delay.vhd|
 !i113 0
 R14
 R15
 Abeh
-R38
 R37
-R31
+R36
+R30
 R4
 R5
 DEx4 work 13 delay_element 0 22 n:>BdcdSX9QbRd21PR3zZ1
@@ -569,11 +570,11 @@ VLQJU29MGFPczdXK`Z5o]P0
 !s100 GMURYNkY?D@mQoFSR3Obn0
 R9
 32
-R41
+R25
 !i10b 1
-R48
-R85
-R86
+R26
+R79
+R80
 !i113 0
 R14
 R15
@@ -590,40 +591,40 @@ VELm8o9>ihlQl]c@YA[G=D0
 !s100 Z6W]BfBg7=O?N<;L4@PBM1
 R9
 32
-R41
+Z81 !s110 1493650180
 !i10b 1
-R48
-!s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/delay_pkg.vhd|
+Z82 !s108 1493650180.000000
+!s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/delay_pkg.vhd|
 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/delay_pkg.vhd|
 !i113 0
 R14
 R15
 Egetraydir
-Z87 w1485268270
-R38
+Z83 w1485268270
 R37
+R36
 R4
 R5
 R6
-Z88 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/getRayDir.vhd
-Z89 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/getRayDir.vhd
+Z84 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/getRayDir.vhd
+Z85 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/getRayDir.vhd
 l0
 L5
 VX<z1mGjl?39jneNfW>>Bf2
 !s100 l@H4i=_D9ca1D7nK4OmX52
 R9
 32
-R41
+R81
 !i10b 1
-R48
-Z90 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/getRayDir.vhd|
-Z91 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/getRayDir.vhd|
+R82
+Z86 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/getRayDir.vhd|
+Z87 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/getRayDir.vhd|
 !i113 0
 R14
 R15
 Abeh
-R38
 R37
+R36
 R4
 R5
 DEx4 work 9 getraydir 0 22 X<z1mGjl?39jneNfW>>Bf2
@@ -633,17 +634,17 @@ VJBES^JjiPkC2ANBT`OLkb3
 !s100 9Jc_`0Ob5ezPG5FgNHFK20
 R9
 32
-R41
+R81
 !i10b 1
-R48
-R90
-R91
+R82
+R86
+R87
 !i113 0
 R14
 R15
 Pgetraydir_pkg
-R38
 R37
+R36
 R4
 R5
 R3
@@ -656,83 +657,85 @@ VzboVAhdE[K4>aBfgC_jNI1
 !s100 8n@Z7_f[_mX37<XZD=O603
 R9
 32
-R41
+R81
 !i10b 1
-R48
-!s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/getRayDir_pkg.vhd|
+R82
+!s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/getRayDir_pkg.vhd|
 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/getRayDir_pkg.vhd|
 !i113 0
 R14
 R15
 Egetraydiralt
-Z92 w1493488552
-R38
+Z88 w1493652665
+Z89 DPx4 work 8 lpm_util 0 22 Cakm1]Ve]4FT@QaZ=H5S;1
+R36
 R37
 R4
 R5
 R6
-Z93 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/getRayDirAlt.vhd
-Z94 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/getRayDirAlt.vhd
+Z90 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/getRayDirAlt.vhd
+Z91 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/getRayDirAlt.vhd
 l0
-L6
-V0ZDWk_O4CYCc4<d0L243[1
-!s100 i]2`lXNLYE:^MlTNngz1N0
+L8
+V2ODF<J8lOERk8Y5X3:L=S0
+!s100 FGhb>ORe60Z=n0_MR4XUN3
 R9
 32
-Z95 !s110 1493497703
+Z92 !s110 1493652667
 !i10b 1
-R48
-Z96 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/getRayDirAlt.vhd|
-Z97 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/getRayDirAlt.vhd|
+Z93 !s108 1493652667.000000
+Z94 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/getRayDirAlt.vhd|
+Z95 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/getRayDirAlt.vhd|
 !i113 0
 R14
 R15
 Aarch
-R38
+R89
+R36
 R37
 R4
 R5
-DEx4 work 12 getraydiralt 0 22 0ZDWk_O4CYCc4<d0L243[1
-l78
-L44
-VYoQGOC0ciczG?2_:jfW8b1
-!s100 Gj5]0F?iY=M<:XTWRSe9^1
+Z96 DEx4 work 12 getraydiralt 0 22 2ODF<J8lOERk8Y5X3:L=S0
+l81
+L46
+V0AFLZ4nJM[P7odUP2>2fL3
+!s100 J>8IX_Y2Y;Z2eUAN0V;;m2
 R9
 32
-R95
+R92
 !i10b 1
-R48
-R96
-R97
+R93
+R94
+R95
 !i113 0
 R14
 R15
 Egetraydiropt
-Z98 w1487689948
-R38
+Z97 w1487689948
 R37
+R36
 R4
 R5
 R6
-Z99 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/getRayDirOpt.vhd
-Z100 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/getRayDirOpt.vhd
+Z98 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/getRayDirOpt.vhd
+Z99 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/getRayDirOpt.vhd
 l0
 L6
 VnbCbPMiaaX:U3jmDi[:J<0
 !s100 J^;P3ZiAoJAh7boCJo^5M0
 R9
 32
-R95
+R81
 !i10b 1
-Z101 !s108 1493497703.000000
-Z102 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/getRayDirOpt.vhd|
-Z103 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/getRayDirOpt.vhd|
+R82
+Z100 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/getRayDirOpt.vhd|
+Z101 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/getRayDirOpt.vhd|
 !i113 0
 R14
 R15
 Aarch
-R38
 R37
+R36
 R4
 R5
 DEx4 work 12 getraydiropt 0 22 nbCbPMiaaX:U3jmDi[:J<0
@@ -742,32 +745,32 @@ VI@I`[5g`]@GQbAYl>1_H30
 !s100 6UM]hVB]C`]JRKT?efo^;3
 R9
 32
-R95
+R81
 !i10b 1
+R82
+R100
 R101
-R102
-R103
 !i113 0
 R14
 R15
 Elfsr
-R98
+R97
 R4
 R5
 R6
-Z104 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/lfsr.vhd
-Z105 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/lfsr.vhd
+Z102 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/lfsr.vhd
+Z103 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/lfsr.vhd
 l0
 L11
 V4HzS7>cQNc<A9l2ZhhVVJ2
 !s100 mCzfk2`Skc`Dec02CSB_n2
 R9
 32
-R95
+R81
 !i10b 1
-R101
-Z106 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/lfsr.vhd|
-Z107 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/lfsr.vhd|
+R82
+Z104 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/lfsr.vhd|
+Z105 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/lfsr.vhd|
 !i113 0
 R14
 R15
@@ -781,16 +784,16 @@ VLJnD9GSe9;oJJnfOPnH`D3
 !s100 9ZJ_VgGG^]74ZOaiA_I]W1
 R9
 32
-R95
+R81
 !i10b 1
-R101
-R106
-R107
+R82
+R104
+R105
 !i113 0
 R14
 R15
 Plpm_util
-R38
+R37
 R4
 R5
 w1492688731
@@ -803,19 +806,19 @@ VCakm1]Ve]4FT@QaZ=H5S;1
 !s100 9Q;nbCC2VGPmE1FH7IdEI2
 R9
 32
-R95
+R81
 !i10b 1
-R101
-!s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/lpm_util.vhd|
+R82
+!s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/lpm_util.vhd|
 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/lpm_util.vhd|
 !i113 0
 R14
 R15
 Pmath_pkg
-Z108 w1484743292
+Z106 w1484743292
 R6
-Z109 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/math_pkg.vhd
-Z110 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/math_pkg.vhd
+Z107 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/math_pkg.vhd
+Z108 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/math_pkg.vhd
 l0
 L20
 V:8G=3n:5T:beicYkUUnWH0
@@ -823,71 +826,71 @@ V:8G=3n:5T:beicYkUUnWH0
 R9
 32
 b1
-R95
+R81
 !i10b 1
-R101
-Z111 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/math_pkg.vhd|
-Z112 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/math_pkg.vhd|
+R82
+Z109 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/math_pkg.vhd|
+Z110 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/math_pkg.vhd|
 !i113 0
 R14
 R15
 Bbody
-R22
+R21
 l0
 L40
 VeAaN^aN5f_5l9=zM@;5aC3
 !s100 n[@=7Amo=8;6=i]C78L4W3
 R9
 32
-R95
+R81
 !i10b 1
-R101
-R111
-R112
+R82
+R109
+R110
 !i113 0
 R14
 R15
-Z113 nbody
+Z111 nbody
 Emm_test
-Z114 w1493497714
+Z112 w1493652306
+R36
 R37
-R38
 R4
 R5
 R6
-Z115 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/mm_test.vhd
-Z116 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/mm_test.vhd
+Z113 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/mm_test.vhd
+Z114 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/mm_test.vhd
 l0
 L7
 VSGEDaBUn1zSk^jR<g9?IH2
 !s100 TEDe`OSgHIj^n@4:S0m[V3
 R9
 32
-Z117 !s110 1493497714
+Z115 !s110 1493652312
 !i10b 1
-Z118 !s108 1493497714.000000
-Z119 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/mm_test.vhd|
-Z120 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/mm_test.vhd|
+Z116 !s108 1493652311.000000
+Z117 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/mm_test.vhd|
+Z118 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/mm_test.vhd|
 !i113 0
 R14
 R15
 Aarch
+R36
 R37
-R38
 R4
 R5
 DEx4 work 7 mm_test 0 22 SGEDaBUn1zSk^jR<g9?IH2
-l122
+l123
 L11
-VR?;?cb3Chl8;iRJ>A[eY83
-!s100 6h3MJWJl151<:4XjHR5]j3
+V4m4]8:0Y1gdj=E:6_1a[:0
+!s100 iE6J[d5VMT^oAVQf28>F=1
 R9
 32
-R117
+R115
 !i10b 1
+R116
+R117
 R118
-R119
-R120
 !i113 0
 R14
 R15
@@ -896,19 +899,19 @@ R3
 R4
 R5
 R6
-Z121 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/mult.vhd
-Z122 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/mult.vhd
+Z119 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/mult.vhd
+Z120 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/mult.vhd
 l0
 L43
 VoSSW^dIbVcE6U5UQob0d71
 !s100 K8BccO6PlZM@>WzUho[mS0
 R9
 32
-R18
+R10
 !i10b 1
-R79
-Z123 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/mult.vhd|
-Z124 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/mult.vhd|
+R11
+Z121 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/mult.vhd|
+Z122 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/mult.vhd|
 !i113 0
 R14
 R15
@@ -922,105 +925,105 @@ VTO^FFe:oAk[ZNQNLj3AiV2
 !s100 4oCG;NPK:6fO[?g7fXbG32
 R9
 32
-R18
+R10
 !i10b 1
-R79
-R123
-R124
+R11
+R121
+R122
 !i113 0
 R14
 R15
 Poperations_pkg
-R38
+R37
 R4
 R5
-Z125 w1493374384
+Z123 w1493650128
 R6
-Z126 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/operations_pkg.vhd
-Z127 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/operations_pkg.vhd
+Z124 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/operations_pkg.vhd
+Z125 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/operations_pkg.vhd
 l0
 L5
-VUAfG]<PnLeG8gEcFSSl@83
-!s100 YHO9eb:16fc5EbdF=4oMK2
+VhgJTI5WShERQ48Q?Z_n2J2
+!s100 ];988TjSbkDiP:e>N>[o?1
 R9
 32
 b1
-R95
+R81
 !i10b 1
-R101
-Z128 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/operations_pkg.vhd|
-Z129 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/operations_pkg.vhd|
+R82
+Z126 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/operations_pkg.vhd|
+Z127 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/operations_pkg.vhd|
 !i113 0
 R14
 R15
 Bbody
+R36
 R37
-R38
 R4
 R5
 l0
-L233
-V4E26>YY]lX5T@KVPhmonW2
-!s100 SY`z`bOW2fhkAh5E:YFjW1
+L236
+V^A2VHAMeIJ3FJ700kAKj22
+!s100 PLX[U1UhglX;8WhabW1Zz0
 R9
 32
-R95
+R81
 !i10b 1
-R101
-R128
-R129
+R82
+R126
+R127
 !i113 0
 R14
 R15
-R113
+R111
 Epicture_data
-Z130 w1493484562
+Z128 w1493651738
+R36
 R37
-R38
 R4
 R5
 R6
-Z131 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/picture_data.vhd
-Z132 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/picture_data.vhd
+Z129 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/picture_data.vhd
+Z130 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/picture_data.vhd
 l0
 L8
 VQL_GJ2?2R@8HIdzo?b0Sg1
 !s100 R9YIV46eL=[c4kcEogzzh0
 R9
 32
-R95
+Z131 !s110 1493652233
 !i10b 1
-R101
+Z132 !s108 1493652233.000000
 Z133 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/picture_data.vhd|
 Z134 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/picture_data.vhd|
 !i113 0
 R14
 R15
 Aarch
+R36
 R37
-R38
 R4
 R5
 DEx4 work 12 picture_data 0 22 QL_GJ2?2R@8HIdzo?b0Sg1
 l76
 L26
-VlYYhelWYbbz2K5=L3X^S@2
-!s100 O^UkaiFL8BZi1963?mKF@1
+V2HD]i6?c5PIVjL8WAM8`k3
+!s100 >f6EWG>[eT2g8?6O6bR581
 R9
 32
-R95
+R131
 !i10b 1
-R101
+R132
 R133
 R134
 !i113 0
 R14
 R15
 Eraydelay
-R44
-R38
+R42
 R37
-R31
+R36
+R30
 R4
 R5
 R6
@@ -1032,18 +1035,18 @@ V84[jKHl8e3IYjNU60^Q4Q1
 !s100 DEVkz;nCe[HaGLYA=V1c23
 R9
 32
-R95
+R81
 !i10b 1
-R101
-Z137 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/rayDelay.vhd|
+R82
+Z137 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/rayDelay.vhd|
 Z138 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/rayDelay.vhd|
 !i113 0
 R14
 R15
 Aarch
-R38
 R37
-R31
+R36
+R30
 R4
 R5
 DEx4 work 8 raydelay 0 22 84[jKHl8e3IYjNU60^Q4Q1
@@ -1053,20 +1056,20 @@ V?0^_ZoK[Zk:@clJP0ZA4R2
 !s100 mWHN0iVR`TR>3BnIO=:<A3
 R9
 32
-R95
+R81
 !i10b 1
-R101
+R82
 R137
 R138
 !i113 0
 R14
 R15
 Praydelay_pkg
-R38
 R37
+R36
 R4
 R5
-R44
+R42
 R6
 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/rayDelay_pkg.vhd
 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/rayDelay_pkg.vhd
@@ -1076,22 +1079,22 @@ VI76f5mIbB99>=Jo=ZmX4G0
 !s100 NglY;ZnMhPLcP7cBc>8<j3
 R9
 32
-R95
+R81
 !i10b 1
-R101
-!s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/rayDelay_pkg.vhd|
+R82
+!s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/rayDelay_pkg.vhd|
 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/rayDelay_pkg.vhd|
 !i113 0
 R14
 R15
 Eraytracing_mm
-Z139 w1493498565
-R45
-R65
+Z139 w1493644915
+R43
+R60
+R36
+R54
+R30
 R37
-R59
-R31
-R38
 R4
 R5
 R6
@@ -1103,33 +1106,33 @@ VU;CUl@m02Kg_?DcccS9iD3
 !s100 hdbHkm2QXWoD^FQZ;=M2R0
 R9
 32
-R54
+R10
 !i10b 1
-R55
-Z142 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/raytracing_mm.vhd|
+R11
+Z142 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/raytracing_mm.vhd|
 Z143 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/raytracing_mm.vhd|
 !i113 0
 R14
 R15
 Aarch
-R45
-R65
+R43
+R60
+R36
+R54
+R30
 R37
-R59
-R31
-R38
 R4
 R5
 DEx4 work 13 raytracing_mm 0 22 U;CUl@m02Kg_?DcccS9iD3
 l206
 L53
-V_iR5oRSOe0eQR`>B^K@aE2
-!s100 :hidm65>CTGiB1mk;?oem0
+VhJD55W7jMd2GBM7HiT0DU3
+!s100 =UdZ?@d>U2D7;h_Z=X_[G3
 R9
 32
-R54
+R10
 !i10b 1
-R55
+R11
 R142
 R143
 !i113 0
@@ -1137,9 +1140,9 @@ R14
 R15
 Ereadinterface
 Z144 w1492602862
-R38
 R37
-R65
+R36
+R60
 R4
 R5
 R6
@@ -1151,18 +1154,18 @@ VdMTRed3g4`[Sg=04Szo<M1
 !s100 AE:ARVK0LeQkjNEP7Z;_m3
 R9
 32
-R95
+Z147 !s110 1493650183
 !i10b 1
-R101
-Z147 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/readInterface.vhd|
-Z148 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/readInterface.vhd|
+R11
+Z148 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/readInterface.vhd|
+Z149 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/readInterface.vhd|
 !i113 0
 R14
 R15
 Abeh
-R38
 R37
-R65
+R36
+R60
 R4
 R5
 DEx4 work 13 readinterface 0 22 dMTRed3g4`[Sg=04Szo<M1
@@ -1172,85 +1175,85 @@ VKz;C3h]iNiSiQZa7D;HfZ3
 !s100 C]IMfo@lT=T9fC3[3i^@13
 R9
 32
-R95
-!i10b 1
-R101
 R147
+!i10b 1
+R11
 R148
+R149
 !i113 0
 R14
 R15
 Ereflect
-Z149 w1492602077
-R31
+Z150 w1493644842
+R30
+R36
 R37
-R38
 R4
 R5
 R6
-Z150 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/reflect.vhd
-Z151 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/reflect.vhd
+Z151 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/reflect.vhd
+Z152 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/reflect.vhd
 l0
 L32
 VBY7`3dz[fZ>]jHSfmfl<>2
 !s100 agSYeg@lU?9oDz7MSMSoz2
 R9
 32
-R95
+R74
 !i10b 1
-R101
-Z152 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/reflect.vhd|
-Z153 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/reflect.vhd|
+R75
+Z153 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/reflect.vhd|
+Z154 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/reflect.vhd|
 !i113 0
 R14
 R15
 Abeh
-R31
+R30
+R36
 R37
-R38
 R4
 R5
 DEx4 work 7 reflect 0 22 BY7`3dz[fZ>]jHSfmfl<>2
 l90
 L64
-VF4K48DiTKPL2?MfGXf_5:1
-!s100 R;@Cd?EEH=1Wnh701aMmc3
+VjNbfXSk=^3_eDUTTM_Rl?2
+!s100 X[16B[SQA8HIh^R1NCa0o3
 R9
 32
-R95
+R74
 !i10b 1
-R101
-R152
+R75
 R153
+R154
 !i113 0
 R14
 R15
 Escalarmul
-Z154 w1487690004
-R45
-R38
+Z155 w1487690004
+R43
+R37
 R4
 R5
 R6
-Z155 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/scalarMul.vhd
-Z156 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/scalarMul.vhd
+Z156 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/scalarMul.vhd
+Z157 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/scalarMul.vhd
 l0
 L9
 ViAj?EAbcK>39JK2o>5^Am0
 !s100 _cAI@Qd@K7LOO`jaONI4z3
 R9
 32
-R95
+R74
 !i10b 1
-R101
-Z157 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/scalarMul.vhd|
-Z158 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/scalarMul.vhd|
+R75
+Z158 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/scalarMul.vhd|
+Z159 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/scalarMul.vhd|
 !i113 0
 R14
 R15
 Aarch
-R45
-R38
+R43
+R37
 R4
 R5
 DEx4 work 9 scalarmul 0 22 iAj?EAbcK>39JK2o>5^Am0
@@ -1260,42 +1263,42 @@ VE7^Nka::Cni9?dBiR:Ud90
 !s100 ON3W3aK]Jo3HFmPblzcbX2
 R9
 32
-R95
+R74
 !i10b 1
-R101
-R157
+R75
 R158
+R159
 !i113 0
 R14
 R15
 Espheredistance
-Z159 w1493494941
-R31
-R45
-R38
+Z160 w1493494941
+R30
+R43
+R37
 R4
 R5
 R6
-Z160 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/sphereDistance.vhd
-Z161 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/sphereDistance.vhd
+Z161 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/sphereDistance.vhd
+Z162 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/sphereDistance.vhd
 l0
 L13
 VmEQABlHgkWi;T`m@i[]zP2
 !s100 ;f1B:T;^0g`J@XZb<iLFL0
 R9
 32
-R10
+R74
 !i10b 1
-R101
-Z162 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/sphereDistance.vhd|
-Z163 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/sphereDistance.vhd|
+R75
+Z163 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/sphereDistance.vhd|
+Z164 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/sphereDistance.vhd|
 !i113 0
 R14
 R15
 Aarch
-R31
-R45
-R38
+R30
+R43
+R37
 R4
 R5
 DEx4 work 14 spheredistance 0 22 mEQABlHgkWi;T`m@i[]zP2
@@ -1305,38 +1308,38 @@ V9ACATnzPdL<^bb@=eDFS72
 !s100 Rd0oieZlEDT_ToT0B6jXC0
 R9
 32
-R10
+R74
 !i10b 1
-R101
-R162
+R75
 R163
+R164
 !i113 0
 R14
 R15
 Espheredistancetb
-R87
-R38
+R83
+R37
 R4
 R5
 R6
-Z164 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/sphereTest.vhd
-Z165 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/sphereTest.vhd
+Z165 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/sphereTest.vhd
+Z166 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/sphereTest.vhd
 l0
 L5
 VJAUjoXX@@z=6mg7i@F5R]0
 !s100 h0oi76VXBJK?CJGXYCW1N1
 R9
 32
-Z166 !s110 1493498765
+R10
 !i10b 1
-Z167 !s108 1493498765.000000
-Z168 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/sphereTest.vhd|
-Z169 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/sphereTest.vhd|
+R11
+Z167 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/sphereTest.vhd|
+Z168 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/sphereTest.vhd|
 !i113 0
 R14
 R15
 Aarch
-R38
+R37
 R4
 R5
 DEx4 work 16 spheredistancetb 0 22 JAUjoXX@@z=6mg7i@F5R]0
@@ -1346,40 +1349,40 @@ VYnAUX7U54`lZEO5N0i7Zc3
 !s100 XW2XhcM2LQ5H]2AHfmaI?1
 R9
 32
-R166
+R10
 !i10b 1
+R11
 R167
 R168
-R169
 !i113 0
 R14
 R15
 Esqrt
-Z170 w1490790420
-R45
-R38
+Z169 w1490790420
+R43
+R37
 R4
 R5
 R6
-Z171 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/sqrt.vhd
-Z172 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/sqrt.vhd
+Z170 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/sqrt.vhd
+Z171 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/sqrt.vhd
 l0
 L12
 V0czgJc94I@aK<Q_R^IR]m2
 !s100 HD3NTRc0[SVfgg:eViLIM1
 R9
 32
-R10
+R74
 !i10b 1
-R11
-Z173 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/sqrt.vhd|
-Z174 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/sqrt.vhd|
+R75
+Z172 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/sqrt.vhd|
+Z173 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/sqrt.vhd|
 !i113 0
 R14
 R15
 Aarch
-R45
-R38
+R43
+R37
 R4
 R5
 DEx4 work 4 sqrt 0 22 0czgJc94I@aK<Q_R^IR]m2
@@ -1389,11 +1392,11 @@ VgCCGA>JoeXV4Ai`1Knbol1
 !s100 M4RgajS^oJKglbRV9QL812
 R9
 32
-R10
+R74
 !i10b 1
-R11
+R75
+R172
 R173
-R174
 !i113 0
 R14
 R15
@@ -1402,19 +1405,19 @@ R3
 R4
 R5
 R6
-Z175 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/square.vhd
-Z176 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/square.vhd
+Z174 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/square.vhd
+Z175 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/square.vhd
 l0
 L43
 ViXi4>gkJ[N=ZeF2G]QI1k1
 !s100 RSaX^]iRFMR9F=DIB9@cn1
 R9
 32
-R18
+R10
 !i10b 1
-R79
-Z177 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/square.vhd|
-Z178 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/square.vhd|
+R11
+Z176 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/square.vhd|
+Z177 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/square.vhd|
 !i113 0
 R14
 R15
@@ -1428,32 +1431,32 @@ V7?6V<47Q?VjFKz7UkKD>g0
 !s100 RKV:caIfkF9aMYDWRI`Tc0
 R9
 32
-R18
+R10
 !i10b 1
-R79
+R11
+R176
 R177
-R178
 !i113 0
 R14
 R15
 Esr_ram
-Z179 w1490965010
+Z178 w1490965010
 R4
 R5
 R6
-Z180 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/sr_ram.vhd
-Z181 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/sr_ram.vhd
+Z179 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/sr_ram.vhd
+Z180 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/sr_ram.vhd
 l0
 L43
 V^YR09GcX9MgAZm=@HgIb80
 !s100 mlZ7`OO@P1VhU2Wn@XebI0
 R9
 32
-R18
+R10
 !i10b 1
-R79
-Z182 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/sr_ram.vhd|
-Z183 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/sr_ram.vhd|
+R11
+Z181 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/sr_ram.vhd|
+Z182 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/sr_ram.vhd|
 !i113 0
 R14
 R15
@@ -1467,11 +1470,11 @@ VIkBJW8F1S4J8[WS]NRBGf3
 !s100 BJX=2MI;oe]E4K]MWioU10
 R9
 32
-R18
+R10
 !i10b 1
-R79
+R11
+R181
 R182
-R183
 !i113 0
 R14
 R15
@@ -1480,19 +1483,19 @@ R3
 R4
 R5
 R6
-Z184 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/sub.vhd
-Z185 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/sub.vhd
+Z183 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/sub.vhd
+Z184 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/sub.vhd
 l0
 L43
 VShTagICHDi:24C<4CX>>[2
 !s100 bo42UoCZoT77LT_9X3P432
 R9
 32
-R18
+R10
 !i10b 1
-R79
-Z186 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/sub.vhd|
-Z187 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/sub.vhd|
+R11
+Z185 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/sub.vhd|
+Z186 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/ip_cores/sub.vhd|
 !i113 0
 R14
 R15
@@ -1506,24 +1509,24 @@ VdBoO@FKBn4@I8c?oFGAR53
 !s100 UTMkGD<m=Y=a;lMVXH_RC1
 R9
 32
-R18
+R10
 !i10b 1
-R79
+R11
+R185
 R186
-R187
 !i113 0
 R14
 R15
 Etest_grdalt
-Z188 w1493383133
-R65
+Z187 w1493383133
+R60
+R36
 R37
-R38
 R4
 R5
 R6
-Z189 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/test_grdalt.vhd
-Z190 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/test_grdalt.vhd
+Z188 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/test_grdalt.vhd
+Z189 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/test_grdalt.vhd
 l0
 L8
 VKYkk77UbaRfTT8Z8d_]DI3
@@ -1532,16 +1535,16 @@ R9
 32
 R10
 !i10b 1
-R11
-Z191 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/test_grdalt.vhd|
-Z192 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/test_grdalt.vhd|
+R75
+Z190 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/test_grdalt.vhd|
+Z191 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_sophie/test_grdalt.vhd|
 !i113 0
 R14
 R15
 Aarch
-R65
+R60
+R36
 R37
-R38
 R4
 R5
 DEx4 work 11 test_grdalt 0 22 KYkk77UbaRfTT8Z8d_]DI3
@@ -1553,38 +1556,38 @@ R9
 32
 R10
 !i10b 1
-R11
+R75
+R190
 R191
-R192
 !i113 0
 R14
 R15
 Evecmuls
-R87
-R45
-R38
+R83
+R43
+R37
 R4
 R5
 R6
-Z193 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vecMulS.vhd
-Z194 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vecMulS.vhd
+Z192 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vecMulS.vhd
+Z193 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vecMulS.vhd
 l0
 L9
 VjSk?`iJGU1h4l6L9gI`4C0
 !s100 Kk:<CQg]hFIFCMWX^QDU=2
 R9
 32
-R10
+R74
 !i10b 1
-R11
-Z195 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vecMulS.vhd|
-Z196 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vecMulS.vhd|
+R75
+Z194 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vecMulS.vhd|
+Z195 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vecMulS.vhd|
 !i113 0
 R14
 R15
 Aarch
-R45
-R38
+R43
+R37
 R4
 R5
 DEx4 work 7 vecmuls 0 22 jSk?`iJGU1h4l6L9gI`4C0
@@ -1594,40 +1597,40 @@ V@UJNNaN2GhAUL3;lj?DF`1
 !s100 Bn<i`5OPI;3ODVKS2llBk3
 R9
 32
-R10
+R74
 !i10b 1
-R11
+R75
+R194
 R195
-R196
 !i113 0
 R14
 R15
 Evector_add_sub
 R3
-R45
-R38
+R43
+R37
 R4
 R5
 R6
-Z197 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vector_add_sub.vhd
-Z198 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vector_add_sub.vhd
+Z196 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vector_add_sub.vhd
+Z197 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vector_add_sub.vhd
 l0
 L9
 V<bcPohQIOXWY@UlkkFAmW2
 !s100 WCT86clM5@_I]=@2g2cDz3
 R9
 32
-R10
+R74
 !i10b 1
-R11
-Z199 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vector_add_sub.vhd|
-Z200 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vector_add_sub.vhd|
+R75
+Z198 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vector_add_sub.vhd|
+Z199 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vector_add_sub.vhd|
 !i113 0
 R14
 R15
 Aarch
-R45
-R38
+R43
+R37
 R4
 R5
 DEx4 work 14 vector_add_sub 0 22 <bcPohQIOXWY@UlkkFAmW2
@@ -1637,42 +1640,42 @@ V0U;@7>UKo6K54TVo`_Jk21
 !s100 2[=1_oga?c5W82nFOXc3V2
 R9
 32
-R10
+R74
 !i10b 1
-R11
+R75
+R198
 R199
-R200
 !i113 0
 R14
 R15
 Evector_dot
 R3
-R45
-Z201 DPx4 ieee 9 math_real 0 22 Sk6CSihbPL<f[^Shm]=KX0
-R38
+R43
+Z200 DPx4 ieee 9 math_real 0 22 Sk6CSihbPL<f[^Shm]=KX0
+R37
 R4
 R5
 R6
-Z202 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vector_dot.vhd
-Z203 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vector_dot.vhd
+Z201 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vector_dot.vhd
+Z202 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vector_dot.vhd
 l0
 L10
 V7gQAjb6Rk?fjBO4JXIZXY0
 !s100 4CPZUIiiFiMi86GLjWN763
 R9
 32
-R10
+R74
 !i10b 1
-R11
-Z204 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vector_dot.vhd|
-Z205 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vector_dot.vhd|
+R75
+Z203 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vector_dot.vhd|
+Z204 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vector_dot.vhd|
 !i113 0
 R14
 R15
 Aarch
-R45
-R201
-R38
+R43
+R200
+R37
 R4
 R5
 DEx4 work 10 vector_dot 0 22 7gQAjb6Rk?fjBO4JXIZXY0
@@ -1682,42 +1685,42 @@ VJhmc0gPei>cPDf4KB@5L83
 !s100 ^MJ7C09[LPOFG0<fW6IeJ3
 R9
 32
-R10
+R74
 !i10b 1
-R11
+R75
+R203
 R204
-R205
 !i113 0
 R14
 R15
 Evector_square
 R3
-R45
-R201
-R38
+R43
+R200
+R37
 R4
 R5
 R6
-Z206 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vector_square.vhd
-Z207 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vector_square.vhd
+Z205 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vector_square.vhd
+Z206 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vector_square.vhd
 l0
 L14
 Vkk1K]R@YmXfoOkWkOYjN41
 !s100 `GCVJK]:0>da?h0jgNdfQ1
 R9
 32
-R10
+R74
 !i10b 1
-R11
-Z208 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vector_square.vhd|
-Z209 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vector_square.vhd|
+R75
+Z207 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vector_square.vhd|
+Z208 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/vector_square.vhd|
 !i113 0
 R14
 R15
 Aarch
-R45
-R201
-R38
+R43
+R200
+R37
 R4
 R5
 DEx4 work 13 vector_square 0 22 kk1K]R@YmXfoOkWkOYjN41
@@ -1727,42 +1730,42 @@ VC8ZOQWSMVWB`D20NgdCNl0
 !s100 5>aYLJDZcMgP]kRL;<?=m1
 R9
 32
-R10
+R74
 !i10b 1
-R11
+R75
+R207
 R208
-R209
 !i113 0
 R14
 R15
 Ewriteiftest
-Z210 w1493474516
+Z209 w1493474516
+R36
+R60
 R37
-R65
-R38
 R4
 R5
 R6
-Z211 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_michael/writeInterfaceTest.vhd
-Z212 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_michael/writeInterfaceTest.vhd
+Z210 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_michael/writeInterfaceTest.vhd
+Z211 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_michael/writeInterfaceTest.vhd
 l0
 L7
 VE?bUgLOh:Q60BT[GXhQGh0
 !s100 jho@G]T@f751ih<_I_?ZS2
 R9
 32
-R10
+R74
 !i10b 1
-R11
-Z213 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_michael/writeInterfaceTest.vhd|
-Z214 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_michael/writeInterfaceTest.vhd|
+R75
+Z212 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_michael/writeInterfaceTest.vhd|
+Z213 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/tb_michael/writeInterfaceTest.vhd|
 !i113 0
 R14
 R15
 Aarch
+R36
+R60
 R37
-R65
-R38
 R4
 R5
 DEx4 work 11 writeiftest 0 22 E?bUgLOh:Q60BT[GXhQGh0
@@ -1772,42 +1775,42 @@ VfiOHk;Tg>1;n4AC@Ii7J]0
 !s100 ^M<A>>U[b5^[ELdHaOK5`0
 R9
 32
-R10
+R74
 !i10b 1
-R11
+R75
+R212
 R213
-R214
 !i113 0
 R14
 R15
 Ewriteinterface
-Z215 w1493496278
+Z214 w1493496278
+R36
+R60
 R37
-R65
-R38
 R4
 R5
 R6
-Z216 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/writeInterface.vhd
-Z217 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/writeInterface.vhd
+Z215 8/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/writeInterface.vhd
+Z216 F/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/writeInterface.vhd
 l0
 L9
 V@kf]OGa5e4ZbOK:MNY@Ff2
 !s100 PRUE7>R]7i[1M21NU0nKG0
 R9
 32
-R10
+R74
 !i10b 1
-R11
-Z218 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|-stats=none|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/writeInterface.vhd|
-Z219 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/writeInterface.vhd|
+R75
+Z217 !s90 -reportprogress|300|-work|work|-2002|-explicit|-vopt|/homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/writeInterface.vhd|
+Z218 !s107 /homes/a0426419/Desktop/HWSWC16_G4/HWSWC16_G4_final/template/vhdl/components/writeInterface.vhd|
 !i113 0
 R14
 R15
 Abeh
+R36
+R60
 R37
-R65
-R38
 R4
 R5
 DEx4 work 14 writeinterface 0 22 @kf]OGa5e4ZbOK:MNY@Ff2
@@ -1817,11 +1820,11 @@ VEbg49WD;9jB?YU[HMV`oJ2
 !s100 67ZMUoCo]l[beH:Aa4L393
 R9
 32
-R10
+R74
 !i10b 1
-R11
+R75
+R217
 R218
-R219
 !i113 0
 R14
 R15

@@ -429,11 +429,13 @@ dest(0) => gcsp_emmiting_old, dest(1) => valid_t_old);
 
 ref_ray_delay_c1t56 : delay_element generic map (WIDTH => 194, DEPTH => 56)
 port map (clk => clk, clken => '1', reset => reset, 
-source(193) => rightRay.valid, source(192) => rightRay.copy, source(191 DOWNTO 96) => to_std_logic(rightRay.direction), source(95 downto 0) => to_std_logic(rightRay.origin),
+source(193) => rightRay.valid, source(192) => rightRay.copy, source(191 DOWNTO 96) => to_std_logic(rightRay.direction), 
+source(95 downto 0) => to_std_logic(rightRay.origin),
 dest(193) => ref_valid, dest(192) => ref_copy, dest(191 downto 96) => ref_dir, dest(95 downto 0) => ref_origin);
 
 ref_gcs_delay_c39t56 : delay_element generic map (WIDTH => 5, DEPTH => 18) port map(
-clk => clk, clken => '1', reset => reset, source(4) => valid_t, source(3 downto 0) => closestSphere, dest(4) => ref_valid_t, dest(3 downto 0) => ref_sphere_i);
+clk => clk, clken => '1', reset => reset, source(4) => valid_t, source(3 downto 0) => closestSphere, 
+dest(4) => ref_valid_t, dest(3 downto 0) => ref_sphere_i);
 
 one_over_rs <= (0 => toscalar(sc.spheres(0).radius), 
 1 => toscalar(sc.spheres(1).radius),
@@ -614,7 +616,7 @@ backend_par : delay_element generic map (WIDTH => 22, DEPTH => 17) port map (clk
 writeIF : writeInterface 
   generic map
   (
-    FIFOSIZE => 128,--256
+    FIFOSIZE => 1024,--256
     MAXWIDTH => MAXWIDTH,
     MAXHEIGHT => MAXHEIGHT
   )
@@ -708,7 +710,8 @@ elsif address(15 downto 8) = x"19" then
 		outputRay_rdo.eob & 
 		outputRay_rdo.copy &
  		outputRay_rdo.pseudo_refl &
-		outputRay_rdo.valid & x"000000";
+		outputRay_rdo.valid & 
+		outputRay_rdo.position &"00";
 -- delayed reflected ray
 elsif address(15 downto 8) = x"20" then
 	readdata <= delayed_reflected_ray.color.x;
@@ -734,7 +737,8 @@ elsif address(15 downto 8) = x"29" then
 		delayed_reflected_ray.eob & 
 		delayed_reflected_ray.copy &
  		delayed_reflected_ray.pseudo_refl &
-		delayed_reflected_ray.valid & x"000000";
+		delayed_reflected_ray.valid & 
+		delayed_reflected_ray.position &"00";
 
 -- color vor und nach colUpdate
 elsif address(15 downto 8) = x"20" then
