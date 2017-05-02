@@ -61,6 +61,8 @@ signal output_write 	: std_logic;
 signal stall : std_logic;
 signal finished : std_logic_vector(1 downto 0);
 
+signal counter0_debug, counter1_debug : std_logic_vector(18 downto 0);
+
 signal waitreq : std_logic := '0';
 
 function to_std_logic(input : boolean) return std_logic is
@@ -106,6 +108,9 @@ dut : writeInterface
     master_address  	=> output_address,
     master_colordata	=> output_color,
     master_write    	=> output_write,
+
+    counter0_debug => counter0_debug,
+    counter1_debug => counter1_debug,
 
     slave_waitreq	=> waitreq
   );

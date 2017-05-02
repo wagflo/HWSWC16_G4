@@ -96,6 +96,7 @@ next_last_frames_done <= last_frames_done OR frames_done;
 			--the current frame has all data
 			if frames_out(0).all_info = '0' then
 				frames_sig(0).all_info <= '1';
+				start_sig <= '1';
 			else
 				frames_sig(1).all_info <= '1';
 			end if;

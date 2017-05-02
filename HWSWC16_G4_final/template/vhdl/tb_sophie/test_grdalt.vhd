@@ -27,8 +27,12 @@ begin
 
 clk_en <= NOT(stall);
 
-grdald : getRayDirAlt port map 
-(
+grdald : getRayDirAlt 
+generic map (
+	MAXWIDTH => 5,
+	MAXHEIGHT => 7
+)
+port map (
     clk => clk, clk_en  => clk_en, hold =>'0', reset => reset, 
     start => start, 
     valid_data => valid_data,
