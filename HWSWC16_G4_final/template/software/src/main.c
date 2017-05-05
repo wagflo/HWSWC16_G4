@@ -88,30 +88,23 @@ main (void)
 			printf("Test scene size should be > 0\n");
 			vec3_t lookfrom, lookat;
 			fix16_t vfov;
-			fb = 0x11 & (fb + 1);
-			printf("Use FB: %x\n", fb);
-			//if there are "old pictures)
-			
-			//selectFramebuffer (fb);
+
 			testGetNextCamera (&lookfrom, &lookat, &vfov);
 			
 			
 			if (start >=1) {
 			  //wait until the old picture is written
-			  printf("Vor busy loop\n");
-			  uint16_t read_base = 0xFF01;
-			  if ((fb & 01) == 1) {
-			    read_base = 0xFF00;
-			  }
-			  
+			  uint16_t read_base = 0xFF00 | (0x01 & fb);
+			  /*
 			  uint32_t countFirst = 0; 
 			  uint32_t counter0, counter1, controls;
 			  uint32_t rdoDirx, rdoDiry, rdoDirz, rdoData, oldRdoData;
 			  uint32_t delReflDirx, delReflDiry, delReflDirz, delReflData;
 			  uint32_t colInX, colInY, colInZ;
-			  oldRdoData = 0x00000000;
+			  oldRdoData = 0x00000000;*/
+			  printf("Vor busy loop\n");
 			  while (IORD(MM_RAYTRACING_0_BASE, read_base) == 0x00000000) {
-			      if(countFirst < 30){
+			      /*if(countFirst < 30){
 				
 				
 				if(1){
@@ -130,28 +123,26 @@ main (void)
 				    printf("GetRayDir    Dir x: %x dir y: %x dir z: %x data (remrefl:3, sob, eob, copy, pseudo, valid, 0:24) %x \n", rdoDirx, rdoDiry, rdoDirz, rdoData);
 				  }
 				  oldRdoData = rdoData;
-				  /*
+				  
 				  delReflDirx = IORD(MM_RAYTRACING_0_BASE, 0x2600);
 				  delReflDiry = IORD(MM_RAYTRACING_0_BASE, 0x2700);
 				  delReflDirz = IORD(MM_RAYTRACING_0_BASE, 0x2800);
 				  delReflData = IORD(MM_RAYTRACING_0_BASE, 0x2900);
 				  printf("Delayed Refl Dir x: %x dir y: %x dir z: %x data (remrefl:3, sob, eob, copy, pseudo, valid, 0:24) %x \n", rdoDirx, rdoDiry, rdoDirz, rdoData);
-				  */
-				  /*
+				  
+				  
 				  colInX = IORD(MM_RAYTRACING_0_BASE, 0x2000);
 				  colInY = IORD(MM_RAYTRACING_0_BASE, 0x2100);
 				  colInZ = IORD(MM_RAYTRACING_0_BASE, 0x2200);
 				  printf("Color in x: %x y: %x z: %x \n", colInX, colInY, colInZ);
-				  */
+				  
 				}
-			      }
+			      }*/
 			      //printf("In busy loop\n");
 			  }
 			  printf("Nach busy loop\n");
 			  //show the time if the picture is the first one
-			  if ((fb & 0x01) == 0) {
-			    printf ("Output: %llu\n", alt_timestamp ());
-			  }
+			  printf ("Output: %llu\n", alt_timestamp ());
 			  //show the picture;
 			  showFramebuffer (fb & 0x01);
 			  
@@ -160,12 +151,12 @@ main (void)
 			else {
 			  start++;
 			}
+			fb = 0x11 & (fb + 1);
+			printf("Use FB: %x\n", fb);
 			printf("Vor  setCamera\n");
 			setCamera (&lookfrom, &lookat, vfov, fb);
 			printf("Nach setCamera\n");
-			if ((fb & 0x01) == 0) {
-			  alt_timestamp_start ();
-			}
+			alt_timestamp_start ();
 			
 			
 		}

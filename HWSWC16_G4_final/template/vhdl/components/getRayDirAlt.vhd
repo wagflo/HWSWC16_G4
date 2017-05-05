@@ -52,7 +52,7 @@ constant zero : std_logic_vector(31 downto 0) := x"00000000";
 constant basisColourVector : vector := (x => one, y => one, z => one);
 constant blackVector : vector := (x => zero, y => zero, z => zero);
 
-signal next_done, next_copyRay, next_valid : std_logic;
+signal next_done, next_copyRay, next_valid, fifo_full_sig, old_fifo_full, next_active_bundle, active_bundle, started, next_started : std_logic;
 
 signal next_sob, next_eob, start_hold, next_start_hold : std_logic;
 
@@ -60,6 +60,7 @@ signal ver_base, next_result, next_result_hold, result_hold, next_ver_base, ran_
 signal next_i, j, next_j, i, samples, next_samples : natural;
 signal next_frame_no, frame_no : std_logic_vector(1 downto 0);
 signal ran : std_logic_vector(31 downto 0) := x"00000000";
+signal bundle_slots : std_logic_vector(31 downto 0) := (0=> '1', OTHERS => '0');
 
 signal address : natural := 0;
 signal next_address : natural;
@@ -84,7 +85,9 @@ l1 : lfsr port map(cout => ran(31 downto 24), clk => clk, reset => reset, enable
 l2 : lfsr port map(cout => ran(23 downto 16), clk => clk, reset => reset, enable => clk_en);
 l3 : lfsr port map(cout => ran(15 downto 8), clk => clk, reset => reset, enable => clk_en);
 l4 : lfsr port map(cout => ran(7 downto 0), clk => clk, reset => reset, enable => clk_en);
-async : process(j, i, start, addition_ver, frame, hold, addition_hor, result_hold, ran_add, ran, num_samples, address, ver_base, addition_base, start_hold, clk_en) is begin
+async : process(j, i, start, addition_ver, frame, hold, 
+addition_hor, result_hold, ran_add, ran, num_samples, address, ver_base, addition_base, start_hold, clk_en, bundle_slots,
+fifo_full_sig) is begin
 next_valid <= '0';
 next_frame_no <= frame;
 next_copyRay <= hold;
@@ -94,8 +97,8 @@ next_eob <= '0';
 next_ran_add <= addition_ver + addition_hor;
 next_result <= result_hold;
 next_result_hold <= result_hold;
-
-next_start_hold <= (start_hold OR start) AND (NOT(clk_en) OR fifo_full OR hold);
+next_started <= started;
+next_start_hold <= (start_hold OR start) AND (NOT(clk_en) OR fifo_full_sig OR hold OR NOT(next_active_bundle));
 
 next_ver_base <= ver_base; --MK
 next_j <= j;	--MK
@@ -109,7 +112,7 @@ if valid_data = '0' then
 	next_j <= 0;
 	next_i <= 0;
 else 
-	if start =  '1' OR start_hold = '1' then
+	if ((start OR start_hold) AND next_active_bundle) = '1' then
 		next_valid <= '1';
 		next_j <= 0;
 		next_i <= 0;
@@ -123,7 +126,8 @@ else
 			next_eob <= '1';
 		end if;
 		next_address <= 0;
-	else
+		next_started <= '1';
+	elsif started = '1' then
 		if samples >= unsigned(num_samples) then
 			next_address <= address + 1;
 			next_samples <= 1;
@@ -137,6 +141,7 @@ else
 			if i >= max_width then
 				if j >= max_height then
 					next_valid <= '0';
+					next_started <= '0';
 					next_result_hold <= (OTHERS => (OTHERS => '0'));
 					next_ver_base <= (OTHERS => (OTHERS => '0'));
 					next_result <= (OTHERS => (OTHERS => '0'));
@@ -184,6 +189,7 @@ if reset = '1' then
 	samples <= 1;
 	i <= 0;
 	j <= 0;
+	started <= '0';
 	result_hold <= (x => (OTHERS => '0'), y => (OTHERS => '0'), z => (OTHERS => '0'));
 	ver_base <= (x => (OTHERS => '0'), y => (OTHERS => '0'), z => (OTHERS => '0'));
 	done <= '0';
@@ -201,13 +207,19 @@ if reset = '1' then
 	address <= 0;
 	outputRay.copy <= '0';
 	start_hold <= '0';
+	bundle_slots <= (31=>'1', OTHERS=>'0');
+	old_fifo_full <= '0';
 elsif rising_edge(clk) then
 	start_hold <= next_start_hold;
 	done <= '0';
-	if clk_en = '1' and fifo_full = '0' then
+	bundle_slots(30 downto 0) <= bundle_slots(31 downto 1);
+	bundle_slots (31) <= active_bundle;
+	old_fifo_full <= fifo_full_sig;
+	if clk_en = '1' and fifo_full_sig = '0' then
 		outputRay.copy <= next_copyRay;
 		if hold = '0' then
 			samples <= next_samples;
+			started <= next_started;
 			i <= next_i;
 			j <= next_j;
 			outputRay.direction <= next_result;
@@ -230,12 +242,20 @@ elsif rising_edge(clk) then
 			address <= next_address;
 			done <= next_done;
 		end if;
-	elsif fifo_full = '1' AND clk_en = '1' then
+	elsif fifo_full_sig = '1' AND clk_en = '1' then
 		outputRay.valid <= '0';
 		valid <= '0';
 	end if;
 end if;
 end process;
-
+active_bundle <= bundle_slots(0);
+next_active_bundle <= bundle_slots(1);
+update_fifo_full_sig : process(old_fifo_full, active_bundle, fifo_full) is begin
+if active_bundle = '1' then
+	fifo_full_sig <= fifo_full;
+else
+	fifo_full_sig <= old_fifo_full;
+end if;
+end process;
 
 end architecture;

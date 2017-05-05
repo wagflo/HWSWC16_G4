@@ -193,6 +193,7 @@ rtSetCamera (vec3_t *lookfrom, vec3_t *lookat, fix16_t vfov, uint8_t frame_addre
 	IOWR(MM_RAYTRACING_0_BASE, 0x3023, camera_base.x[2]);
 	//write the frame address
 	IOWR(MM_RAYTRACING_0_BASE, 0x3050, 0x00000000 | frame_address);
+	printf("Frame No: %x\n", 0x00000000 | frame_address);
 	//finish the frame
 	IOWR(MM_RAYTRACING_0_BASE, 0xFFFF, 0x00000000);
 }
