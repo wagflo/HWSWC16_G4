@@ -230,12 +230,13 @@ syn : process(reset, clk) is begin
 		--else 
 		--  toggle <= toggle;
 		end if;
+		
 		old_valid_data <= valid_data;
 	end if;
 end process;
 
 start_rdo <= (valid_data AND NOT(old_valid_data)) OR start_picture;
-can_feed <= frames(0).all_info AND NOT(delayed_reflected_ray.valid);
+can_feed <= frames(0).all_info AND NOT(delayed_reflected_ray.valid) AND NOT(stall);
 stall <= fifo_full_delayed;
 
 rdo : getRayDirAlt 
@@ -764,6 +765,5 @@ elsif address(15 downto 8) = x"25" then
 
 end if;
 end process;
---readdata <= (others => '0'); --MK
 pixel_readdata <= (others => '0'); --MK
 end architecture;
