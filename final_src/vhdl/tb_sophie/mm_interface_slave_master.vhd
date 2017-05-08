@@ -197,8 +197,14 @@ end if;
 end process;
 
 async_read : process(read, address) is begin
-if read = '1' and address = x"0000" then
-	readdata <= (OTHERS => done);
+if read = '1' and address(15 downto 8) = x"FF" then
+	if address(0) = '1' then
+		readdata <= (OTHERS=>sc.pic_done(1);
+	else
+		readdata <= (OTHERS=>sc.pic_done(0);
+	end if;
+elsif read = '1' and addres = x"0000" then
+	readdata <= (OTHERS => write_poss);
 elsif read = '1' and address = x"0001" then
 	readdata <= (OTHERS => stall);
 elsif read = '1' and address = x"0002" then
