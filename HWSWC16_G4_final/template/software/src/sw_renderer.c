@@ -178,7 +178,7 @@ rtSetCamera (vec3_t *lookfrom, vec3_t *lookat, fix16_t vfov, uint8_t frame_addre
 	//write the origin
 	IOWR(MM_RAYTRACING_0_BASE, 0x3011, camera.origin.x[0]);
 	IOWR(MM_RAYTRACING_0_BASE, 0x3012, camera.origin.x[1]);
-	IOWR(MM_RAYTRACING_0_BASE, 0x3012, camera.origin.x[2]);
+	IOWR(MM_RAYTRACING_0_BASE, 0x3013, camera.origin.x[2]);
 	//write the horizontal add
 	IOWR(MM_RAYTRACING_0_BASE, 0x3031, camera.horizontal.x[0]);
 	IOWR(MM_RAYTRACING_0_BASE, 0x3032, camera.horizontal.x[1]);
