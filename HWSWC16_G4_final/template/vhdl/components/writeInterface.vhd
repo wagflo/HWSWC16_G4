@@ -50,7 +50,7 @@ architecture beh of writeInterface is
 --constant FIFOSIZE : positive := 8; -- 256 => whole m9k block, zum testen 4 
 
 signal data_betw_fifos : std_logic_vector(56 downto 0);
-signal req_betw_fifos, readreq_for_second_fifo, first_empty, second_empty, stall_int : std_logic;
+signal req_betw_fifos, readreq_for_second_fifo, first_empty, second_empty, stall_int, stall_sig, stall_old : std_logic;
 signal slave_waitreq_registered, frame : std_logic;
 signal data_delayed_1, address_delayed_1 : std_logic_vector(31 downto 0);
 signal data_delayed_2, address_delayed_2 : std_logic_vector(31 downto 0);
@@ -103,7 +103,17 @@ begin
       q(23 downto  0) => fifoback_colordata(23 downto 0)
     );
 
-stall <= stall_int;
+stall <= stall_sig;
+
+assign_stall : process(stall_old, stall_int, first_empty) is begin
+stall_sig <= stall_old;
+if (first_empty AND NOT (stall_int)) = '1' then
+	stall_sig <= '0';
+elsif stall_int = '1' then
+	stall_sig <= '1';
+end if;
+end process;
+
 
 fifoback_colordata(31 downto 24) <= (others => '0');
 
@@ -141,7 +151,7 @@ end process;
 sync : process(clk, reset)
 begin
 if reset = '1' then
-
+  stall_old <= '0';
   slave_waitreq_registered <= '0';
   address_delayed_1 <= (others => '0');
   data_delayed_1 <= (others => '0');
@@ -153,7 +163,7 @@ if reset = '1' then
   counter1 <= 0;
   finished <= "00";
 elsif rising_edge(clk) then
-
+  stall_old <= stall_sig;
   slave_waitreq_registered <= slave_waitreq;
   address_delayed_1 <= fifoback_address;
   address_delayed_2 <= address_delayed_1;
