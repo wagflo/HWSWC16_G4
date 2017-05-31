@@ -125,12 +125,15 @@ rtInit (uint8_t num_objects, sphere_t *spheres, uint16_t max_reflects, uint16_t 
 }
 
 void
-rtSetCamera (vec3_t *lookfrom, vec3_t *lookat, fix16_t vfov, uint8_t frame_address)
+rtSetCamera (vec3_t *lookfrom, vec3_t *lookat, fix16_t vfov)
 {
 	const fix16_t aspect =
 		fix16_div (fix16_from_int (FRAME_WIDTH), fix16_from_int (FRAME_HEIGHT));
 	const fix16_t rpd = fix16_div (fix16_pi, fix16_from_int (180));
-
+	
+	const fix16_t f_height_r = fix16_div (fix16_one, fix16_from_int (FRAME_HEIGHT));
+	const fix16_t f_width_r = fix16_div (fix16_one, fix16_from_int (FRAME_WIDTH));
+	
 	fix16_t theta = fix16_mul (vfov, rpd);
 	fix16_t half_height = fix16_tan (theta >> 1); /* theta/2 */
 	fix16_t half_width = fix16_mul (aspect, half_height);
@@ -162,10 +165,15 @@ rtSetCamera (vec3_t *lookfrom, vec3_t *lookat, fix16_t vfov, uint8_t frame_addre
 	//write the frame data
 	vec3_t camera_base;
 	vec3_t upper_left;
-	vec3_t vertical_times_height;
-	vec3MulS(&vertical_times_height, fix16_from_int(479), &camera.vertical);
-	vec3Add(&upper_left, &camera.lower_left_corner, &vertical_times_height);
+	
+	vec3Add(&upper_left, &camera.lower_left_corner, &camera.vertical);
 	vec3Sub(&camera_base, &upper_left, &camera.origin);
+	
+	vec3_t horizontal_add;
+	vec3_t vertical_sub;
+	
+	vec3MulS(&horizontal_add, f_width_r, &camera.horizontal);
+	vec3MulS(&vertical_sub, f_height_r, &camera.vertical);
 	
 	
 	printf("Vor camera data \n");
@@ -178,24 +186,20 @@ rtSetCamera (vec3_t *lookfrom, vec3_t *lookat, fix16_t vfov, uint8_t frame_addre
 	//write the origin
 	IOWR(MM_RAYTRACING_0_BASE, 0x3011, camera.origin.x[0]);
 	IOWR(MM_RAYTRACING_0_BASE, 0x3012, camera.origin.x[1]);
-	IOWR(MM_RAYTRACING_0_BASE, 0x3012, camera.origin.x[2]);
+	IOWR(MM_RAYTRACING_0_BASE, 0x3013, camera.origin.x[2]);
 	//write the horizontal add
-	IOWR(MM_RAYTRACING_0_BASE, 0x3031, camera.horizontal.x[0]);
-	IOWR(MM_RAYTRACING_0_BASE, 0x3032, camera.horizontal.x[1]);
-	IOWR(MM_RAYTRACING_0_BASE, 0x3033, camera.horizontal.x[2]);
+	IOWR(MM_RAYTRACING_0_BASE, 0x3031, horizontal_add.x[0]);
+	IOWR(MM_RAYTRACING_0_BASE, 0x3032, horizontal_add.x[1]);
+	IOWR(MM_RAYTRACING_0_BASE, 0x3033, horizontal_add.x[2]);
 	//write the vertical add
-	IOWR(MM_RAYTRACING_0_BASE, 0x3041, camera.vertical.x[0]);
-	IOWR(MM_RAYTRACING_0_BASE, 0x3042, camera.vertical.x[1]);
-	IOWR(MM_RAYTRACING_0_BASE, 0x3043, camera.vertical.x[2]);
+	IOWR(MM_RAYTRACING_0_BASE, 0x3041, vertical_sub.x[0]);
+	IOWR(MM_RAYTRACING_0_BASE, 0x3042, vertical_sub.x[1]);
+	IOWR(MM_RAYTRACING_0_BASE, 0x3043, vertical_sub.x[2]);
 	//write the addition base
 	IOWR(MM_RAYTRACING_0_BASE, 0x3021, camera_base.x[0]);
 	IOWR(MM_RAYTRACING_0_BASE, 0x3022, camera_base.x[1]);
 	IOWR(MM_RAYTRACING_0_BASE, 0x3023, camera_base.x[2]);
-	//write the frame address
-	IOWR(MM_RAYTRACING_0_BASE, 0x3050, 0x00000000 | frame_address);
-	printf("Frame No: %x\n", 0x00000000 | frame_address);
-	//finish the frame
-	IOWR(MM_RAYTRACING_0_BASE, 0xFFFF, 0x00000000);
+	
 }
 
 /* result = lower_let_corner + s*horizontal + t*vertical - origin */

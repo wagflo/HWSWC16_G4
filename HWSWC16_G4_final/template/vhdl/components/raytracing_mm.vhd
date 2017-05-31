@@ -211,6 +211,8 @@ reset <= res_n when t /= reset_data else res_n OR read;
 --number_filled_v <= (1 => frames(0).all_info AND frames(1).all_info, 0 => frames(0).all_info XOR frames(1).all_info);
 gcsInput <= to_scInput(sc);
 
+--:: RESET wieder rein
+
 syn : process(reset, clk) is begin
 	if reset = '1' then 
 		--frames <= (OTHERS => initial_frame);
@@ -270,7 +272,9 @@ rdo : getRayDirAlt
     outputRay 	=> outputRay_rdo,
     done	=> done_rdo);
 
-rightRay <= outputRay_rdo when stall = '0' else delayed_reflected_ray;
+--rightRay <= outputRay_rdo when stall = '0' else delayed_reflected_ray; --MK da sicher Problem!
+
+rightRay <= outputRay_rdo when delayed_reflected_ray.valid = '0' else delayed_reflected_ray; --MK da sicher Problem!
 
 csp_c1t4 : closestSpherePrep port map(
 	clk => clk, reset => reset, clk_en=> '1',

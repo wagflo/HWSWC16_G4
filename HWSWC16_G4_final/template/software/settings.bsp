@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>May 8, 2017 5:44:59 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1494258299638</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>May 31, 2017 12:31:43 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1496226703320</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>bsp/</BspGeneratedLocation>
         <BspSettingsFile>./settings.bsp</BspSettingsFile>
         <SopcDesignFile>../quartus/raytracing.sopcinfo</SopcDesignFile>
