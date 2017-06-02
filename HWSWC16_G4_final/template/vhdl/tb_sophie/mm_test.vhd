@@ -122,7 +122,7 @@ signal i, j : natural := 18;
 
 begin
 
-slave_waitreq <= '0';
+--slave_waitreq <= '0';
 
 
 clk <= not(clk) after 20 ns;
@@ -134,8 +134,8 @@ res_n <= '0' after 10 ns;
 mm : raytracing_mm 
 generic map(
 
-	MAXWIDTH => 5,
-	MAXHEIGHT => 7
+	MAXWIDTH => 20,
+	MAXHEIGHT => 28
 )
 port map (clk => clk, res_n => res_n, 
 		address		=> address,
@@ -170,7 +170,15 @@ if res_n = '1'  then
 	write <= '0';
 	read <= '0';
 	j <= 0;
+	slave_waitreq <= '0';
+
 elsif  rising_edge(clk) then
+	if j mod 8 = 0 then
+		slave_waitreq <= '0';
+	else
+		slave_waitreq <= '1';
+	end if;
+
 	write <= '0';
 	read <= '0';
 	j <= j + 1;
