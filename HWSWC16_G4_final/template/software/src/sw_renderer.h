@@ -40,7 +40,7 @@ void rtInit (uint8_t num_objects, sphere_t *spheres, uint16_t max_reflects, uint
  * @param lookat   Camera direction
  * @param vfov     Vertical field of view in degrees
  */
-void rtSetCamera (vec3_t *lookfrom, vec3_t *lookat, fix16_t vfov, uint8_t frame_address);
+void rtSetCamera (vec3_t *lookfrom, vec3_t *lookat, fix16_t vfov);
 
 /** 
  * @brief Renders a frame. rtInit and rtSetCamera need to be called beforehand.

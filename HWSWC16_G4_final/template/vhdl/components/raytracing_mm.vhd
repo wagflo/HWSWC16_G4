@@ -211,6 +211,8 @@ reset <= res_n when t /= reset_data else res_n OR read;
 --number_filled_v <= (1 => frames(0).all_info AND frames(1).all_info, 0 => frames(0).all_info XOR frames(1).all_info);
 gcsInput <= to_scInput(sc);
 
+--:: RESET wieder rein
+
 syn : process(reset, clk) is begin
 	if reset = '1' then 
 		--frames <= (OTHERS => initial_frame);
@@ -230,13 +232,12 @@ syn : process(reset, clk) is begin
 		--else 
 		--  toggle <= toggle;
 		end if;
-		
 		old_valid_data <= valid_data;
 	end if;
 end process;
 
 start_rdo <= (valid_data AND NOT(old_valid_data)) OR start_picture;
-can_feed <= frames(0).all_info AND NOT(delayed_reflected_ray.valid) AND NOT(stall);
+can_feed <= frames(0).all_info AND NOT(delayed_reflected_ray.valid);
 stall <= fifo_full_delayed;
 
 rdo : getRayDirAlt 
@@ -271,7 +272,9 @@ rdo : getRayDirAlt
     outputRay 	=> outputRay_rdo,
     done	=> done_rdo);
 
-rightRay <= outputRay_rdo when stall = '0' else delayed_reflected_ray;
+--rightRay <= outputRay_rdo when stall = '0' else delayed_reflected_ray; --MK da sicher Problem!
+
+rightRay <= outputRay_rdo when delayed_reflected_ray.valid = '0' else delayed_reflected_ray; --MK da sicher Problem!
 
 csp_c1t4 : closestSpherePrep port map(
 	clk => clk, reset => reset, clk_en=> '1',
@@ -619,7 +622,7 @@ backend_par : delay_element generic map (WIDTH => 22, DEPTH => 17) port map (clk
 writeIF : writeInterface 
   generic map
   (
-    FIFOSIZE => 1024,--256
+    FIFOSIZE => 128,--256
     MAXWIDTH => MAXWIDTH,
     MAXHEIGHT => MAXHEIGHT
   )
@@ -765,5 +768,6 @@ elsif address(15 downto 8) = x"25" then
 
 end if;
 end process;
+--readdata <= (others => '0'); --MK
 pixel_readdata <= (others => '0'); --MK
 end architecture;

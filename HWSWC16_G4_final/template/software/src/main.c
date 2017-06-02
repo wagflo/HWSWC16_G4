@@ -55,7 +55,7 @@ static void init (
  * @param lookat   Observer direction
  * @param vfov     Vertical field of view in degrees
  */
-static void setCamera (vec3_t *lookfrom, vec3_t *lookat, fix16_t vfov, uint8_t frame_address);
+static void setCamera (vec3_t *lookfrom, vec3_t *lookat, fix16_t vfov);
 
 /** 
  * @brief Start raytracer
@@ -74,37 +74,37 @@ main (void)
 	selectFramebuffer (fb);
 	displayClear (0);
 	
-	displayClear(0xa0a000);
+	displayClear(0xa0a0a0);
 	
-	printf("Nach displayClear\n");
+	//printf("Nach displayClear\n");
 	showFramebuffer (fb & 0x01);
-	printf("Nach showFrambuffer\n");
+	//printf("Nach showFrambuffer\n");
 	init (TEST_SCENE_SIZE, test_spheres, TEST_NUM_REFLECTS, TEST_NUM_SAMPLES);
 	printf("Nach Init\n");
 	while (1)
 	{
 		if (TEST_SCENE_SIZE > 0) {
 		  
-			printf("Test scene size should be > 0\n");
+			//printf("Test scene size should be > 0\n");
 			vec3_t lookfrom, lookat;
 			fix16_t vfov;
 
 			testGetNextCamera (&lookfrom, &lookat, &vfov);
-			
+			setCamera (&lookfrom, &lookat, vfov);
 			
 			if (start >=1) {
 			  //wait until the old picture is written
 			  uint16_t read_base = 0xFF00 | (0x01 & fb);
-			  /*
+			  
 			  uint32_t countFirst = 0; 
 			  uint32_t counter0, counter1, controls;
 			  uint32_t rdoDirx, rdoDiry, rdoDirz, rdoData, oldRdoData;
 			  uint32_t delReflDirx, delReflDiry, delReflDirz, delReflData;
 			  uint32_t colInX, colInY, colInZ;
-			  oldRdoData = 0x00000000;*/
+			  oldRdoData = 0x00000000;
 			  printf("Vor busy loop\n");
 			  while (IORD(MM_RAYTRACING_0_BASE, read_base) == 0x00000000) {
-			      /*if(countFirst < 30){
+			      if(countFirst < 30){
 				
 				
 				if(1){
@@ -137,7 +137,7 @@ main (void)
 				  printf("Color in x: %x y: %x z: %x \n", colInX, colInY, colInZ);
 				  
 				}
-			      }*/
+			      }
 			      //printf("In busy loop\n");
 			  }
 			  printf("Nach busy loop\n");
@@ -152,10 +152,13 @@ main (void)
 			  start++;
 			}
 			fb = 0x11 & (fb + 1);
-			printf("Use FB: %x\n", fb);
-			printf("Vor  setCamera\n");
-			setCamera (&lookfrom, &lookat, vfov, fb);
-			printf("Nach setCamera\n");
+			
+			//write the frame address
+			IOWR(MM_RAYTRACING_0_BASE, 0x3050, 0x00000000 | fb);
+			//printf("Frame No: %x\n", 0x00000000 | frame_address);
+			//finish the frame
+			IOWR(MM_RAYTRACING_0_BASE, 0xFFFF, 0x00000000);
+			//printf("Nach setCamera\n");
 			alt_timestamp_start ();
 			
 			
@@ -192,9 +195,9 @@ init (
 }
 
 static void
-setCamera (vec3_t *lookfrom, vec3_t *lookat, fix16_t vfov, uint8_t frame_address)
+setCamera (vec3_t *lookfrom, vec3_t *lookat, fix16_t vfov)
 {
-	rtSetCamera (lookfrom, lookat, vfov, frame_address);
+	rtSetCamera (lookfrom, lookat, vfov);
 }
 
 static void

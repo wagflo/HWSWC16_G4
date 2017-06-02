@@ -411,7 +411,7 @@ next_last_frames_done <= last_frames_done OR frames_done;
 			end if;
 		end if;
 	elsif next_frame = '1' OR last_nextframe = '1' then
-		start_sig <= '1';
+		start_sig <= frames_out(1).all_info;
 		frames_sig(0) <= frames_out(1);
 		frames_sig(1) <= initial_frame;
 		next_last_nextframe <= '0';

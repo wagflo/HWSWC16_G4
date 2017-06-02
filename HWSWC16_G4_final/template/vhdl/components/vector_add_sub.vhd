@@ -25,7 +25,7 @@ COMPONENT lpm_add_sub
 		lpm_direction		: STRING;
 		lpm_hint		: STRING;
 		lpm_pipeline		: NATURAL;
-		lpm_representation		: STRING;
+		lpm_representation	: STRING;
 		lpm_type		: STRING;
 		lpm_width		: NATURAL
 	);

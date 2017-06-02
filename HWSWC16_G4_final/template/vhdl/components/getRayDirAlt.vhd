@@ -81,10 +81,13 @@ constant max_width : natural := MAXWIDTH - 1;
 constant max_height : natural := MAXHEIGHT - 1;
 
 begin
-l1 : lfsr port map(cout => ran(31 downto 24), clk => clk, reset => reset, enable => clk_en);
-l2 : lfsr port map(cout => ran(23 downto 16), clk => clk, reset => reset, enable => clk_en);
-l3 : lfsr port map(cout => ran(15 downto 8), clk => clk, reset => reset, enable => clk_en);
-l4 : lfsr port map(cout => ran(7 downto 0), clk => clk, reset => reset, enable => clk_en);
+--l1 : lfsr port map(cout => ran(31 downto 24), clk => clk, reset => reset, enable => clk_en);
+--l2 : lfsr port map(cout => ran(23 downto 16), clk => clk, reset => reset, enable => clk_en);
+--l3 : lfsr port map(cout => ran(15 downto 8), clk => clk, reset => reset, enable => clk_en);
+--l4 : lfsr port map(cout => ran(7 downto 0), clk => clk, reset => reset, enable => clk_en);
+
+ran <= x"0000_0000";
+
 async : process(j, i, start, addition_ver, frame, hold, 
 addition_hor, result_hold, ran_add, ran, num_samples, address, ver_base, addition_base, start_hold, clk_en, bundle_slots,
 fifo_full_sig) is begin
@@ -122,7 +125,7 @@ else
 		next_done <= '0';
 		next_samples <= 1;
 		next_sob <= '1';
-		if num_samples = "00001" then
+		if num_samples = "00001" or num_samples = "00000" then
 			next_eob <= '1';
 		end if;
 		next_address <= 0;
@@ -132,7 +135,7 @@ else
 			next_address <= address + 1;
 			next_samples <= 1;
 			next_sob <= '1';
-			if num_samples = "00001" then
+			if num_samples = "00001" or num_samples = "00000" then
 				next_eob <= '1';
 				if j = max_height AND i = max_width - 1 then
 					next_done <= '1';

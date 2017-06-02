@@ -3,7 +3,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 library lpm;
---use lpm.lpm_components.all;
+use lpm.lpm_components.all;
 use lpm.all;
 
 LIBRARY altera_mf;
@@ -76,7 +76,7 @@ COMPONENT lpm_add_sub
 		lpm_direction		: STRING;
 		lpm_hint		: STRING;
 		lpm_pipeline		: NATURAL;
-		lpm_representation		: STRING;
+		lpm_representation	: STRING;
 		lpm_type		: STRING;
 		lpm_width		: NATURAL
 	);
@@ -85,9 +85,9 @@ COMPONENT lpm_add_sub
 			clken		: IN STD_LOGIC;
 			add_sub	: IN STD_LOGIC ;
 			clock	: IN STD_LOGIC ;
-			dataa	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
-			datab	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
-			result	: OUT STD_LOGIC_VECTOR (31 DOWNTO 0)
+			dataa	: IN STD_LOGIC_VECTOR (lpm_width-1 DOWNTO 0);
+			datab	: IN STD_LOGIC_VECTOR (lpm_width-1 DOWNTO 0);
+			result	: OUT STD_LOGIC_VECTOR (lpm_width-1 DOWNTO 0)
 	);
 	END COMPONENT;
 
