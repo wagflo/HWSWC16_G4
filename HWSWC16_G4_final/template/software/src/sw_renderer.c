@@ -48,10 +48,10 @@ rtInit (uint8_t num_objects, sphere_t *spheres, uint16_t max_reflects, uint16_t 
 	general_data = general_data | ((0x000000FF & num_samples) << 16);
 
 	for (uint8_t i = 0; i < num_objects; ++i) {
-		printf("Writing Sphere %d\n", i);
+		//printf("Writing Sphere %d\n", i);
 		//scene.spheres[i] = spheres[i];
 		sphere_ena = sphere_ena | (0x00000001 << i);
-		printf("sphereEnable: %x\n", sphere_ena);
+		//printf("sphereEnable: %x\n", sphere_ena);
 		uint16_t i_16 = (0x000F & (uint16_t) i) << 8;
 		uint16_t spheres_address = 0x1000;
 		uint16_t radius2 = 0x0020;
@@ -65,38 +65,38 @@ rtInit (uint8_t num_objects, sphere_t *spheres, uint16_t max_reflects, uint16_t 
 		//Write the radius2 to the memory mapped interface
 		uint16_t address = spheres_address | i_16 | radius2;
 		uint32_t data = fix16_mul(spheres[i].radius, spheres[i].radius);
-		printf("Write at: %x data: %x\n", address, data);
+		printf("Sphere %d: radius2: %x\n", i, data);
 		IOWR(MM_RAYTRACING_0_BASE, address, data);
 		//write inverse rad to the memory mapped interface
 		address = spheres_address | i_16 | rad_inv;
 		data = fix16_div(0x00010000, spheres[i].radius);
-		printf("Write at: %x data: %x\n", address, data);
+		printf("Sphere %d: radius_inv: %x\n", i, data);
 		IOWR(MM_RAYTRACING_0_BASE, address, data);
 		//write the center to the memory mapped interface
 		address = spheres_address | i_16 | center | x;
 		data = spheres[i].center.x[0];
-		printf("Write at: %x data: %x\n", address, data);
+		printf("Sphere %d: center.x: %x\n", i, data);
 		IOWR(MM_RAYTRACING_0_BASE, address, data);
 		address = spheres_address | i_16 | center | y;
 		data = spheres[i].center.x[1];
-		printf("Write at: %x data: %x\n", address, data);
+		printf("Sphere %d: center.y: %x\n", i, data);
 		IOWR(MM_RAYTRACING_0_BASE, address, data);
 		address = spheres_address | i_16 | center | z;
 		data = spheres[i].center.x[2];
-		printf("Write at: %x data: %x\n", address, data);
+		printf("Sphere %d: center.z: %x\n", i, data);
 		IOWR(MM_RAYTRACING_0_BASE, address, data);
 		//write the color to the memory mapped interface
 		address = spheres_address | i_16 | color | x;
 		data = spheres[i].color.x[0];
-		printf("Write at: %x data: %x\n", address, data);
+		printf("Sphere %d: color.x: %x\n", i, data);
 		IOWR(MM_RAYTRACING_0_BASE, address, data);
 		address = spheres_address | i_16 | color | y;
 		data = spheres[i].color.x[1];
-		printf("Write at: %x data: %x\n", address, data);
+		printf("Sphere %d: color.y: %x\n", i, data);
 		IOWR(MM_RAYTRACING_0_BASE, address, data);
 		address = spheres_address | i_16 | color | z;
 		data = spheres[i].color.x[2];
-		printf("Write at: %x data: %x\n", address, data);
+		printf("Sphere %d: color.z: %x\n", i, data);
 		IOWR(MM_RAYTRACING_0_BASE, address, data);
 		//write emitting to the memory mapped interface
 		address = spheres_address | i_16 | emitting;
@@ -106,14 +106,14 @@ rtInit (uint8_t num_objects, sphere_t *spheres, uint16_t max_reflects, uint16_t 
 			data= 0x00000000;
 			
 		}
-		printf("Write at: %x data: %x\n", address, data);
+		printf("Sphere %d: emitting: %x\n", i, data);
 		IOWR(MM_RAYTRACING_0_BASE, address, data);
 	}
 	//write the general data to the memory mapped interface
 	general_data = general_data | (0x0000FFFF & sphere_ena);
-	printf("Write at: %x data: %x\n", 0x2000, general_data);
+	printf("General Data: %x\n", general_data);
 	IOWR(MM_RAYTRACING_0_BASE, 0x2000, general_data);		// MK hier war 0x0200
-	printf("sphere0 color y: %X\n", IORD(MM_RAYTRACING_0_BASE, 0x0300));
+	//printf("sphere0 color y: %X\n", IORD(MM_RAYTRACING_0_BASE, 0x0300));
 	
 	//IOWR(MM_RAYTRACING_0_BASE, 0xFFFF, 0x123); // MK	
 	//IOWR(MM_RAYTRACING_0_BASE, 0xFFFF, 0x123); // MK		
@@ -175,6 +175,10 @@ rtSetCamera (vec3_t *lookfrom, vec3_t *lookat, fix16_t vfov)
 	vec3MulS(&horizontal_add, f_width_r, &camera.horizontal);
 	vec3MulS(&vertical_sub, f_height_r, &camera.vertical);
 	
+	printf("Origin: (%X, %X, %X), Horizontal: (%X, %X, %X), Vertical (%X, %X, %X), Base: (%X, %X, %X)",
+	  camera.origin.x[0], camera.origin.x[1], camera.origin.x[2], horizontal_add.x[0], horizontal_add.x[1], horizontal_add.x[2],
+	  vertical_sub.x[0], vertical_sub.x[1], vertical_sub.x[2], camera_base.x[0], camera_base.x[1], camera_base.x[2]
+	);
 	
 	printf("Vor camera data \n");
 	

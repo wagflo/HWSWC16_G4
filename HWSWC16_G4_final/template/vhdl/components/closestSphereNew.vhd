@@ -597,6 +597,7 @@ dest(31 downto 0) => t12345678_c37,
 dest(35 downto 33) => t12345678_sp_c37
 );
 
+
 t_res1 <= t_old when (copy_c21 AND t_old_valid AND t_old_smaller) = '1' else t12345678_c37;
 t_res1_valid <= t_old_valid when (copy_c21 AND t_old_valid AND t_old_smaller) = '1' else t12345678_valid_c37;
 t_res1_sp <= t_old_sp when (copy_c21 AND t_old_valid AND t_old_smaller) = '1' else copy_c21 & t12345678_sp_c37;

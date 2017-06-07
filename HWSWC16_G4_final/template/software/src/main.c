@@ -75,6 +75,7 @@ main (void)
 	displayClear (0);
 	
 	displayClear(0xa0a0a0);
+	//displayClear(0xa00000);
 	
 	//printf("Nach displayClear\n");
 	showFramebuffer (fb & 0x01);
@@ -104,40 +105,40 @@ main (void)
 			  oldRdoData = 0x00000000;
 			  printf("Vor busy loop\n");
 			  while (IORD(MM_RAYTRACING_0_BASE, read_base) == 0x00000000) {
-			      if(countFirst < 30){
-				
-				
-				if(1){
-				  
-				  counter0 = IORD(MM_RAYTRACING_0_BASE, 0x0400);
-				  counter1 = IORD(MM_RAYTRACING_0_BASE, 0x0500);
-				  controls = IORD(MM_RAYTRACING_0_BASE, 0x0600);
-				  printf("Counter0: %d counter1: %d controls (0: 27, stall, fr_done: 2, sc.pic_done: 2) %x \n", counter0, counter1, controls);
-				  
-				  
-				  rdoDirx = IORD(MM_RAYTRACING_0_BASE, 0x1600);
-				  rdoDiry = IORD(MM_RAYTRACING_0_BASE, 0x1700);
-				  rdoDirz = IORD(MM_RAYTRACING_0_BASE, 0x1800);
-				  rdoData = IORD(MM_RAYTRACING_0_BASE, 0x1900);
-				  if (rdoData != oldRdoData) {
-				    printf("GetRayDir    Dir x: %x dir y: %x dir z: %x data (remrefl:3, sob, eob, copy, pseudo, valid, 0:24) %x \n", rdoDirx, rdoDiry, rdoDirz, rdoData);
-				  }
-				  oldRdoData = rdoData;
-				  
-				  delReflDirx = IORD(MM_RAYTRACING_0_BASE, 0x2600);
-				  delReflDiry = IORD(MM_RAYTRACING_0_BASE, 0x2700);
-				  delReflDirz = IORD(MM_RAYTRACING_0_BASE, 0x2800);
-				  delReflData = IORD(MM_RAYTRACING_0_BASE, 0x2900);
-				  printf("Delayed Refl Dir x: %x dir y: %x dir z: %x data (remrefl:3, sob, eob, copy, pseudo, valid, 0:24) %x \n", rdoDirx, rdoDiry, rdoDirz, rdoData);
-				  
-				  
-				  colInX = IORD(MM_RAYTRACING_0_BASE, 0x2000);
-				  colInY = IORD(MM_RAYTRACING_0_BASE, 0x2100);
-				  colInZ = IORD(MM_RAYTRACING_0_BASE, 0x2200);
-				  printf("Color in x: %x y: %x z: %x \n", colInX, colInY, colInZ);
-				  
-				}
-			      }
+// 			      if(countFirst < 30){
+// 				
+// 				
+// 				if(1){
+// 				  
+// 				  counter0 = IORD(MM_RAYTRACING_0_BASE, 0x0400);
+// 				  counter1 = IORD(MM_RAYTRACING_0_BASE, 0x0500);
+// 				  controls = IORD(MM_RAYTRACING_0_BASE, 0x0600);
+// 				  printf("Counter0: %d counter1: %d controls (0: 27, stall, fr_done: 2, sc.pic_done: 2) %x \n", counter0, counter1, controls);
+// 				  
+// 				  
+// 				  rdoDirx = IORD(MM_RAYTRACING_0_BASE, 0x1600);
+// 				  rdoDiry = IORD(MM_RAYTRACING_0_BASE, 0x1700);
+// 				  rdoDirz = IORD(MM_RAYTRACING_0_BASE, 0x1800);
+// 				  rdoData = IORD(MM_RAYTRACING_0_BASE, 0x1900);
+// 				  if (rdoData != oldRdoData) {
+// 				    printf("GetRayDir    Dir x: %x dir y: %x dir z: %x data (remrefl:3, sob, eob, copy, pseudo, valid, 0:24) %x \n", rdoDirx, rdoDiry, rdoDirz, rdoData);
+// 				  }
+// 				  oldRdoData = rdoData;
+// 				  
+// 				  delReflDirx = IORD(MM_RAYTRACING_0_BASE, 0x2600);
+// 				  delReflDiry = IORD(MM_RAYTRACING_0_BASE, 0x2700);
+// 				  delReflDirz = IORD(MM_RAYTRACING_0_BASE, 0x2800);
+// 				  delReflData = IORD(MM_RAYTRACING_0_BASE, 0x2900);
+// 				  printf("Delayed Refl Dir x: %x dir y: %x dir z: %x data (remrefl:3, sob, eob, copy, pseudo, valid, 0:24) %x \n", rdoDirx, rdoDiry, rdoDirz, rdoData);
+// 				  
+// 				  
+// 				  colInX = IORD(MM_RAYTRACING_0_BASE, 0x2000);
+// 				  colInY = IORD(MM_RAYTRACING_0_BASE, 0x2100);
+// 				  colInZ = IORD(MM_RAYTRACING_0_BASE, 0x2200);
+// 				  printf("Color in x: %x y: %x z: %x \n", colInX, colInY, colInZ);
+// 				  
+// 				}
+// 			      }
 			      //printf("In busy loop\n");
 			  }
 			  printf("Nach busy loop\n");
@@ -145,13 +146,28 @@ main (void)
 			  printf ("Output: %llu\n", alt_timestamp ());
 			  //show the picture;
 			  showFramebuffer (fb & 0x01);
+			 /*						MK bis: } \n else 
+			  for(int i = 0; i < 1e5; ++i) {
+			    printf(" ");
+			  }
+			  selectFramebuffer (fb);
 			  
-			  
+			  displayClear(0xa0a0a0);
+			  showFramebuffer (fb & 0x01);
+			  */
+			 
+			 
+			 for(int i = 0; i < 4e4; ++i) {
+			    printf(" ");
+			  }
+			 displayClear(0xa0a0a0);
 			}
 			else {
 			  start++;
 			}
-			fb = 0x11 & (fb + 1);
+			
+			//fb = 0x11 & (fb + 1); ******************************************************************************** MK
+			
 			
 			//write the frame address
 			IOWR(MM_RAYTRACING_0_BASE, 0x3050, 0x00000000 | fb);

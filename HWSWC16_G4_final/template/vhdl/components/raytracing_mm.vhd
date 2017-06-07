@@ -622,7 +622,7 @@ backend_par : delay_element generic map (WIDTH => 22, DEPTH => 17) port map (clk
 writeIF : writeInterface 
   generic map
   (
-    FIFOSIZE => 128,--256
+    FIFOSIZE => 256,--256
     MAXWIDTH => MAXWIDTH,
     MAXHEIGHT => MAXHEIGHT
   )

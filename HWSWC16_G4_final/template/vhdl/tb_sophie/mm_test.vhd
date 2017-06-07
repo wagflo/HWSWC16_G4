@@ -4,6 +4,10 @@ use ieee.numeric_std.all;
 
 use work.operations_pkg.all;
 
+library modelsim_lib;
+
+use modelsim_lib.util.all;
+
 entity mm_test is
 
 end entity;
@@ -52,9 +56,12 @@ signal master_address, master_colordata, writedata, readdata, pixel_readdata : s
 signal address : std_logic_vector(15 downto 0);
 signal pixel_address : std_logic_vector(0 downto 0);
 
+signal position_debug : std_logic_vector(21 downto 0);
+
 type signal_array is array (natural range <>) of std_logic_vector(15 downto 0);
 type data_signal_array is array (natural range <>) of std_logic_vector(31 downto 0);
 
+constant stall_array : std_logic_vector(63 downto 0) := x"F_7F_3F_1F_0F_07_03_01_0";
 
 constant address_array : signal_array(63 downto 18)  := (
 --general data
@@ -122,6 +129,8 @@ signal i, j : natural := 18;
 
 begin
 
+--init_signal_spy("/mm/old_position","/position_debug", 1);
+
 --slave_waitreq <= '0';
 
 
@@ -173,11 +182,13 @@ if res_n = '1'  then
 	slave_waitreq <= '0';
 
 elsif  rising_edge(clk) then
-	if j mod 8 = 0 then
-		slave_waitreq <= '0';
-	else
-		slave_waitreq <= '1';
-	end if;
+	--if j mod 8 = 0 then
+	--	slave_waitreq <= '0';
+	--else
+	--	slave_waitreq <= '1';
+	--end if;
+
+	slave_waitreq <= stall_array(j mod stall_array'LEFT);
 
 	write <= '0';
 	read <= '0';

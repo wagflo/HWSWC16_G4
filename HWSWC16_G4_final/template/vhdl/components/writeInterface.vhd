@@ -64,6 +64,8 @@ signal counter0, counter0_next, counter1, counter1_next : integer range 0 to MAX
 
 signal finished_next : std_logic_vector(1 downto 0);
 
+signal toggle4doubling, rdreq4first, was_doubled: std_logic;
+
 begin
 
   fifofront: alt_fwft_fifo 
@@ -76,7 +78,7 @@ begin
       clock	=> clk,
       data(56 downto 24) => pixel_address,
       data(23 downto 0) => pixel_color,
-      rdreq	=> req_betw_fifos,
+      rdreq	=> req_betw_fifos, --rdreq4first, --req_betw_fifos
       wrreq	=> valid_data,
       empty	=> first_empty,
       full	=> open,	-- design needs to guard against first FIFO getting full => stall + big enough
@@ -85,19 +87,25 @@ begin
 
   req_betw_fifos <= (not stall_int) and (not first_empty); -- stall_int == second FIFO full
 
+  --rdreq4first <= req_betw_fifos and toggle4doubling;
+  
+
   fifoback : alt_fwft_fifo 
     generic map(
-      DATA_WIDTH => 57,
+      DATA_WIDTH => 58, --57,
       NUM_ELEMENTS => FIFOSIZE 
     )
     port map(
       aclr	=> reset,
       clock	=> clk,
-      data	=> data_betw_fifos,
+      --data	=> data_betw_fifos,
+      data(57)  => toggle4doubling,
+      data(56 downto 0)	=> data_betw_fifos,
       rdreq	=> readreq_for_second_fifo,
       wrreq	=> req_betw_fifos,
       empty	=> second_empty,
       full	=> stall_int,
+      q(57)	=> was_doubled, --
       q(56)	=> frame,
       q(55 downto 24) => fifoback_address,
       q(23 downto  0) => fifoback_colordata(23 downto 0)
@@ -127,15 +135,18 @@ begin
 counter0_next <= counter0;
 counter1_next <= counter1;
 finished_next <= "00";
-if readreq_for_second_fifo = '1' then
-  if frame = '0' then
+--if readreq_for_second_fifo = '1' then
+if readreq_for_second_fifo = '1'  then
+  --if frame = '0' then
+  if frame = '0' then -- and was_doubled = '0' then
 	if counter0 >= (MAXWIDTH*MAXHEIGHT - 1) then
     		counter0_next <= 0;
     		finished_next(0) <= '1';
 	else
 		counter0_next <= counter0 + 1;
 	end if;
-  else
+  --else
+  elsif frame = '1' then --and was_doubled = '0' then
     	if counter1 >= (MAXWIDTH*MAXHEIGHT - 1) then
     		counter1_next <= 0;
     		finished_next(1) <= '1';
@@ -162,6 +173,8 @@ if reset = '1' then
   counter0 <= 0;
   counter1 <= 0;
   finished <= "00";
+  toggle4doubling <= '0';
+
 elsif rising_edge(clk) then
   stall_old <= stall_sig;
   slave_waitreq_registered <= slave_waitreq;
@@ -174,10 +187,13 @@ elsif rising_edge(clk) then
   counter0 <= counter0_next;
   counter1 <= counter1_next;
   finished <= finished_next;
+
+  toggle4doubling <= not toggle4doubling;
 end if;
 end process;
 
-readreq_for_second_fifo <= (not slave_waitreq) and (not second_empty); -- after 2 ns; -- delay against waitreq glitches
+-- MK doubling: readreq_for_second_fifo <= (not slave_waitreq) and (not second_empty); -- after 2 ns; -- delay against waitreq glitches
+readreq_for_second_fifo <= (not slave_waitreq) and (not second_empty) and toggle4doubling;
 --(not slave_waitreq_registered) and (not second_empty);
 
 --readreq_for_second_fifo <= (not slave_waitreq) and (not second_empty) after 1 ns;
