@@ -50,6 +50,10 @@ component raytracing_mm is
 	);
 end component;
 
+constant MAXWIDTH  : integer := 200;
+constant MAXHEIGHT : integer :=  120;
+
+
 signal clk, write, read, slave_waitreq, master_write, pixel_read, old_reset : std_logic := '0';
 signal res_n : std_logic := '1';
 signal master_address, master_colordata, writedata, readdata, pixel_readdata : std_logic_vector(31 downto 0);
@@ -62,6 +66,12 @@ type signal_array is array (natural range <>) of std_logic_vector(15 downto 0);
 type data_signal_array is array (natural range <>) of std_logic_vector(31 downto 0);
 
 constant stall_array : std_logic_vector(63 downto 0) := x"F_7F_3F_1F_0F_07_03_01_0";
+
+subtype my_bit_array is bit_vector(MAXWIDTH*MAXHEIGHT - 1 downto 0);
+
+signal test_all_sent : my_bit_array := (others => '0');
+signal new_address, old_address : std_logic_vector(31 downto 0) := (others => '0'); --std_logic_vector(to_unsigned(MAXWIDTH*MAXHEIGHT*4, 32)); --(others => '0');
+signal spy_fr_done : std_logic_vector(1 downto 0);
 
 constant address_array : signal_array(63 downto 18)  := (
 --general data
@@ -129,6 +139,12 @@ signal i, j : natural := 18;
 
 begin
 
+spy_process : process
+begin
+init_signal_spy("/mm/fr_done","/spy_fr_done",1);
+wait;
+end process spy_process;
+
 --init_signal_spy("/mm/old_position","/position_debug", 1);
 
 --slave_waitreq <= '0';
@@ -143,8 +159,8 @@ res_n <= '0' after 10 ns;
 mm : raytracing_mm 
 generic map(
 
-	MAXWIDTH => 20,
-	MAXHEIGHT => 28
+	MAXWIDTH => MAXWIDTH,
+	MAXHEIGHT => MAXHEIGHT
 )
 port map (clk => clk, res_n => res_n, 
 		address		=> address,
@@ -187,6 +203,24 @@ elsif  rising_edge(clk) then
 	--else
 	--	slave_waitreq <= '1';
 	--end if;
+	
+	if master_write = '1' and slave_waitreq = '0' then 
+
+		test_all_sent(to_integer(unsigned(master_address)) / 4) <= '1';
+	end if;
+
+	if spy_fr_done /= "00" then 
+
+		test_all_sent <= (others => '0');
+	end if;
+	
+	--test_all_sent(to_integer(unsigned(master_address)) mod 4) <= '1' when master_write = '1' and slave_waitreq = '0' else '0';
+
+--	if to_integer(unsigned(old_address)) != to_integer(unsigned(master_address)) then
+
+	if old_address /= master_address then
+		old_address <= master_address;
+	end if;
 
 	slave_waitreq <= stall_array(j mod stall_array'LEFT);
 
@@ -241,6 +275,10 @@ end if;
 
 end process;
 
+--assert test_all_sent = my_bit_array'(others => '0');
+assert test_all_sent(MAXWIDTH*MAXHEIGHT - 1) = '0' report "test_all_sent last written"; -- nur letztes
+
+assert unsigned(old_address) <= unsigned(master_address) report "probably reflected ray overtakes, as it should OR SIMPLY NEW PICTURE";
 
 address <= address_array(i);
 writedata <= data_array(i);

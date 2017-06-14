@@ -192,8 +192,11 @@ elsif rising_edge(clk) then
 end if;
 end process;
 
--- MK doubling: readreq_for_second_fifo <= (not slave_waitreq) and (not second_empty); -- after 2 ns; -- delay against waitreq glitches
-readreq_for_second_fifo <= (not slave_waitreq) and (not second_empty) and toggle4doubling;
+-- MK not doubling: readreq_for_second_fifo <= (not slave_waitreq) and (not second_empty); -- after 2 ns; -- delay against waitreq glitches
+
+readreq_for_second_fifo <= (not slave_waitreq) and (not second_empty);
+
+-- MK doubling: readreq_for_second_fifo <= (not slave_waitreq) and (not second_empty) and toggle4doubling;
 --(not slave_waitreq_registered) and (not second_empty);
 
 --readreq_for_second_fifo <= (not slave_waitreq) and (not second_empty) after 1 ns;
