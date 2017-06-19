@@ -2,6 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+use work.sim_bmppack.all;
 use work.operations_pkg.all;
 
 library modelsim_lib;
@@ -50,8 +51,11 @@ component raytracing_mm is
 	);
 end component;
 
-constant MAXWIDTH  : integer := 200;
-constant MAXHEIGHT : integer :=  120;
+-- bitmap debugging: mit GIMP BILD mit MAXWIDTH mal MAXHEIGHT Pixeln erstellen, export as ..., Windows BMP, 
+-- dann 24 bits und "do not write color space information" anklicken, damit headerfile passt
+
+constant MAXWIDTH  : integer := 200; -- fuer bitmap debug muss 3*MAXWIDTH modulo 4 = 0 sein!
+constant MAXHEIGHT : integer := 120;
 
 
 signal clk, write, read, slave_waitreq, master_write, pixel_read, old_reset : std_logic := '0';
@@ -65,13 +69,36 @@ signal position_debug : std_logic_vector(21 downto 0);
 type signal_array is array (natural range <>) of std_logic_vector(15 downto 0);
 type data_signal_array is array (natural range <>) of std_logic_vector(31 downto 0);
 
-constant stall_array : std_logic_vector(63 downto 0) := x"F_7F_3F_1F_0F_07_03_01_0";
+constant stall_array : std_logic_vector(63 downto 0) := x"0_00_00_00_00_00_00_00_0"; --x"0_00_00_00_00_00_00_00_0"; --x"F_7F_7F_7F_7F_7F_7F_7F_7"; --x"F_7F_3F_1F_0F_07_03_01_0";
 
 subtype my_bit_array is bit_vector(MAXWIDTH*MAXHEIGHT - 1 downto 0);
+--subtype bitzeile is bit_vector(MAXWIDTH - 1 downto 0);
+type my_bit_array2 is array (0 to MAXHEIGHT - 1) of bit_vector(MAXWIDTH - 1 downto 0);
 
-signal test_all_sent : my_bit_array := (others => '0');
+type bildtyp is array (0 to MAXWIDTH*MAXHEIGHT - 1) of std_logic_vector(23 downto 0);
+type zeilentyp is array(0 to MAXWIDTH - 1) of std_logic_vector(23 downto 0);
+type bildtyp2 is array (0 to MAXHEIGHT - 1) of zeilentyp;
+
+type bildzahltyp is array (0 to MAXWIDTH*MAXHEIGHT - 1) of Integer;
+
+signal test_all_sent, test_2nd_sent, test_bitmap : my_bit_array := (others => '0');
+signal test_all_sent2, test_2nd_sent2, test_bitmap2 : my_bit_array2 := (others => (others => '0'));
 signal new_address, old_address : std_logic_vector(31 downto 0) := (others => '0'); --std_logic_vector(to_unsigned(MAXWIDTH*MAXHEIGHT*4, 32)); --(others => '0');
 signal spy_fr_done : std_logic_vector(1 downto 0);
+signal spy_rightRay : ray;
+
+--signal dummy_color : std_logic_vector(23 downto 0) := x"000000";
+signal red 	: std_logic_vector(23 downto 0) := x"0000FF";
+signal green 	: std_logic_vector(23 downto 0) := x"00FF00";
+signal blue 	: std_logic_vector(23 downto 0) := x"FF0000";
+signal bild : bildtyp := (others => x"000000");
+signal bild2 : bildtyp2 := (others => (others => x"000000"));
+
+signal minNumRefl : bildzahltyp := (others => 0);
+type reflColorLookuptype is array(0 to 7) of std_logic_vector(23 downto 0);
+constant reflColorLU : reflColorLookuptype := (x"0000FF", x"00FF00", x"FF0000", x"0000FF", x"00FF00", x"FF0000", x"0000FF", x"00FF00");
+
+signal dummy_thresh : std_logic_vector(31 downto 0) := x"00017500";
 
 constant address_array : signal_array(63 downto 18)  := (
 --general data
@@ -125,7 +152,7 @@ constant data_array : data_signal_array(63 downto 18)  := (
 --can I write?
 48 => X"00000000",
 --camera center + addition base
-49 => X"00000000", 50=>X"00000000", 51=>X"00000000", 52 => X"FFFF0000", 53=>X"00010000", 54=>X"00010000",
+49 => X"00000000", 50=>X"00000000", 51=>X"00000000", 52 => X"FFFF0000", 53=>X"00015000", 54=>X"00010000",
 --addition vectors hoizontal + vertical
 55 => X"0000_0089", 56=>X"00000000", 57=>X"00000000", 58 => X"00000000", 59=>X"0000_00A4", 60=>X"00000000",
 --finish the frame
@@ -141,7 +168,27 @@ begin
 
 spy_process : process
 begin
-init_signal_spy("/mm/fr_done","/spy_fr_done",1);
+
+--ReadFile("/homes/a0426419/Documents/fitting.bmp"); -- Groesse muss wohl passen von, Bild muss da sein, fuer Header Info
+			
+	--	for i in 0 to MAXWIDTH - 1 loop
+	--		for j in 0 to MAXHEIGHT - 1 loop
+	--			if test_bitmap(j*MAXWIDTH + i) = '1' then
+	--				SetPixel (i, j, dummy_color);
+	--			end if;
+	--		end loop;
+	--	end loop;
+
+--SetPixel (10, 10, red);
+--SetPixel (10, 11, green);
+--SetPixel (11, 10, blue);
+--SetPixel (11, 11, red);
+
+--WriteFile("/homes/a0426419/Documents/result.bmp");
+
+
+init_signal_spy("/mm/fr_done", "/spy_fr_done", 1);
+init_signal_spy("/mm/rightRay", "/spy_rightRay", 1);
 wait;
 end process spy_process;
 
@@ -187,6 +234,7 @@ port map (clk => clk, res_n => res_n,
 		slave_waitreq	 => slave_waitreq);
 
 cpu : process(clk, res_n) is
+variable dummy_color : std_logic_vector(23 downto 0) := x"000000";
 
 begin
 
@@ -204,14 +252,80 @@ elsif  rising_edge(clk) then
 	--	slave_waitreq <= '1';
 	--end if;
 	
+	if(unsigned(master_address) <= unsigned(dummy_thresh)) then
+
+	minNumRefl(to_integer(unsigned(spy_rightRay.position))) <= to_integer(unsigned(spy_rightRay.remaining_reflects));
+
+	assert minNumRefl(to_integer(unsigned(spy_rightRay.position))) >= to_integer(unsigned(spy_rightRay.remaining_reflects)) 
+		report "New rightRay with more or equal number of remaing refl";
+
+	end if;
+
 	if master_write = '1' and slave_waitreq = '0' then 
 
 		test_all_sent(to_integer(unsigned(master_address)) / 4) <= '1';
+		test_all_sent2(to_integer(unsigned(master_address)) / (4*MAXWIDTH))((to_integer(unsigned(master_address)) mod (4*MAXWIDTH)) / 4) <= '1';
+
+		if test_all_sent(to_integer(unsigned(master_address)) / 4) = '1' then
+
+			test_2nd_sent(to_integer(unsigned(master_address)) / 4) <= '1';
+			test_2nd_sent2(to_integer(unsigned(master_address)) / (4*MAXWIDTH))((to_integer(unsigned(master_address)) mod (4*MAXWIDTH)) / 4) <= '1';
+	
+		end if;
+
+		if master_colordata /= x"0000_0000" then
+			test_bitmap(to_integer(unsigned(master_address)) / 4) <= '1';
+			test_bitmap2(to_integer(unsigned(master_address)) / (4*MAXWIDTH))((to_integer(unsigned(master_address)) mod (4*MAXWIDTH)) / 4) <= '1';
+		else 
+			test_bitmap(to_integer(unsigned(master_address)) / 4) <= '0';
+			test_bitmap2(to_integer(unsigned(master_address)) / (4*MAXWIDTH))((to_integer(unsigned(master_address)) mod (4*MAXWIDTH)) / 4) <= '0';
+		end if;
+
+		bild(to_integer(unsigned(master_address)) / 4) <= master_colordata(23 downto 0);
+		bild2(to_integer(unsigned(master_address)) / (4*MAXWIDTH))((to_integer(unsigned(master_address)) mod (4*MAXWIDTH)) / 4) <= master_colordata(23 downto 0);
+
+		--bild2(to_integer(unsigned(master_address)) / (4*MAXWIDTH))((to_integer(unsigned(master_address)) mod / (4*MAXWIDTH)) / 4) <= master_colordata(23 downto 0);
 	end if;
 
 	if spy_fr_done /= "00" then 
 
+		ReadFile("/homes/a0426419/Documents/fitting.bmp"); -- Groesse muss wohl passen von, Bild muss da sein, fuer Header Info
+			
+		for my_i in 0 to MAXWIDTH - 1 loop
+			for my_j in 0 to MAXHEIGHT - 1 loop
+				if test_bitmap(my_j*MAXWIDTH + my_i) = '1' then
+					dummy_color := bild(my_j*MAXWIDTH + my_i);
+					SetPixel (my_i, my_j, dummy_color);
+				end if;
+			end loop;
+		end loop;
+
+		WriteFile("/homes/a0426419/Documents/result.bmp");
+
 		test_all_sent <= (others => '0');
+		test_2nd_sent <= (others => '0');
+		test_bitmap <= (others => '0');
+		bild <= (others => x"000000");
+
+		test_all_sent2 <= (others => (others => '0'));
+		test_2nd_sent2 <= (others => (others => '0'));
+		test_bitmap2 <= (others => (others => '0'));
+		bild2 <= (others => (others => x"000000"));
+
+		ReadFile("/homes/a0426419/Documents/fitting.bmp"); -- Groesse muss wohl passen von, Bild muss da sein, fuer Header Info
+			
+		for i in 0 to MAXWIDTH - 1 loop
+			for j in 0 to MAXHEIGHT - 1 loop
+				--if test_bitmap(j*MAXWIDTH + i) = '1' then
+					dummy_color := reflColorLU(minNumRefl(j*MAXWIDTH + i));
+					SetPixel (i, j, dummy_color);
+				--end if;
+			end loop;
+		end loop;
+
+		WriteFile("/homes/a0426419/Documents/min_rem_refl.bmp");
+
+		minNumRefl <= (others => 0);
 	end if;
 	
 	--test_all_sent(to_integer(unsigned(master_address)) mod 4) <= '1' when master_write = '1' and slave_waitreq = '0' else '0';
@@ -276,7 +390,15 @@ end if;
 end process;
 
 --assert test_all_sent = my_bit_array'(others => '0');
-assert test_all_sent(MAXWIDTH*MAXHEIGHT - 1) = '0' report "test_all_sent last written"; -- nur letztes
+assert test_all_sent(MAXWIDTH*MAXHEIGHT - 1) = '0' report "test_all_sent last written"; -- nur letztes, fuer Anzeige in Sim
+assert test_2nd_sent(MAXWIDTH*MAXHEIGHT - 1) = '0' report "test_all_sent last written"; -- nur letztes, fuer Anzeige in Sim
+assert test_bitmap(MAXWIDTH*MAXHEIGHT - 1) = '0' report "test_bitmap last written"; -- fuer Anzeige in Sim
+assert bild(MAXHEIGHT*MAXWIDTH - 1) = x"000000" report "test_bitmap last written"; -- fuer Anzeige in Sim
+
+assert test_all_sent2(MAXHEIGHT - 1)(MAXWIDTH - 1) = '0' report "test_all_sent last written"; -- nur letztes, fuer Anzeige in Sim
+assert test_2nd_sent2(MAXHEIGHT - 1)(MAXWIDTH - 1) = '0' report "test_all_sent last written"; -- nur letztes, fuer Anzeige in Sim
+assert test_bitmap2(MAXHEIGHT - 1)(MAXWIDTH - 1) = '0' report "test_bitmap last written"; -- fuer Anzeige in Sim
+assert bild2(MAXHEIGHT-1)(MAXWIDTH - 1) = x"000000" report "test_bitmap last written"; -- fuer Anzeige in Sim
 
 assert unsigned(old_address) <= unsigned(master_address) report "probably reflected ray overtakes, as it should OR SIMPLY NEW PICTURE";
 

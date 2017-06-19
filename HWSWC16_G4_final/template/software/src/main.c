@@ -80,7 +80,7 @@ main (void)
 	//printf("Nach displayClear\n");
 	showFramebuffer (fb & 0x01);
 	//printf("Nach showFrambuffer\n");
-	init (TEST_SCENE_SIZE, test_spheres, TEST_NUM_REFLECTS, TEST_NUM_SAMPLES);
+	init (TEST_SCENE_SIZE, test_spheres, TEST_NUM_REFLECTS, 1);
 	printf("Nach Init\n");
 	while (1)
 	{

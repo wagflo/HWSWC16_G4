@@ -586,7 +586,7 @@ if anyrefo_pseudo = '1' then
 	reflected_ray.position <= old_position;
 else
 	backend_ray.position <= old_position;
-	backend_ray.valid <= updatedColorRayValid;
+	backend_ray.valid <= anyrefo_valid_ray; --SR: old version was updatedColorRayValid
 	if (updatedColorValid  AND (gcsp_emmiting OR NOT(valid_t_old))) = '1' then 
         	backend_ray.color <= updatedColor;
 	elsif old_pseudo = '0' then

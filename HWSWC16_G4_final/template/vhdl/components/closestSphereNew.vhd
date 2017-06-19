@@ -463,9 +463,35 @@ source(31 downto 0) => t2,
 dest(32) => t2_valid_c34,
 dest(31 downto 0) => t2_c34
 );
-t12_valid <= t1_valid_c34 OR t2_valid_c34;
-t12 <= t2_c34 when (t2_valid_c34 AND (t2_smaller OR NOT(t1_valid_c34))) = '1' else t1_c34;
-t12_sp <= "001" when (t2_valid_c34 AND (t2_smaller OR NOT(t1_valid_c34))) = '1' else "000";
+
+assign_t12 : process(t1_valid_c34, t2_valid_c34, t2_smaller, t2_c34, t1_c34) is begin
+if t1_valid_c34 = '1' and t2_valid_c34 = '1' then
+	t12_valid <= '1';
+	if t2_smaller = '1' then
+		t12 <= t2_c34;
+		t12_sp <= "001";
+	else
+		t12 <= t1_c34;
+		t12_sp <= "000";
+	end if;
+elsif t1_valid_c34 = '1' then
+	t12_valid <= '1';
+	t12 <= t1_c34;
+	t12_sp <= "000";
+elsif t2_valid_c34 = '1' then
+	t12_valid <= '1';
+	t12 <= t2_c34;
+	t12_sp <= "001";
+else
+	t12_valid <= '0';
+	t12 <= t1_c34;
+	t12_sp <= "000";
+end if;
+end process;
+
+--t12_valid <= t1_valid_c34 OR t2_valid_c34;
+--t12 <= t2_c34 when (t2_valid_c34 AND (t2_smaller OR NOT(t1_valid_c34))) = '1' else t1_c34;
+--t12_sp <= "001" when (t2_valid_c34 AND (t2_smaller OR NOT(t1_valid_c34))) = '1' else "000";
 
 delay_t3 : delay_element generic map(WIDTH => 33, DEPTH => 1) port map (
 clk => clk, clken => clk_en, reset => reset, 
@@ -481,9 +507,35 @@ source(31 downto 0) => t4,
 dest(32) => t4_valid_c34,
 dest(31 downto 0) => t4_c34
 );
-t34_valid <= t3_valid_c34 OR t4_valid_c34;
-t34 <= t4_c34 when (t4_valid_c34 AND (t4_smaller OR NOT(t3_valid_c34))) = '1' else t3_c34;
-t34_sp <= "011" when (t4_valid_c34 AND (t4_smaller OR NOT(t3_valid_c34))) = '1' else "010";
+
+assign_t34 : process(t3_valid_c34, t4_valid_c34, t4_smaller, t4_c34, t3_c34) is begin
+if t3_valid_c34 = '1' and t4_valid_c34 = '1' then
+	t34_valid <= '1';
+	if t4_smaller = '1' then
+		t34 <= t4_c34;
+		t34_sp <= "011";
+	else
+		t34 <= t3_c34;
+		t34_sp <= "000";
+	end if;
+elsif t3_valid_c34 = '1' then
+	t34_valid <= '1';
+	t34 <= t3_c34;
+	t34_sp <= "010";
+elsif t4_valid_c34 = '1' then
+	t34_valid <= '1';
+	t34 <= t4_c34;
+	t34_sp <= "011";
+else
+	t34_valid <= '0';
+	t34 <= t3_c34;
+	t34_sp <= "010";
+end if;
+end process;
+
+--t34_valid <= t3_valid_c34 OR t4_valid_c34;
+--t34 <= t4_c34 when (t4_valid_c34 AND (t4_smaller OR NOT(t3_valid_c34))) = '1' else t3_c34;
+--t34_sp <= "011" when (t4_valid_c34 AND (t4_smaller OR NOT(t3_valid_c34))) = '1' else "010";
 
 delay_t5 : delay_element generic map(WIDTH => 33, DEPTH => 1) port map (
 clk => clk, clken => clk_en, reset => reset, 
@@ -499,9 +551,35 @@ source(31 downto 0) => t6,
 dest(32) => t6_valid_c34,
 dest(31 downto 0) => t6_c34
 );
-t56_valid <= t5_valid_c34 OR t6_valid_c34;
-t56 <= t6_c34 when (t6_valid_c34 AND (t6_smaller OR NOT(t5_valid_c34))) = '1' else t5_c34;
-t56_sp <= "101" when (t6_valid_c34 AND (t6_smaller OR NOT(t5_valid_c34))) = '1' else "100";
+
+assign_t56 : process(t5_valid_c34, t6_valid_c34, t6_smaller, t6_c34, t5_c34) is begin
+if t5_valid_c34 = '1' and t6_valid_c34 = '1' then
+	t56_valid <= '1';
+	if t6_smaller = '1' then
+		t56 <= t6_c34;
+		t56_sp <= "101";
+	else
+		t56 <= t5_c34;
+		t56_sp <= "100";
+	end if;
+elsif t5_valid_c34 = '1' then
+	t56_valid <= '1';
+	t56 <= t5_c34;
+	t56_sp <= "100";
+elsif t6_valid_c34 = '1' then
+	t56_valid <= '1';
+	t56 <= t6_c34;
+	t56_sp <= "101";
+else
+	t56_valid <= '0';
+	t56 <= t5_c34;
+	t56_sp <= "100";
+end if;
+end process;
+
+--t56_valid <= t5_valid_c34 OR t6_valid_c34;
+--t56 <= t6_c34 when (t6_valid_c34 AND (t6_smaller OR NOT(t5_valid_c34))) = '1' else t5_c34;
+--t56_sp <= "101" when (t6_valid_c34 AND (t6_smaller OR NOT(t5_valid_c34))) = '1' else "100";
 
 delay_t7 : delay_element generic map(WIDTH => 33, DEPTH => 1) port map (
 clk => clk, clken => clk_en, reset => reset, 
@@ -517,9 +595,35 @@ source(31 downto 0) => t8,
 dest(32) => t8_valid_c34,
 dest(31 downto 0) => t8_c34
 );
-t78_valid <= t7_valid_c34 OR t8_valid_c34;
-t78 <= t8_c34 when (t8_valid_c34 AND (t8_smaller OR NOT(t7_valid_c34))) = '1' else t7_c34;
-t78_sp <= "111" when (t8_valid_c34 AND (t8_smaller OR NOT(t7_valid_c34))) = '1' else "110";
+
+assign_t78 : process(t7_valid_c34, t8_valid_c34, t8_smaller, t8_c34, t7_c34) is begin
+if t7_valid_c34 = '1' and t8_valid_c34 = '1' then
+	t78_valid <= '1';
+	if t8_smaller = '1' then
+		t78 <= t8_c34;
+		t78_sp <= "111";
+	else
+		t78 <= t7_c34;
+		t78_sp <= "110";
+	end if;
+elsif t7_valid_c34 = '1' then
+	t78_valid <= '1';
+	t78 <= t7_c34;
+	t78_sp <= "110";
+elsif t8_valid_c34 = '1' then
+	t78_valid <= '1';
+	t78 <= t8_c34;
+	t78_sp <= "111";
+else
+	t78_valid <= '0';
+	t78 <= t7_c34;
+	t78_sp <= "110";
+end if;
+end process;
+
+--t78_valid <= t7_valid_c34 OR t8_valid_c34;
+--t78 <= t8_c34 when (t8_valid_c34 AND (t8_smaller OR NOT(t7_valid_c34))) = '1' else t7_c34;
+--t78_sp <= "111" when (t8_valid_c34 AND (t8_smaller OR NOT(t7_valid_c34))) = '1' else "110";
 
 delay_t12 : delay_element generic map(WIDTH => 36, DEPTH => 1) port map (
 clk => clk, clken => clk_en, reset => reset, 
@@ -539,9 +643,35 @@ dest(32) => t34_valid_c35,
 dest(31 downto 0) => t34_c35,
 dest(35 downto 33) => t34_sp_c35
 );
-t1234_valid <= t12_valid_c35 OR t34_valid_c35;
-t1234 <= t34_c35 when (t34_valid_c35 AND (t34_smaller OR NOT(t12_valid_c35))) = '1' else t12_c35;
-t1234_sp <= t34_sp_c35 when (t34_valid_c35 AND (t34_smaller OR NOT(t12_valid_c35))) = '1' else t12_sp_c35;
+
+assign_t1234 : process(t12_valid_c35, t34_valid_c35, t34_smaller, t34_c35, t12_c35, t12_sp_c35, t34_sp_c35) is begin
+if t12_valid_c35 = '1' and t34_valid_c35 = '1' then
+	t1234_valid <= '1';
+	if t34_smaller = '1' then
+		t1234 <= t34_c35;
+		t1234_sp <= t34_sp_c35;
+	else
+		t1234 <= t12_c35;
+		t1234_sp <= t12_sp_c35;
+	end if;
+elsif t12_valid_c35 = '1' then
+	t1234_valid <= '1';
+	t1234 <= t12_c35;
+	t1234_sp <= t12_sp_c35;
+elsif t34_valid_c35 = '1' then
+	t1234_valid <= '1';
+	t1234 <= t34_c35;
+	t1234_sp <= t34_sp_c35;
+else
+	t1234_valid <= '0';
+	t1234 <= t12_c35;
+	t1234_sp <= t12_sp_c35;
+end if;
+end process;
+
+--t1234_valid <= t12_valid_c35 OR t34_valid_c35;
+--t1234 <= t34_c35 when (t34_valid_c35 AND (t34_smaller OR NOT(t12_valid_c35))) = '1' else t12_c35;
+--t1234_sp <= t34_sp_c35 when (t34_valid_c35 AND (t34_smaller OR NOT(t12_valid_c35))) = '1' else t12_sp_c35;
 
 delay_t56 : delay_element generic map(WIDTH => 36, DEPTH => 1) port map (
 clk => clk, clken => clk_en, reset => reset, 
@@ -561,9 +691,35 @@ dest(32) => t78_valid_c35,
 dest(31 downto 0) => t78_c35,
 dest(35 downto 33) => t78_sp_c35
 );
-t5678_valid <= t56_valid_c35 OR t78_valid_c35;
-t5678 <= t78_c35 when (t78_valid_c35 AND (t78_smaller OR NOT(t56_valid_c35))) = '1' else t56_c35;
-t5678_sp <= t78_sp_c35 when (t78_valid_c35 AND (t78_smaller OR NOT(t56_valid_c35))) = '1' else t56_sp_c35;
+
+assign_t5678 : process(t56_valid_c35, t78_valid_c35, t78_smaller, t78_c35, t56_c35, t56_sp_c35, t78_sp_c35) is begin
+if t56_valid_c35 = '1' and t78_valid_c35 = '1' then
+	t5678_valid <= '1';
+	if t78_smaller = '1' then
+		t5678 <= t78_c35;
+		t5678_sp <= t78_sp_c35;
+	else
+		t5678 <= t56_c35;
+		t5678_sp <= t56_sp_c35;
+	end if;
+elsif t56_valid_c35 = '1' then
+	t5678_valid <= '1';
+	t5678 <= t56_c35;
+	t5678_sp <= t56_sp_c35;
+elsif t78_valid_c35 = '1' then
+	t5678_valid <= '1';
+	t5678 <= t78_c35;
+	t5678_sp <= t78_sp_c35;
+else
+	t5678_valid <= '0';
+	t5678 <= t56_c35;
+	t5678_sp <= t56_sp_c35;
+end if;
+end process;
+
+--t5678_valid <= t56_valid_c35 OR t78_valid_c35;
+--t5678 <= t78_c35 when (t78_valid_c35 AND (t78_smaller OR NOT(t56_valid_c35))) = '1' else t56_c35;
+--t5678_sp <= t78_sp_c35 when (t78_valid_c35 AND (t78_smaller OR NOT(t56_valid_c35))) = '1' else t56_sp_c35;
 
 delay_t1234 : delay_element generic map(WIDTH => 36, DEPTH => 1) port map (
 clk => clk, clken => clk_en, reset => reset, 
@@ -583,9 +739,35 @@ dest(32) => t5678_valid_c36,
 dest(31 downto 0) => t5678_c36,
 dest(35 downto 33) => t5678_sp_c36
 );
-t12345678_valid <= t1234_valid_c36 OR t5678_valid_c36;
-t12345678 <= t5678_c36 when (t5678_valid_c36 AND (t5678_smaller OR NOT(t1234_valid_c36))) = '1' else t1234_c36;
-t12345678_sp <= t5678_sp_c36 when (t5678_valid_c36 AND (t5678_smaller OR NOT(t1234_valid_c36))) = '1' else t1234_sp_c36;
+
+assign_t12345678 : process(t1234_valid_c36, t5678_valid_c36, t5678_smaller, t5678_c36, t1234_c36, t1234_sp_c36, t5678_sp_c36) is begin
+if t1234_valid_c36 = '1' and t5678_valid_c36 = '1' then
+	t12345678_valid <= '1';
+	if t5678_smaller = '1' then
+		t12345678 <= t5678_c36;
+		t12345678_sp <= t5678_sp_c36;
+	else
+		t12345678 <= t1234_c36;
+		t12345678_sp <= t1234_sp_c36;
+	end if;
+elsif t1234_valid_c36 = '1' then
+	t12345678_valid <= '1';
+	t12345678 <= t1234_c36;
+	t12345678_sp <= t1234_sp_c36;
+elsif t5678_valid_c36 = '1' then
+	t12345678_valid <= '1';
+	t12345678 <= t5678_c36;
+	t12345678_sp <= t5678_sp_c36;
+else
+	t12345678_valid <= '0';
+	t12345678 <= t1234_c36;
+	t12345678_sp <= t1234_sp_c36;
+end if;
+end process;
+
+--t12345678_valid <= t1234_valid_c36 OR t5678_valid_c36;
+--t12345678 <= t5678_c36 when (t5678_valid_c36 AND (t5678_smaller OR NOT(t1234_valid_c36))) = '1' else t1234_c36;
+--t12345678_sp <= t5678_sp_c36 when (t5678_valid_c36 AND (t5678_smaller OR NOT(t1234_valid_c36))) = '1' else t1234_sp_c36;
 
 delay_t12345678 : delay_element generic map(WIDTH => 36, DEPTH => 1) port map (
 clk => clk, clken => clk_en, reset => reset, 
@@ -597,10 +779,34 @@ dest(31 downto 0) => t12345678_c37,
 dest(35 downto 33) => t12345678_sp_c37
 );
 
+assign_t_res1 : process(t12345678_valid_c37, t_old_valid, t_old_smaller, t12345678_c37, t_old, t12345678_sp_c37, t_old_sp) is begin
+if t12345678_valid_c37 = '1' and t_old_valid = '1' then
+	t_res1_valid <= '1';
+	if t_old_smaller = '1' AND copy_c21 = '1' then
+		t_res1 <= t_old;
+		t_res1_sp <= t_old_sp;
+	else
+		t_res1 <= t12345678_c37;
+		t_res1_sp <= copy_c21 & t12345678_sp_c37;
+	end if;
+elsif t12345678_valid_c37 = '1' then
+	t_res1_valid <= '1';
+	t_res1 <= t12345678_c37;
+	t_res1_sp <= copy_c21 & t12345678_sp_c37;
+elsif t_old_valid = '1' and copy_c21 = '1' then
+	t_res1_valid <= '1';
+	t_res1 <= t_old;
+	t_res1_sp <= t_old_sp;
+else
+	t_res1_valid <= '0';
+	t_res1 <= t12345678_c37;
+	t_res1_sp <= copy_c21 & t12345678_sp_c37;
+end if;
+end process;
 
-t_res1 <= t_old when (copy_c21 AND t_old_valid AND t_old_smaller) = '1' else t12345678_c37;
-t_res1_valid <= t_old_valid when (copy_c21 AND t_old_valid AND t_old_smaller) = '1' else t12345678_valid_c37;
-t_res1_sp <= t_old_sp when (copy_c21 AND t_old_valid AND t_old_smaller) = '1' else copy_c21 & t12345678_sp_c37;
+--t_res1 <= t_old when (copy_c21 AND t_old_valid AND t_old_smaller) = '1' else t12345678_c37;
+--t_res1_valid <= t_old_valid when (copy_c21 AND t_old_valid AND t_old_smaller) = '1' else t12345678_valid_c37;
+--t_res1_sp <= t_old_sp when (copy_c21 AND t_old_valid AND t_old_smaller) = '1' else copy_c21 & t12345678_sp_c37;
 
 
 shift : process(clk, clk_en, reset) is begin
@@ -615,9 +821,16 @@ elsif (rising_edge(clk) AND clk_en = '1') then
 end if;
 end process;
 
-t_times_a <= t_old;
-closestSphere <= t_old_sp;
-valid_t <= t_old_valid;
-
+assign_output : process(copy_c21, t_res1, t_old, t_res1_sp, t_old_sp, t_res1_valid, t_old_valid) is begin
+if copy_c21 = '1' then
+	t_times_a <= t_res1;
+	closestSphere <= t_res1_sp;
+	valid_t <= t_res1_valid;
+else
+	t_times_a <= t_old;
+	closestSphere <= t_old_sp;
+	valid_t <= t_old_valid;
+end if;
+end process;
 end architecture;
 

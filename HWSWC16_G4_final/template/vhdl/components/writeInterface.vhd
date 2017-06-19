@@ -66,6 +66,7 @@ signal finished_next : std_logic_vector(1 downto 0);
 
 signal toggle4doubling, rdreq4first, was_doubled: std_logic;
 
+signal usedw_test : std_logic_vector(7 downto 0);
 begin
 
   fifofront: alt_fwft_fifo 
@@ -202,6 +203,7 @@ readreq_for_second_fifo <= (not slave_waitreq) and (not second_empty);
 --readreq_for_second_fifo <= (not slave_waitreq) and (not second_empty) after 1 ns;
 
 master_write <= not second_empty; --econd_empty_delayed_2;
+
 byteenable <= (others => not second_empty);
 --master_write <= readreq_for_second_fifo;
 
