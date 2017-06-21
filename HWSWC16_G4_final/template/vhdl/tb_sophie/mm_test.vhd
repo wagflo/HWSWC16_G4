@@ -69,7 +69,7 @@ signal position_debug : std_logic_vector(21 downto 0);
 type signal_array is array (natural range <>) of std_logic_vector(15 downto 0);
 type data_signal_array is array (natural range <>) of std_logic_vector(31 downto 0);
 
-constant stall_array : std_logic_vector(63 downto 0) := x"0_00_00_00_00_00_00_00_0"; --x"0_00_00_00_00_00_00_00_0"; --x"F_7F_7F_7F_7F_7F_7F_7F_7"; --x"F_7F_3F_1F_0F_07_03_01_0";
+constant stall_array : std_logic_vector(63 downto 0) := x"F_7F_3F_1F_0F_07_03_01_0"; --x"0_00_00_00_00_00_00_00_0"; --x"F_7F_7F_7F_7F_7F_7F_7F_7"; --x"F_7F_3F_1F_0F_07_03_01_0";
 
 subtype my_bit_array is bit_vector(MAXWIDTH*MAXHEIGHT - 1 downto 0);
 --subtype bitzeile is bit_vector(MAXWIDTH - 1 downto 0);
@@ -86,6 +86,7 @@ signal test_all_sent2, test_2nd_sent2, test_bitmap2 : my_bit_array2 := (others =
 signal new_address, old_address : std_logic_vector(31 downto 0) := (others => '0'); --std_logic_vector(to_unsigned(MAXWIDTH*MAXHEIGHT*4, 32)); --(others => '0');
 signal spy_fr_done : std_logic_vector(1 downto 0);
 signal spy_rightRay : ray;
+signal spy_backendray : ray;
 
 --signal dummy_color : std_logic_vector(23 downto 0) := x"000000";
 signal red 	: std_logic_vector(23 downto 0) := x"0000FF";
@@ -93,12 +94,21 @@ signal green 	: std_logic_vector(23 downto 0) := x"00FF00";
 signal blue 	: std_logic_vector(23 downto 0) := x"FF0000";
 signal bild : bildtyp := (others => x"000000");
 signal bild2 : bildtyp2 := (others => (others => x"000000"));
+signal firstNonWhite : bildtyp := (others => x"FFFFFF");
+signal lastBackendInput : bildtyp := (others => x"FFFFFF");
 
-signal minNumRefl : bildzahltyp := (others => 0);
-type reflColorLookuptype is array(0 to 7) of std_logic_vector(23 downto 0);
-constant reflColorLU : reflColorLookuptype := (x"0000FF", x"00FF00", x"FF0000", x"0000FF", x"00FF00", x"FF0000", x"0000FF", x"00FF00");
+signal minNumRefl : bildzahltyp := (others => 9);
+signal orderDrawn : bildzahltyp := (others => 0);
+signal counterDrawn : Integer := 0;
+signal howoftenRightRay : bildzahltyp := (others => 0);
 
-signal dummy_thresh : std_logic_vector(31 downto 0) := x"00017500";
+type reflColorLookuptype is array(0 to 9) of std_logic_vector(23 downto 0);
+constant reflColorLU : reflColorLookuptype := (x"0000FF", x"00FF00", x"FF0000", x"0000FF", x"00FF00", x"FF0000", x"0000FF", 
+					       x"00FF00", x"0000FF", x"000000");
+
+--signal dummy_thresh : std_logic_vector(31 downto 0) := x"00017500";
+
+signal bildnummer : integer := 0;
 
 constant address_array : signal_array(63 downto 18)  := (
 --general data
@@ -189,6 +199,8 @@ begin
 
 init_signal_spy("/mm/fr_done", "/spy_fr_done", 1);
 init_signal_spy("/mm/rightRay", "/spy_rightRay", 1);
+init_signal_spy("/mm/backend_ray", "/spy_backendray", 1);
+
 wait;
 end process spy_process;
 
@@ -252,13 +264,35 @@ elsif  rising_edge(clk) then
 	--	slave_waitreq <= '1';
 	--end if;
 	
-	if(unsigned(master_address) <= unsigned(dummy_thresh)) then
+	--if(unsigned(master_address) <= unsigned(dummy_thresh)) then -- ??? warum dummy noch checken!!!!!!! 
+	if spy_rightRay.valid = '1' then
 
-	minNumRefl(to_integer(unsigned(spy_rightRay.position))) <= to_integer(unsigned(spy_rightRay.remaining_reflects));
+		if minNumRefl(to_integer(unsigned(spy_rightRay.position))) >= to_integer(unsigned(spy_rightRay.remaining_reflects)) then
+			minNumRefl(to_integer(unsigned(spy_rightRay.position))) <= to_integer(unsigned(spy_rightRay.remaining_reflects)); 			
+		else 
+			minNumRefl(to_integer(unsigned(spy_rightRay.position))) <= minNumRefl(to_integer(unsigned(spy_rightRay.position)));
+		end if;
+		
+		--assert minNumRefl(to_integer(unsigned(spy_rightRay.position))) >= to_integer(unsigned(spy_rightRay.remaining_reflects));
+		--report "New rightRay with more or equal number of remaing refl";
+		howoftenRightRay(to_integer(unsigned(spy_rightRay.position))) <= howoftenRightRay(to_integer(unsigned(spy_rightRay.position))) + 1;
 
-	assert minNumRefl(to_integer(unsigned(spy_rightRay.position))) >= to_integer(unsigned(spy_rightRay.remaining_reflects)) 
-		report "New rightRay with more or equal number of remaing refl";
+		--if firstNonWhite(to_integer(unsigned(spy_rightRay.position))) = x"010000" then
 
+			firstNonWhite(to_integer(unsigned(spy_rightRay.position))) <= spy_rightRay.color.x(15 downto 8) & 
+				spy_rightRay.color.y(15 downto 8) & spy_rightRay.color.z(15 downto 8 ); --& '1' letzte 1 zur Sicherheit, damit nicht mehr 010000
+				
+			--spy_rightRay.color.y(23 downto 0);
+
+		--end if;
+
+	
+	end if;
+
+	if spy_backendray.valid = '1' then
+
+		lastBackendInput(to_integer(unsigned(spy_backendray.position))) <= spy_backendray.color.x(15 downto 8) & 
+				spy_backendray.color.y(15 downto 8) & spy_backendray.color.z(15 downto 8 );-- hier noch backend spy machen
 	end if;
 
 	if master_write = '1' and slave_waitreq = '0' then 
@@ -284,6 +318,17 @@ elsif  rising_edge(clk) then
 		bild(to_integer(unsigned(master_address)) / 4) <= master_colordata(23 downto 0);
 		bild2(to_integer(unsigned(master_address)) / (4*MAXWIDTH))((to_integer(unsigned(master_address)) mod (4*MAXWIDTH)) / 4) <= master_colordata(23 downto 0);
 
+		orderDrawn(to_integer(unsigned(master_address)) / 4) <= counterDrawn;
+		if counterDrawn < 255 then
+			counterDrawn <= counterDrawn + 1;
+		elsif counterDrawn < 65535 then
+			counterDrawn <= counterDrawn + 256;
+		elsif counterDrawn < 16777215 then
+			counterDrawn <= counterDrawn + 65536;
+		else 
+			counterDrawn <= 0;
+		end if;
+
 		--bild2(to_integer(unsigned(master_address)) / (4*MAXWIDTH))((to_integer(unsigned(master_address)) mod / (4*MAXWIDTH)) / 4) <= master_colordata(23 downto 0);
 	end if;
 
@@ -300,7 +345,7 @@ elsif  rising_edge(clk) then
 			end loop;
 		end loop;
 
-		WriteFile("/homes/a0426419/Documents/result.bmp");
+		WriteFile("/homes/a0426419/Documents/result" & integer'image(bildnummer) & ".bmp");
 
 		test_all_sent <= (others => '0');
 		test_2nd_sent <= (others => '0');
@@ -323,9 +368,70 @@ elsif  rising_edge(clk) then
 			end loop;
 		end loop;
 
-		WriteFile("/homes/a0426419/Documents/min_rem_refl.bmp");
+		WriteFile("/homes/a0426419/Documents/min_rem_refl" & integer'image(bildnummer) & ".bmp");
 
-		minNumRefl <= (others => 0);
+		minNumRefl <= (others => 9);
+	
+		ReadFile("/homes/a0426419/Documents/fitting.bmp"); -- Groesse muss wohl passen von, Bild muss da sein, fuer Header Info
+			
+		for i in 0 to MAXWIDTH - 1 loop
+			for j in 0 to MAXHEIGHT - 1 loop
+				--if test_bitmap(j*MAXWIDTH + i) = '1' then
+					dummy_color := std_logic_vector(to_unsigned(orderDrawn(j*MAXWIDTH + i) mod 256, 24));
+					SetPixel (i, j, dummy_color);
+				--end if;
+			end loop;
+		end loop;
+
+		WriteFile("/homes/a0426419/Documents/orderDrawn" & integer'image(bildnummer) & ".bmp");
+
+		orderDrawn <= (others => 0);
+
+		
+		ReadFile("/homes/a0426419/Documents/fitting.bmp"); -- Groesse muss wohl passen von, Bild muss da sein, fuer Header Info
+			
+		for i in 0 to MAXWIDTH - 1 loop
+			for j in 0 to MAXHEIGHT - 1 loop
+				--if test_bitmap(j*MAXWIDTH + i) = '1' then
+					dummy_color := reflColorLU(howoftenRightRay(j*MAXWIDTH + i));
+					SetPixel (i, j, dummy_color);
+				--end if;
+			end loop;
+		end loop;
+
+		WriteFile("/homes/a0426419/Documents/howoftenRightRay" & integer'image(bildnummer) & ".bmp");
+		howoftenRightRay <= (others => 0);
+
+		ReadFile("/homes/a0426419/Documents/fitting.bmp"); -- Groesse muss wohl passen von, Bild muss da sein, fuer Header Info
+			
+		for i in 0 to MAXWIDTH - 1 loop
+			for j in 0 to MAXHEIGHT - 1 loop
+				--if test_bitmap(j*MAXWIDTH + i) = '1' then
+					dummy_color := firstNonWhite(j*MAXWIDTH + i);
+					SetPixel (i, j, dummy_color);
+				--end if;
+			end loop;
+		end loop;
+
+		WriteFile("/homes/a0426419/Documents/firstNonWhite" & integer'image(bildnummer) & ".bmp");
+		firstNonWhite <= (others => x"FFFFFF");
+
+	ReadFile("/homes/a0426419/Documents/fitting.bmp"); -- Groesse muss wohl passen von, Bild muss da sein, fuer Header Info
+			
+		for i in 0 to MAXWIDTH - 1 loop
+			for j in 0 to MAXHEIGHT - 1 loop
+				--if test_bitmap(j*MAXWIDTH + i) = '1' then
+					dummy_color := lastBackendInput(j*MAXWIDTH + i);
+					SetPixel (i, j, dummy_color);
+				--end if;
+			end loop;
+		end loop;
+
+		WriteFile("/homes/a0426419/Documents/lastBackendInput" & integer'image(bildnummer) & ".bmp");
+		firstNonWhite <= (others => x"FFFFFF");
+
+
+		bildnummer <= bildnummer + 1;
 	end if;
 	
 	--test_all_sent(to_integer(unsigned(master_address)) mod 4) <= '1' when master_write = '1' and slave_waitreq = '0' else '0';
