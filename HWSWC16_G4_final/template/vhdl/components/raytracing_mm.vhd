@@ -587,7 +587,8 @@ if anyrefo_pseudo = '1' then
 else
 	backend_ray.position <= old_position;
 	backend_ray.valid <= updatedColorRayValid;--anyrefo_valid_ray; --SR: old version was updatedColorRayValid
-	if (updatedColorValid  AND (gcsp_emmiting OR NOT(valid_t_old))) = '1' then 
+	--if (updatedColorValid  AND (gcsp_emmiting OR NOT(valid_t_old))) = '1' then ---SIGNALE von UNTERSCHIEDLICHEN ZEITEN
+	if (updatedColorValid  AND (gcsp_emmiting_old OR NOT(valid_t_old))) = '1' then ---SIGNALE von UNTERSCHIEDLICHEN ZEITEN
         	backend_ray.color <= updatedColor;
 	elsif old_pseudo = '0' then
 		--if the ray was not pseudo reflected AND it missed all spheres, set the color to black
@@ -616,7 +617,9 @@ back : backend
     ray_in => backend_ray, color_data => back_out_color, valid_data => back_out_valid
   );
 
-backend_par : delay_element generic map (WIDTH => 22, DEPTH => 18) port map (clk => clk, clken => '1', reset => reset, source => backend_ray.position, dest => back_out_address);
+-- MK 21062017 backend_par : delay_element generic map (WIDTH => 22, DEPTH => 18) 
+backend_par : delay_element generic map (WIDTH => 22, DEPTH => 17) 
+port map (clk => clk, clken => '1', reset => reset, source => backend_ray.position, dest => back_out_address);
 
 
 writeIF : writeInterface 

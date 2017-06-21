@@ -69,7 +69,7 @@ signal position_debug : std_logic_vector(21 downto 0);
 type signal_array is array (natural range <>) of std_logic_vector(15 downto 0);
 type data_signal_array is array (natural range <>) of std_logic_vector(31 downto 0);
 
-constant stall_array : std_logic_vector(63 downto 0) := x"0_00_00_00_00_00_00_00_0"; --x"0_00_00_00_00_00_00_00_0"; --x"F_7F_7F_7F_7F_7F_7F_7F_7"; --x"F_7F_3F_1F_0F_07_03_01_0";
+constant stall_array : std_logic_vector(63 downto 0) := x"F_7F_3F_1F_0F_07_03_01_0";--x"0_00_00_00_00_00_00_00_0"; --x"F_7F_7F_7F_7F_7F_7F_7F_7"; --x"F_7F_3F_1F_0F_07_03_01_0";
 
 subtype my_bit_array is bit_vector(MAXWIDTH*MAXHEIGHT - 1 downto 0);
 --subtype bitzeile is bit_vector(MAXWIDTH - 1 downto 0);
@@ -291,8 +291,9 @@ elsif  rising_edge(clk) then
 
 	if spy_backendray.valid = '1' then
 
-		lastBackendInput(to_integer(unsigned(spy_backendray.position))) <= spy_backendray.color.x(15 downto 8) & 
-				spy_backendray.color.y(15 downto 8) & spy_backendray.color.z(15 downto 8 );-- hier noch backend spy machen
+		lastBackendInput(to_integer(unsigned(spy_backendray.position))) <= spy_backendray.color.x(16 downto 9) & 
+				spy_backendray.color.y(16 downto 9) & spy_backendray.color.z(16 downto 9 );-- hier noch backend spy machen
+				-- besser 16 bis 9 als 15 bis 8 damit 10000 von weiss noch drauf
 		test_backendInput(to_integer(unsigned(spy_backendray.position))) <= '1';
 	end if;
 
@@ -513,7 +514,7 @@ assert test_2nd_sent2(MAXHEIGHT - 1)(MAXWIDTH - 1) = '0' report "test_all_sent l
 assert test_bitmap2(MAXHEIGHT - 1)(MAXWIDTH - 1) = '0' report "test_bitmap last written"; -- fuer Anzeige in Sim
 assert bild2(MAXHEIGHT-1)(MAXWIDTH - 1) = x"000000" report "test_bitmap last written"; -- fuer Anzeige in Sim
 
-assert unsigned(old_address) <= unsigned(master_address) report "probably reflected ray overtakes, as it should OR SIMPLY NEW PICTURE";
+--assert unsigned(old_address) <= unsigned(master_address) report "probably reflected ray overtakes, as it should OR SIMPLY NEW PICTURE";
 
 address <= address_array(i);
 writedata <= data_array(i);

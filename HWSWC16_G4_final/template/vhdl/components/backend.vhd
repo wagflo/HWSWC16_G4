@@ -202,7 +202,8 @@ begin
 
     color_accum <= color_accum_next;
     eob_and_valid <= eob_and_valid_next;
-    valid_shift <= next_valid & valid_shift(17 downto 1);
+    valid_shift(16 downto 0) <= next_valid & valid_shift(16 downto 1); -- MK 21062017: valid_shift <= next_valid & valid_shift(17 downto 1); 
+	--scheint keinen Unterschied zu machen??? ws . wegen parallelem delay!
 
 
   end if;
