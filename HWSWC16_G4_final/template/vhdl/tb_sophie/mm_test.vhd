@@ -69,7 +69,7 @@ signal position_debug : std_logic_vector(21 downto 0);
 type signal_array is array (natural range <>) of std_logic_vector(15 downto 0);
 type data_signal_array is array (natural range <>) of std_logic_vector(31 downto 0);
 
-constant stall_array : std_logic_vector(63 downto 0) := x"F_7F_3F_1F_0F_07_03_01_0"; --x"0_00_00_00_00_00_00_00_0"; --x"F_7F_7F_7F_7F_7F_7F_7F_7"; --x"F_7F_3F_1F_0F_07_03_01_0";
+constant stall_array : std_logic_vector(63 downto 0) := x"0_00_00_00_00_00_00_00_0"; --x"0_00_00_00_00_00_00_00_0"; --x"F_7F_7F_7F_7F_7F_7F_7F_7"; --x"F_7F_3F_1F_0F_07_03_01_0";
 
 subtype my_bit_array is bit_vector(MAXWIDTH*MAXHEIGHT - 1 downto 0);
 --subtype bitzeile is bit_vector(MAXWIDTH - 1 downto 0);
@@ -81,8 +81,8 @@ type bildtyp2 is array (0 to MAXHEIGHT - 1) of zeilentyp;
 
 type bildzahltyp is array (0 to MAXWIDTH*MAXHEIGHT - 1) of Integer;
 
-signal test_all_sent, test_2nd_sent, test_bitmap : my_bit_array := (others => '0');
-signal test_all_sent2, test_2nd_sent2, test_bitmap2 : my_bit_array2 := (others => (others => '0'));
+signal test_all_sent, test_2nd_sent, test_bitmap, test_backendInput : my_bit_array := (others => '0');
+signal test_all_sent2, test_2nd_sent2, test_bitmap2  : my_bit_array2 := (others => (others => '0'));
 signal new_address, old_address : std_logic_vector(31 downto 0) := (others => '0'); --std_logic_vector(to_unsigned(MAXWIDTH*MAXHEIGHT*4, 32)); --(others => '0');
 signal spy_fr_done : std_logic_vector(1 downto 0);
 signal spy_rightRay : ray;
@@ -293,17 +293,18 @@ elsif  rising_edge(clk) then
 
 		lastBackendInput(to_integer(unsigned(spy_backendray.position))) <= spy_backendray.color.x(15 downto 8) & 
 				spy_backendray.color.y(15 downto 8) & spy_backendray.color.z(15 downto 8 );-- hier noch backend spy machen
+		test_backendInput(to_integer(unsigned(spy_backendray.position))) <= '1';
 	end if;
 
-	if master_write = '1' and slave_waitreq = '0' then 
+	if master_write = '1' and slave_waitreq = '0' and to_integer(unsigned(master_address(31 downto 2))) < MAXWIDTH*MAXHEIGHT then 
 
-		test_all_sent(to_integer(unsigned(master_address)) / 4) <= '1';
-		test_all_sent2(to_integer(unsigned(master_address)) / (4*MAXWIDTH))((to_integer(unsigned(master_address)) mod (4*MAXWIDTH)) / 4) <= '1';
+		test_all_sent(to_integer(unsigned(master_address(31 downto 2)))) <= '1';
+		test_all_sent2(to_integer(unsigned(master_address(31 downto 2))) / (MAXWIDTH))((to_integer(unsigned(master_address(31 downto 2))) mod (MAXWIDTH)) ) <= '1';
 
-		if test_all_sent(to_integer(unsigned(master_address)) / 4) = '1' then
+		if test_all_sent(to_integer(unsigned(master_address(31 downto 2)))) = '1' then
 
-			test_2nd_sent(to_integer(unsigned(master_address)) / 4) <= '1';
-			test_2nd_sent2(to_integer(unsigned(master_address)) / (4*MAXWIDTH))((to_integer(unsigned(master_address)) mod (4*MAXWIDTH)) / 4) <= '1';
+			test_2nd_sent(to_integer(unsigned(master_address(31 downto 2))) ) <= '1';
+			test_2nd_sent2(to_integer(unsigned(master_address(31 downto 2))) / (MAXWIDTH))((to_integer(unsigned(master_address(31 downto 2))) mod (MAXWIDTH)) ) <= '1';
 	
 		end if;
 
@@ -350,6 +351,7 @@ elsif  rising_edge(clk) then
 		test_all_sent <= (others => '0');
 		test_2nd_sent <= (others => '0');
 		test_bitmap <= (others => '0');
+		test_backendInput <= (others => '0');
 		bild <= (others => x"000000");
 
 		test_all_sent2 <= (others => (others => '0'));
@@ -499,7 +501,12 @@ end process;
 assert test_all_sent(MAXWIDTH*MAXHEIGHT - 1) = '0' report "test_all_sent last written"; -- nur letztes, fuer Anzeige in Sim
 assert test_2nd_sent(MAXWIDTH*MAXHEIGHT - 1) = '0' report "test_all_sent last written"; -- nur letztes, fuer Anzeige in Sim
 assert test_bitmap(MAXWIDTH*MAXHEIGHT - 1) = '0' report "test_bitmap last written"; -- fuer Anzeige in Sim
+assert test_backendInput(MAXWIDTH*MAXHEIGHT - 1) = '0' report "test_bitmap last written"; -- fuer Anzeige in Sim
 assert bild(MAXHEIGHT*MAXWIDTH - 1) = x"000000" report "test_bitmap last written"; -- fuer Anzeige in Sim
+assert lastBackendInput(MAXHEIGHT*MAXWIDTH - 1) = x"000000" report "test_bitmap last written"; -- fuer Anzeige in Sim
+assert firstNonWhite(MAXHEIGHT*MAXWIDTH - 1) = x"000000" report "test_bitmap last written"; -- fuer Anzeige in Sim
+assert minNumRefl(MAXHEIGHT*MAXWIDTH - 1) = 0 report "test_bitmap last written"; -- fuer Anzeige in Sim
+assert howoftenRightRay(MAXHEIGHT*MAXWIDTH - 1) = 0 report "test_bitmap last written"; -- fuer Anzeige in Sim
 
 assert test_all_sent2(MAXHEIGHT - 1)(MAXWIDTH - 1) = '0' report "test_all_sent last written"; -- nur letztes, fuer Anzeige in Sim
 assert test_2nd_sent2(MAXHEIGHT - 1)(MAXWIDTH - 1) = '0' report "test_all_sent last written"; -- nur letztes, fuer Anzeige in Sim

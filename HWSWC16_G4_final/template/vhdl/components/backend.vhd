@@ -61,8 +61,8 @@ architecture beh of backend is
   signal color_shifted, color_accum, color_accum_next, color_root : vector;
   signal eob_and_valid, eob_and_valid_next : std_logic;
 
-  signal valid_ray, copy_ray, startOfBundle, endOfBundle : std_logic;
-  signal valid_shift, valid_shift_next : std_logic_vector(17 downto 0);
+  signal valid_ray, copy_ray, startOfBundle, endOfBundle, next_valid : std_logic;
+  signal valid_shift :  std_logic_vector(17 downto 0);
 
 begin
 
@@ -184,11 +184,12 @@ vec_sub : vector_add_sub
     z => color_data( 7 downto  0)
   );
 
-valid_shift_next(16 downto 0) <= valid_shift(17 downto 1);
-valid_shift_next(17) <= valid_ray and endOfBundle;
+--valid_shift_next(16 downto 0) <= valid_shift(17 downto 1);
+--valid_shift_next(17) <= valid_ray and endOfBundle;
+next_valid <= valid_ray and endOfBundle;
 valid_data <= valid_shift(0);
 
-sync : process(clk, reset)
+sync : process(clk, reset, valid_shift, next_valid)
 begin
 
   if reset = '1' then 
@@ -201,7 +202,8 @@ begin
 
     color_accum <= color_accum_next;
     eob_and_valid <= eob_and_valid_next;
-    valid_shift <= valid_shift_next;
+    valid_shift <= next_valid & valid_shift(17 downto 1);
+
 
   end if;
 end process;

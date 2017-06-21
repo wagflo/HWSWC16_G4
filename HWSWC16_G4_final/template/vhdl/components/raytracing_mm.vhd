@@ -562,7 +562,7 @@ backend_ray.valid <= '0';
 
 if anyrefo_pseudo = '1' then
 	reflected_ray.pseudo_refl <= anyrefo_pseudo AND NOT(anyrefo_isRef);
-	reflected_ray.valid <= anyrefo_valid_ray;--updatedColorRayValid;
+	reflected_ray.valid <= updatedColorRayValid; --anyrefo_valid_ray;--updatedColorRayValid;
 	if updatedColorValid = '1' then 
 		--if we really had a genuine hit, update the color
         	reflected_ray.color <= updatedColor;
@@ -586,7 +586,7 @@ if anyrefo_pseudo = '1' then
 	reflected_ray.position <= old_position;
 else
 	backend_ray.position <= old_position;
-	backend_ray.valid <= anyrefo_valid_ray; --SR: old version was updatedColorRayValid
+	backend_ray.valid <= updatedColorRayValid;--anyrefo_valid_ray; --SR: old version was updatedColorRayValid
 	if (updatedColorValid  AND (gcsp_emmiting OR NOT(valid_t_old))) = '1' then 
         	backend_ray.color <= updatedColor;
 	elsif old_pseudo = '0' then
@@ -616,7 +616,7 @@ back : backend
     ray_in => backend_ray, color_data => back_out_color, valid_data => back_out_valid
   );
 
-backend_par : delay_element generic map (WIDTH => 22, DEPTH => 17) port map (clk => clk, clken => '1', reset => reset, source => backend_ray.position, dest => back_out_address);
+backend_par : delay_element generic map (WIDTH => 22, DEPTH => 18) port map (clk => clk, clken => '1', reset => reset, source => backend_ray.position, dest => back_out_address);
 
 
 writeIF : writeInterface 

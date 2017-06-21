@@ -10,6 +10,7 @@ entity anyRefl is
     reset 	: in std_logic;
    
     -- kein clock enable, nehme valid
+	--auch falsch!
 
     num_samples	: in std_logic_vector(4 downto 0); -- one hot: 16, 8, 4, 2, 1
 --    max_num_reflect : in std_logic_vector(2 downto 0);

@@ -22,7 +22,7 @@ end entity delay_element;
 
 architecture beh of delay_element is
 
-  signal store : std_logic_vector(WIDTH*(DEPTH +1) - 1 downto 0);
+  signal store : std_logic_vector(WIDTH*(DEPTH) - 1 downto 0);
 
 begin
 
@@ -49,15 +49,20 @@ begin
 		 DEPTH > 0 AND WIDTH > 0 generate -- sonst mit generate
 
 	-- real delay
-	store(WIDTH*(DEPTH +1) - 1 downto WIDTH*DEPTH) <= source;
+	--store(WIDTH*(DEPTH +1) - 1 downto WIDTH*DEPTH) <= source;
 	dest <= store(WIDTH-1 DOWNTO 0);
 
 	sync : process(clk, reset, clken) is begin
 		if reset = '1' then
-
-			store(WIDTH*DEPTH - 1 DOWNTO 0) <= (others => '0');
+			store <= (OTHERS => '0');
+			--store(WIDTH*DEPTH - 1 DOWNTO 0) <= (others => '0');
 		elsif rising_edge(clk) AND clken =  '1' then
-			store(WIDTH*DEPTH - 1 DOWNTO 0) <= store(WIDTH*(DEPTH +1) - 1 DOWNTO WIDTH);
+			--store(WIDTH*DEPTH - 1 DOWNTO 0) <= store(WIDTH*(DEPTH +1) - 1 DOWNTO WIDTH);
+			if DEPTH > 1 AND WIDTH > 0 then
+				store <= source & store(WIDTH * DEPTH - 1 downto WIDTH);
+			elsif DEPTH = 1 AND WIDTH > 0 then -- sonst mit generate
+				store <= source;
+			end if;
 		end if;
 	end process;
 	end generate;
