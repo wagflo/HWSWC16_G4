@@ -467,8 +467,10 @@ t1_g_t2_c27 :LPM_COMPARE
 	);
 
 
-output : process(t1_valid, t2_valid, valid_cycle27, t2_smaller, t1_cycle27, t2_cycle27, start_shift(0)) is begin
-if valid_cycle27 = '1' AND start_shift(0) = '1' then
+output : process(t1_valid, t2_valid, t2_smaller, t1_cycle27, t2_cycle27, start_shift(0)) is begin
+if 
+--valid_cycle27 = '1' AND 
+start_shift(0) = '1' then
 	if t1_valid = '1' AND t2_valid = '1' then
 		if t2_smaller = '0' then
 			t_valid <= '1';

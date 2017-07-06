@@ -563,16 +563,24 @@ backend_ray.valid <= '0';
 if anyrefo_pseudo = '1' then
 	reflected_ray.pseudo_refl <= anyrefo_pseudo AND NOT(anyrefo_isRef);
 	reflected_ray.valid <= updatedColorRayValid; --anyrefo_valid_ray;--updatedColorRayValid;
-	if updatedColorValid = '1' then 
-		--if we really had a genuine hit, update the color
-        	reflected_ray.color <= updatedColor;
-	elsif old_pseudo = '0' then
-		--if the ray was not pseudo reflected AND it missed all spheres, set the color to black
-		reflected_ray.color <= (OTHERS => (OTHERS => '0'));
+	if old_pseudo = '1' then
+	  reflected_ray.color <= tovector(old_color);
+	elsif updatedColorValid = '1' AND (anyrefo_isRef = '1' OR gcsp_emmiting_old = '1') then
+	  reflected_ray.color <= updatedColor;
 	else
-		--if the ray was pseudo reflected, keep the old color
-		reflected_ray.color <= tovector(old_color);
+	  reflected_ray.color <= (OTHERS => (OTHERS => '0'));
 	end if;
+-- 	if updatedColorValid = '1' AND old_pseudo = '0' AND  then 
+-- 		--if we really had a genuine hit, update the color
+--         	reflected_ray.color <= updatedColor;
+-- 	elsif (updatedColorValid = '0' AND old_pseudo = '0') OR (anyrefo_isRef = '0' AND )then
+-- 		--if the ray was not pseudo reflected AND it missed all spheres, set the color to black
+-- 		reflected_ray.color <= (OTHERS => (OTHERS => '0'));
+-- 	
+-- 	else
+-- 		--if the ray was pseudo reflected, keep the old color
+-- 		reflected_ray.color <= tovector(old_color);
+-- 	end if;
 	reflected_ray.origin <= ref_out_origin;
 	reflected_ray.direction <= ref_out_dir;
 
@@ -588,13 +596,22 @@ else
 	backend_ray.position <= old_position;
 	backend_ray.valid <= updatedColorRayValid;--anyrefo_valid_ray; --SR: old version was updatedColorRayValid
 	--if (updatedColorValid  AND (gcsp_emmiting OR NOT(valid_t_old))) = '1' then ---SIGNALE von UNTERSCHIEDLICHEN ZEITEN
-	if (updatedColorValid  AND (gcsp_emmiting_old OR NOT(valid_t_old))) = '1' then ---SIGNALE von UNTERSCHIEDLICHEN ZEITEN
-        	backend_ray.color <= updatedColor;
-	elsif old_pseudo = '0' then
-		--if the ray was not pseudo reflected AND it missed all spheres, set the color to black
-		backend_ray.color <= (OTHERS => (OTHERS => '0'));
-	else backend_ray.color <= tovector(old_color);
+	--if (updatedColorValid  AND (gcsp_emmiting_old OR NOT(valid_t_old))) = '1' then ---SIGNALE von UNTERSCHIEDLICHEN ZEITEN
+	if old_pseudo = '1' then
+	  backend_ray.color <= tovector(old_color);
+	elsif updatedColorValid = '1' AND gcsp_emmiting_old = '1' then
+	  backend_ray.color <= updatedColor;
+	else
+	  backend_ray.color <= (OTHERS => (OTHERS => '0'));
 	end if;
+        --if updatedColorValid = '1' AND old_pseudo = '0' then 
+	  --backend_ray.color <= updatedColor;
+	--elsif updatedColorValid = '0' AND old_pseudo = '0' then
+	--elsif old_pseudo = '0' then
+		--if the ray was not pseudo reflected AND it missed all spheres, set the color to black
+	--	backend_ray.color <= (OTHERS => (OTHERS => '0'));
+	--else backend_ray.color <= tovector(old_color);
+	--end if;
 	backend_ray.sob <= anyrefo_sob;
 	backend_ray.eob <= anyrefo_eob;
 	backend_ray.copy <= ref_out_copy;

@@ -117,10 +117,10 @@ component sphereDistance is
 end component;
 
 
-signal origin_c6, dir_c6,
+signal origin_c2, dir_c2,
 center_in1, center_in2, center_in3, center_in4, center_in5, center_in6, center_in7, center_in8
 	: std_logic_vector(95 downto 0);
-signal a_c6, t_min_a,
+signal a_c2, t_min_a,
 rad2_in1, rad2_in2, rad2_in3, rad2_in4, rad2_in5, rad2_in6, rad2_in7, rad2_in8, 
 t1, t2, t3, t4, t5, t6, t7, t8, t12, t34, t56, t78, t1234, t5678, t12345678,
 t1_c30, t2_c30, t3_c30, t4_c30, t5_c30, t6_c30, t7_c30, t8_c30,
@@ -192,15 +192,15 @@ a_t_min_calc_c1t2 : lpm_mult GENERIC MAP (
 	);
 
 origin_delay : delay_element generic map(WIDTH => 96, DEPTH => 2)
-port map (clk => clk, reset => reset, clken => clk_en, source => to_std_logic(origin), dest => origin_c6
+port map (clk => clk, reset => reset, clken => clk_en, source => to_std_logic(origin), dest => origin_c2
 );
 
 dir_delay : delay_element generic map(WIDTH => 96, DEPTH => 2)
-port map (clk => clk, reset => reset, clken => clk_en, source => to_std_logic(dir), dest => dir_c6
+port map (clk => clk, reset => reset, clken => clk_en, source => to_std_logic(dir), dest => dir_c2
 );
 
 a_delay : delay_element generic map(WIDTH => 32, DEPTH => 2)
-port map (clk => clk, reset => reset, clken => clk_en, source => a, dest => a_c6
+port map (clk => clk, reset => reset, clken => clk_en, source => a, dest => a_c2
 );
 
 copy_delay_1 : delay_element generic map (WIDTH => 2, DEPTH => 2) port map(clk => clk, clken => '1', reset => reset, 
@@ -217,9 +217,9 @@ start1 <= valid_c2 AND ((smaller_numbers AND relevantScene.activeSpheres(0)) OR 
 comp1_c3t29 : sphereDistance port map(
 	clk => clk, reset => reset, clk_en => clk_en, 
 	start => start1,
-	origin  => origin_c6,
-   	dir => dir_c6,
-	a => a_c6,
+	origin  => origin_c2,
+   	dir => dir_c2,
+	a => a_c2,
 	center => center_in1,
    	radius2 => rad2_in1,
 	t_min_a => t_min_a,
@@ -230,9 +230,9 @@ start2 <= valid_c2 AND ((smaller_numbers AND relevantScene.activeSpheres(1)) OR 
 comp2_c3t29 : sphereDistance port map(
 	clk => clk, reset => reset, clk_en => clk_en,
 	start => start2,
-	origin  => origin_c6,
-   	dir => dir_c6,
-	a => a_c6,
+	origin  => origin_c2,
+   	dir => dir_c2,
+	a => a_c2,
 	center => center_in2,
    	radius2 => rad2_in2,
 	t_min_a => t_min_a,
@@ -243,9 +243,9 @@ start3 <= valid_c2 AND ((smaller_numbers AND relevantScene.activeSpheres(2)) OR 
 comp3_c3t29 : sphereDistance port map(
 	clk => clk, reset => reset, clk_en => clk_en, 
 	start => start3,
-	origin  => origin_c6,
-   	dir => dir_c6,
-	a => a_c6,
+	origin  => origin_c2,
+   	dir => dir_c2,
+	a => a_c2,
 	center => center_in3,
    	radius2 => rad2_in3,
 	t_min_a => t_min_a,
@@ -256,9 +256,9 @@ start4 <= valid_c2 AND ((smaller_numbers AND relevantScene.activeSpheres(3)) OR 
 comp4_c3t29 : sphereDistance port map(
 	clk => clk, reset => reset, clk_en => clk_en, 
 	start => start4,
-	origin  => origin_c6,
-   	dir => dir_c6,
-	a => a_c6,
+	origin  => origin_c2,
+   	dir => dir_c2,
+	a => a_c2,
 	center => center_in4,
    	radius2 => rad2_in4,
 	t_min_a => t_min_a,
@@ -269,9 +269,9 @@ start5 <= valid_c2 AND ((smaller_numbers AND relevantScene.activeSpheres(4)) OR 
 comp5_c3t29 : sphereDistance port map(
 	clk => clk, reset => reset, clk_en => clk_en, 
 	start => start5,
-	origin  => origin_c6,
-   	dir => dir_c6,
-	a => a_c6,
+	origin  => origin_c2,
+   	dir => dir_c2,
+	a => a_c2,
 	center => center_in5,
    	radius2 => rad2_in5,
 	t_min_a => t_min_a,
@@ -282,9 +282,9 @@ start6 <= valid_c2 AND ((smaller_numbers AND relevantScene.activeSpheres(5)) OR 
 comp6_c3t29 : sphereDistance port map(
 	clk => clk, reset => reset, clk_en => clk_en, 
 	start => start6,
-	origin  => origin_c6,
-   	dir => dir_c6,
-	a => a_c6,
+	origin  => origin_c2,
+   	dir => dir_c2,
+	a => a_c2,
 	center => center_in6,
    	radius2 => rad2_in6,
 	t_min_a => t_min_a,
@@ -295,9 +295,9 @@ start7 <= valid_c2 AND ((smaller_numbers AND relevantScene.activeSpheres(6)) OR 
 comp7_c3t29 : sphereDistance port map(
 	clk => clk, reset => reset, clk_en => clk_en, 
 	start => start7,
-	origin  => origin_c6,
-   	dir => dir_c6,
-	a => a_c6,
+	origin  => origin_c2,
+   	dir => dir_c2,
+	a => a_c2,
 	center => center_in7,
    	radius2 => rad2_in7,
 	t_min_a => t_min_a,
@@ -308,9 +308,9 @@ start8 <= valid_c2 AND ((smaller_numbers AND relevantScene.activeSpheres(7)) OR 
 comp8_c3t29 : sphereDistance port map(
 	clk => clk, reset => reset, clk_en => clk_en,
 	start => start8,
-	origin  => origin_c6,
-   	dir => dir_c6,
-	a => a_c6,
+	origin  => origin_c2,
+   	dir => dir_c2,
+	a => a_c2,
 	center => center_in8,
    	radius2 => rad2_in8,
 	t_min_a => t_min_a,

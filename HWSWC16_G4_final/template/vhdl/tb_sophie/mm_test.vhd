@@ -321,12 +321,15 @@ elsif  rising_edge(clk) then
 		bild2(to_integer(unsigned(master_address)) / (4*MAXWIDTH))((to_integer(unsigned(master_address)) mod (4*MAXWIDTH)) / 4) <= master_colordata(23 downto 0);
 
 		orderDrawn(to_integer(unsigned(master_address)) / 4) <= counterDrawn;
-		if counterDrawn < 255 then
-			counterDrawn <= counterDrawn + 1;
-		elsif counterDrawn < 65535 then
-			counterDrawn <= counterDrawn + 256;
-		elsif counterDrawn < 16777215 then
-			counterDrawn <= counterDrawn + 65536;
+		
+		--if counterDrawn < 255 then
+		--	counterDrawn <= counterDrawn + 1;
+		--elsif counterDrawn < 65535 then
+		--	counterDrawn <= counterDrawn + 256;
+		--elsif counterDrawn < 16777215 then
+		--	counterDrawn <= counterDrawn + 65536;
+		if counterDrawn < 16777215 then
+			counterDrawn <= counterDrawn + 65536 + 256 + 1;
 		else 
 			counterDrawn <= 0;
 		end if;
