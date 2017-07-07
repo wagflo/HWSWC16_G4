@@ -113,7 +113,7 @@ constant reflColorLU : reflColorLookuptype := (x"0000FF", x"00FF00", x"FF0000", 
 
 --signal dummy_thresh : std_logic_vector(31 downto 0) := x"00017500";
 
-constant bildordner : String := ""; -- "/homes/a0426419/Documents/result";
+constant bildordner : String := "/home/phi/Documents/HWSW/HWSWC16_G4/HWSWC16_G4_final/modelsim"; -- "/homes/a0426419/Documents/result";
 
 signal bildnummer : integer := 0;
 
