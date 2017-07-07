@@ -113,6 +113,8 @@ constant reflColorLU : reflColorLookuptype := (x"0000FF", x"00FF00", x"FF0000", 
 
 --signal dummy_thresh : std_logic_vector(31 downto 0) := x"00017500";
 
+constant bildordner : String := ""; -- "/homes/a0426419/Documents/result";
+
 signal bildnummer : integer := 0;
 
 constant address_array : signal_array(63 downto 18)  := (
@@ -354,7 +356,7 @@ elsif  rising_edge(clk) then
 
 	if spy_fr_done /= "00" then 
 
-		ReadFile("/homes/a0426419/Documents/fitting.bmp"); -- Groesse muss wohl passen von, Bild muss da sein, fuer Header Info
+		ReadFile(bildordner & "fitting.bmp"); -- Groesse muss wohl passen von, Bild muss da sein, fuer Header Info
 			
 		for my_i in 0 to MAXWIDTH - 1 loop
 			for my_j in 0 to MAXHEIGHT - 1 loop
@@ -365,7 +367,7 @@ elsif  rising_edge(clk) then
 			end loop;
 		end loop;
 
-		WriteFile("/homes/a0426419/Documents/result" & integer'image(bildnummer) & ".bmp");
+		WriteFile(bildordner & "/result" & integer'image(bildnummer) & ".bmp");
 
 		test_all_sent <= (others => '0');
 		test_2nd_sent <= (others => '0');
@@ -378,7 +380,7 @@ elsif  rising_edge(clk) then
 		test_bitmap2 <= (others => (others => '0'));
 		bild2 <= (others => (others => x"000000"));
 
-		ReadFile("/homes/a0426419/Documents/fitting.bmp"); -- Groesse muss wohl passen von, Bild muss da sein, fuer Header Info
+		ReadFile(bildordner & "fitting.bmp"); -- Groesse muss wohl passen von, Bild muss da sein, fuer Header Info
 			
 		for i in 0 to MAXWIDTH - 1 loop
 			for j in 0 to MAXHEIGHT - 1 loop
@@ -389,11 +391,11 @@ elsif  rising_edge(clk) then
 			end loop;
 		end loop;
 
-		WriteFile("/homes/a0426419/Documents/min_rem_refl" & integer'image(bildnummer) & ".bmp");
+		WriteFile(bildordner & "min_rem_refl" & integer'image(bildnummer) & ".bmp");
 
 		minNumRefl <= (others => 9);
 	
-		ReadFile("/homes/a0426419/Documents/fitting.bmp"); -- Groesse muss wohl passen von, Bild muss da sein, fuer Header Info
+		ReadFile(bildordner & "fitting.bmp"); -- Groesse muss wohl passen von, Bild muss da sein, fuer Header Info
 			
 		for i in 0 to MAXWIDTH - 1 loop
 			for j in 0 to MAXHEIGHT - 1 loop
@@ -404,12 +406,12 @@ elsif  rising_edge(clk) then
 			end loop;
 		end loop;
 
-		WriteFile("/homes/a0426419/Documents/orderDrawn" & integer'image(bildnummer) & ".bmp");
+		WriteFile(bildordner & "orderDrawn" & integer'image(bildnummer) & ".bmp");
 
 		orderDrawn <= (others => 0);
 
 		
-		ReadFile("/homes/a0426419/Documents/fitting.bmp"); -- Groesse muss wohl passen von, Bild muss da sein, fuer Header Info
+		ReadFile(bildordner & "fitting.bmp"); -- Groesse muss wohl passen von, Bild muss da sein, fuer Header Info
 			
 		for i in 0 to MAXWIDTH - 1 loop
 			for j in 0 to MAXHEIGHT - 1 loop
@@ -420,10 +422,10 @@ elsif  rising_edge(clk) then
 			end loop;
 		end loop;
 
-		WriteFile("/homes/a0426419/Documents/howoftenRightRay" & integer'image(bildnummer) & ".bmp");
+		WriteFile(bildordner & "howoftenRightRay" & integer'image(bildnummer) & ".bmp");
 		howoftenRightRay <= (others => 0);
 
-		ReadFile("/homes/a0426419/Documents/fitting.bmp"); -- Groesse muss wohl passen von, Bild muss da sein, fuer Header Info
+		ReadFile(bildordner & "fitting.bmp"); -- Groesse muss wohl passen von, Bild muss da sein, fuer Header Info
 			
 		for i in 0 to MAXWIDTH - 1 loop
 			for j in 0 to MAXHEIGHT - 1 loop
@@ -434,10 +436,10 @@ elsif  rising_edge(clk) then
 			end loop;
 		end loop;
 
-		WriteFile("/homes/a0426419/Documents/firstNonWhite" & integer'image(bildnummer) & ".bmp");
+		WriteFile(bildordner & "firstNonWhite" & integer'image(bildnummer) & ".bmp");
 		firstNonWhite <= (others => x"FFFFFF");
 
-		ReadFile("/homes/a0426419/Documents/fitting.bmp"); -- Groesse muss wohl passen von, Bild muss da sein, fuer Header Info
+		ReadFile(bildordner & "fitting.bmp"); -- Groesse muss wohl passen von, Bild muss da sein, fuer Header Info
 			
 		for i in 0 to MAXWIDTH - 1 loop
 			for j in 0 to MAXHEIGHT - 1 loop
@@ -448,7 +450,7 @@ elsif  rising_edge(clk) then
 			end loop;
 		end loop;
 
-		WriteFile("/homes/a0426419/Documents/lastBackendInput" & integer'image(bildnummer) & ".bmp");
+		WriteFile(bildordner & "lastBackendInput" & integer'image(bildnummer) & ".bmp");
 		lastBackendInput <= (others => x"FFFFFF");
 		
 		for i in 0 to MAXWIDTH - 1 loop
@@ -460,7 +462,7 @@ elsif  rising_edge(clk) then
 			end loop;
 		end loop;
 
-		WriteFile("/homes/a0426419/Documents/sphereHit" & integer'image(bildnummer) & ".bmp");
+		WriteFile(bildordner & "sphereHit" & integer'image(bildnummer) & ".bmp");
 		sphereHit <= (others => 0);
 
 
