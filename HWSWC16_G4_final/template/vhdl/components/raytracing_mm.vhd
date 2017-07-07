@@ -163,7 +163,7 @@ old_pseudo, gcsp_emmiting_old, valid_t_old
 signal anyref_ray_rem_ref, rem_reflects_old : std_logic_vector(2 downto 0);
 
 signal outputRay_rdo,reflected_ray, rightRay, delayed_reflected_ray, backend_ray : ray;
-signal position_rdo, old_position, backend_position, back_out_address : std_logic_vector(21 downto 0);
+signal position_rdo, old_position, spy_position, backend_position, back_out_address : std_logic_vector(21 downto 0);
 
 signal sph_demux : std_logic_vector(15 downto 0) := "0000000000011111";
 
@@ -618,6 +618,9 @@ else
 end if;
 end process;
 rem_ref_delay_c39t70 : delay_element generic map (WIDTH => 3, DEPTH => 32) port map (clk => clk, clken => '1', reset => reset, source => anyref_ray_rem_ref, dest => rem_reflects_old);
+
+position_delay_TOSPY_c1t38 : delay_element generic map (WIDTH => 22, DEPTH => 38) port map (clk => clk, clken=> '1', reset => reset, source => rightRay.position, dest => spy_position);
+
 position_delay_c1t70 : delay_element generic map (WIDTH => 22, DEPTH => 70) port map (clk => clk, clken=> '1', reset => reset, source => rightRay.position, dest => old_position);
 
 reflectDelay_c71t96 : rayDelay generic map (DELAY_LENGTH => 26)

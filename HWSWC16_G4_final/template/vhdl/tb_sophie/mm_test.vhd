@@ -84,9 +84,13 @@ type bildzahltyp is array (0 to MAXWIDTH*MAXHEIGHT - 1) of Integer;
 signal test_all_sent, test_2nd_sent, test_bitmap, test_backendInput : my_bit_array := (others => '0');
 signal test_all_sent2, test_2nd_sent2, test_bitmap2  : my_bit_array2 := (others => (others => '0'));
 signal new_address, old_address : std_logic_vector(31 downto 0) := (others => '0'); --std_logic_vector(to_unsigned(MAXWIDTH*MAXHEIGHT*4, 32)); --(others => '0');
+
 signal spy_fr_done : std_logic_vector(1 downto 0);
 signal spy_rightRay : ray;
 signal spy_backendray : ray;
+signal spy_position : std_logic_vector(21 downto 0);
+signal spy_sphere : std_logic_vector(3 downto 0);
+signal spy_sphere_valid_t : std_logic;
 
 --signal dummy_color : std_logic_vector(23 downto 0) := x"000000";
 signal red 	: std_logic_vector(23 downto 0) := x"0000FF";
@@ -99,6 +103,7 @@ signal lastBackendInput : bildtyp := (others => x"FFFFFF");
 
 signal minNumRefl : bildzahltyp := (others => 9);
 signal orderDrawn : bildzahltyp := (others => 0);
+signal sphereHit  : bildzahltyp := (others => 0);
 signal counterDrawn : Integer := 0;
 signal howoftenRightRay : bildzahltyp := (others => 0);
 
@@ -200,6 +205,10 @@ begin
 init_signal_spy("/mm/fr_done", "/spy_fr_done", 1);
 init_signal_spy("/mm/rightRay", "/spy_rightRay", 1);
 init_signal_spy("/mm/backend_ray", "/spy_backendray", 1);
+init_signal_spy("/mm/spy_position", "/spy_position", 1);
+init_signal_spy("/mm/closestSphere", "/spy_sphere", 1);
+init_signal_spy("/mm/valid_t", "/spy_sphere_valid_t", 1);
+
 
 wait;
 end process spy_process;
@@ -295,6 +304,12 @@ elsif  rising_edge(clk) then
 				spy_backendray.color.y(16 downto 9) & spy_backendray.color.z(16 downto 9 );-- hier noch backend spy machen
 				-- besser 16 bis 9 als 15 bis 8 damit 10000 von weiss noch drauf
 		test_backendInput(to_integer(unsigned(spy_backendray.position))) <= '1';
+	end if;
+	
+	if spy_sphere_valid_t = '1' then
+
+		sphereHit(to_integer(unsigned(spy_position))) <= to_integer(unsigned(spy_sphere));
+		
 	end if;
 
 	if master_write = '1' and slave_waitreq = '0' and to_integer(unsigned(master_address(31 downto 2))) < MAXWIDTH*MAXHEIGHT then 
@@ -422,7 +437,7 @@ elsif  rising_edge(clk) then
 		WriteFile("/homes/a0426419/Documents/firstNonWhite" & integer'image(bildnummer) & ".bmp");
 		firstNonWhite <= (others => x"FFFFFF");
 
-	ReadFile("/homes/a0426419/Documents/fitting.bmp"); -- Groesse muss wohl passen von, Bild muss da sein, fuer Header Info
+		ReadFile("/homes/a0426419/Documents/fitting.bmp"); -- Groesse muss wohl passen von, Bild muss da sein, fuer Header Info
 			
 		for i in 0 to MAXWIDTH - 1 loop
 			for j in 0 to MAXHEIGHT - 1 loop
@@ -434,7 +449,19 @@ elsif  rising_edge(clk) then
 		end loop;
 
 		WriteFile("/homes/a0426419/Documents/lastBackendInput" & integer'image(bildnummer) & ".bmp");
-		firstNonWhite <= (others => x"FFFFFF");
+		lastBackendInput <= (others => x"FFFFFF");
+		
+		for i in 0 to MAXWIDTH - 1 loop
+			for j in 0 to MAXHEIGHT - 1 loop
+				--if test_bitmap(j*MAXWIDTH + i) = '1' then
+					dummy_color := reflColorLU(sphereHit(j*MAXWIDTH + i));
+					SetPixel (i, j, dummy_color);
+				--end if;
+			end loop;
+		end loop;
+
+		WriteFile("/homes/a0426419/Documents/sphereHit" & integer'image(bildnummer) & ".bmp");
+		sphereHit <= (others => 0);
 
 
 		bildnummer <= bildnummer + 1;
