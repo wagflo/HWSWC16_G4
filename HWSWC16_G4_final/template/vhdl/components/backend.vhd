@@ -41,9 +41,9 @@ end entity;
 
 architecture beh of backend is
 
-  signal index : natural;
-  signal valid_t_vec, valid_color_vec : std_logic_vector(0 downto 0);
-  signal valid_ray_in_vec, valid_ray_out_vec : std_logic_vector(0 downto 0);
+  --signal index : natural;
+  --signal valid_t_vec, valid_color_vec : std_logic_vector(0 downto 0);
+  --signal valid_ray_in_vec, valid_ray_out_vec : std_logic_vector(0 downto 0);
 
   signal color_shifted, color_accum, color_accum_next, color_root : vector;
   signal eob_and_valid, eob_and_valid_next : std_logic;

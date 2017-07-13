@@ -175,7 +175,7 @@ COMPONENT lpm_compare
 	END COMPONENT;
 signal dir_cycle1, oc : std_logic_vector(95 downto 0);
 signal t2_c27, t1_c27, t_min_a_c26,	
-b_c25, b_c6, b, 
+b_c24, b_c6, b, 
 a_c6, 
 radius2_c5,
 almost_c, c, b2, ac, discr, discr_after, t1_cycle27, t2_cycle27, t1, t2, t_inputb
@@ -194,7 +194,7 @@ ac(31) <= subwire0_ac(63);
 ac(30 downto 0) <= subwire0_ac(46 downto 16);
 discr_after(31 downto 24) <= (OTHERS => '0');
 discr_after(23 downto 0) <= sub_wire0_discr_after(23 downto 0);
-t_inputb <= std_logic_vector(signed(NOT(b_c25)) + 1);
+--t_inputb <= (0 - signed(b_c25));-- std_logic_vector(signed(NOT(b_c25)) + 1);
 --start_shift(26) <= NOT(reset) AND start;
 
 sub_oc_c1 : vector_add_sub
@@ -233,8 +233,8 @@ delay_b_first : delay_element generic map(WIDTH => 32, DEPTH => 1)
 port map (clk => clk, clken => clk_en, reset => reset, source => b, dest => b_c6
 );
 
-delay_b_second : delay_element generic map (WIDTH => 32, DEPTH => 19)
-port map ( clk => clk, clken => clk_en, reset => reset, source => b_c6, dest => b_c25);
+delay_b_second : delay_element generic map (WIDTH => 32, DEPTH => 18)
+port map ( clk => clk, clken => clk_en, reset => reset, source => b_c6, dest => b_c24);
 
 delay_a : delay_element generic map (WIDTH => 32, DEPTH => 6)
 port map(clk => clk, clken => clk_en, reset => reset, source => a, dest => a_c6);
@@ -379,6 +379,25 @@ sqrt_c10to25 : ALTSQRT
 		radical(15 downto 0) => (OTHERS => '0'),
 		q => sub_wire0_discr_after,
 		remainder => open
+	);
+
+t_inputb_c25 : lpm_add_sub
+GENERIC MAP (
+		lpm_direction => "UNUSED",
+		lpm_hint => "ONE_INPUT_IS_CONSTANT=YES,CIN_USED=NO",
+		lpm_pipeline => 1,
+		lpm_representation => "SIGNED",
+		lpm_type => "LPM_ADD_SUB",
+		lpm_width => 32
+	)
+	PORT MAP (
+		aclr	=> reset,
+		clken	=> clk_en, 
+		add_sub => '0',
+		clock => clk,
+		dataa => (OTHERS => '0'),
+		datab => b_c24,
+		result => t_inputb
 	);
 	
 t1_c26 : lpm_add_sub GENERIC MAP (
