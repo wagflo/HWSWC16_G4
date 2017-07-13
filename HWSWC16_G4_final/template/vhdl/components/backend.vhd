@@ -116,6 +116,7 @@ begin
 	end if;
 end process;
 
+
 -- sync values cycles 1-2 + validities cycles 1-19
 sync : process(clk, reset, clk_en)
 begin

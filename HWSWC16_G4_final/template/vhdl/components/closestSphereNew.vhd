@@ -13,7 +13,8 @@ use altera_mf.all;
 
 use work.operations_pkg.all;
 
-entity closestSphereNew is port (
+entity closestSphereNew is
+port (
 	clk, reset, clk_en 	: in std_logic;
 	dir, origin		: in vector;
 	a			: in std_logic_vector(31 downto 0);
@@ -29,90 +30,83 @@ end entity;
 architecture arch of closestSphereNew is
 
 component lpm_mult
-	generic (
-		lpm_hint		: STRING;
-		lpm_pipeline		: NATURAL;
-		lpm_representation		: STRING;
-		lpm_type		: STRING;
-		lpm_widtha		: NATURAL;
-		lpm_widthb		: NATURAL;
-		lpm_widthp		: NATURAL
-	);
-	port (
-		aclr	: IN STD_LOGIC ;
-		clken	: IN STD_LOGIC ;
-		clock	: IN STD_LOGIC ;
-		dataa	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
-		datab	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
-		result	: OUT STD_LOGIC_VECTOR (63 DOWNTO 0)
-	);
+generic (
+	lpm_hint		: STRING;
+	lpm_pipeline		: NATURAL;
+	lpm_representation	: STRING;
+	lpm_type		: STRING;
+	lpm_widtha		: NATURAL;
+	lpm_widthb		: NATURAL;
+	lpm_widthp		: NATURAL
+);
+port (
+	aclr	: IN STD_LOGIC ;
+	clken	: IN STD_LOGIC ;
+	clock	: IN STD_LOGIC ;
+	dataa	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+	datab	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+	result	: OUT STD_LOGIC_VECTOR (63 DOWNTO 0)
+);
 end component;
 	
 component lpm_compare
-	generic (
-		lpm_hint		: STRING;
-		lpm_pipeline		: NATURAL;
-		lpm_representation		: STRING;
-		lpm_type		: STRING;
-		lpm_width		: NATURAL
-	);
-	port (
-		aclr	: IN STD_LOGIC ;
-		clken	: IN STD_LOGIC ;
-		clock	: IN STD_LOGIC ;
-		dataa	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
-		datab	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
-		agb	: OUT STD_LOGIC 
-	);
+generic (
+	lpm_hint		: STRING;
+	lpm_pipeline		: NATURAL;
+	lpm_representation		: STRING;
+	lpm_type		: STRING;
+	lpm_width		: NATURAL
+);
+port (
+	aclr	: IN STD_LOGIC ;
+	clken	: IN STD_LOGIC ;
+	clock	: IN STD_LOGIC ;
+	dataa	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+	datab	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+	agb	: OUT STD_LOGIC 
+);
 end component;
 
 component lpm_divide
-	generic (
-		lpm_drepresentation		: STRING;
-		lpm_hint		: STRING;
-		lpm_nrepresentation		: STRING;
-		lpm_pipeline		: NATURAL;
-		lpm_type		: STRING;
-		lpm_widthd		: NATURAL;
-		lpm_widthn		: NATURAL
-	);
-	port (
-		aclr	: IN STD_LOGIC ;
-		clken	: IN STD_LOGIC ;
-		clock	: IN STD_LOGIC ;
-		denom	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
-		numer	: IN STD_LOGIC_VECTOR (47 DOWNTO 0);
-		quotient	: OUT STD_LOGIC_VECTOR (47 DOWNTO 0);
-		remain	: OUT STD_LOGIC_VECTOR (31 DOWNTO 0)
-	);
+generic (
+	lpm_drepresentation		: STRING;
+	lpm_hint		: STRING;
+	lpm_nrepresentation		: STRING;
+	lpm_pipeline		: NATURAL;
+	lpm_type		: STRING;
+	lpm_widthd		: NATURAL;
+	lpm_widthn		: NATURAL
+);
+port (
+	aclr	: IN STD_LOGIC ;
+	clken	: IN STD_LOGIC ;
+	clock	: IN STD_LOGIC ;
+	denom	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+	numer	: IN STD_LOGIC_VECTOR (47 DOWNTO 0);
+	quotient	: OUT STD_LOGIC_VECTOR (47 DOWNTO 0);
+	remain	: OUT STD_LOGIC_VECTOR (31 DOWNTO 0)
+);
 end component;
 
 
 component sphereDistance is
-  port
-    (
-      clk   : in std_logic;
-      reset : in std_logic;
-      clk_en : in std_logic;
-
-      start : in std_logic;
-
-
-      origin    : in std_logic_vector(95 downto 0);
-      dir       : in std_logic_vector(95 downto 0);
-
-     a			 : in std_logic_vector(31 downto 0);
-
-      center    : in std_logic_vector(95 downto 0);
-      radius2   : in std_logic_vector(31 downto 0);
-
-	   t_min_a : in std_logic_vector(31 downto 0);
-
-	   t			: out std_logic_vector(31 downto 0);
-		
-	   t_valid		: out std_logic
-
-      );
+port (
+	--clk inputs
+	clk	: in std_logic;
+	reset	: in std_logic;
+	clk_en	: in std_logic;
+	--logic inputs
+	start	: in std_logic;
+	origin	: in std_logic_vector(95 downto 0);
+	dir 	: in std_logic_vector(95 downto 0);
+	a	: in std_logic_vector(31 downto 0);
+	center	: in std_logic_vector(95 downto 0);
+	radius2	: in std_logic_vector(31 downto 0);
+	t_min_a : in std_logic_vector(31 downto 0);
+	--ouputs
+	t	: out std_logic_vector(31 downto 0);
+	t_valid	: out std_logic
+);
 end component;
 
 
@@ -144,7 +138,7 @@ t12_sp_c31, t34_sp_c31, t56_sp_c31, t78_sp_c31, t1234_sp_c32, t5678_sp_c32, t123
 
 signal t_res1_sp, t_old_sp:  std_logic_vector(3 downto 0);
 
-constant TIME_MIN : std_logic_vector(31 downto 0) := x"0000199A";
+constant TIME_MIN : std_logic_vector(31 downto 0) := x"0000_199A";
 
 begin
 

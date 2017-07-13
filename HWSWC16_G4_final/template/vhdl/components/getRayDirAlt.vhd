@@ -88,6 +88,20 @@ begin
 
 ran <= x"0000_0000";
 
+--add_ran : process (ran, ran_add)
+
+--begin
+
+--if ran_add(31) = '1' and (ran(31) OR ran(30) or ran(29) or ran(28) or ran(27) or ran(26) or ran (25) or ran(24)) = '1'  then
+
+--add_ran <= ran_add OR ran;
+
+-- else
+ 
+-- add_ran <= ran_add AND ran;
+
+--end process;
+
 async : process(j, i, start, addition_ver, frame, hold, 
 addition_hor, result_hold, ran_add, ran, num_samples, address, ver_base, addition_base, start_hold, clk_en, bundle_slots,
 fifo_full_sig) is begin

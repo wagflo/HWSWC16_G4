@@ -638,7 +638,7 @@ back : backend
   );
 
 -- MK 21062017 backend_par : delay_element generic map (WIDTH => 22, DEPTH => 18) 
-backend_par : delay_element generic map (WIDTH => 22, DEPTH => 17) 
+backend_par : delay_element generic map (WIDTH => 22, DEPTH => 19) --17) 
 port map (clk => clk, clken => '1', reset => reset, source => backend_ray.position, dest => back_out_address);
 
 

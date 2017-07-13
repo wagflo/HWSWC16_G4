@@ -1,25 +1,26 @@
 
---						if (nearest_obj->mat == EMITTING)
---							break;
---						
---						/* if not emitting reflect */
---						/* ray_origin = ray_origin + t * ray_dir */
---						vec3_t tmp;
---						vec3MulS (&tmp, tmin, &ray_dir);
---						vec3Add (&ray_origin, &tmp, &ray_origin);
---						/* n = (ray_origin - center) / radius  */
---						vec3_t n; /* surface normal */
---						vec3Sub (&n, &ray_origin, &nearest_obj->center);
---						//fix16_t rr = nearest_obj->rec_radius;
---						vec3MulS (&n, nearest_obj->rec_radius, &n);
---						reflect (&ray_dir, &ray_dir, &n);
---reflect (vec3_t *r, vec3_t *v, vec3_t *n)
---{
+--	if (nearest_obj->mat == EMITTING)
+--		break;
+--	
+--	/* if not emitting reflect */
+--	/* ray_origin = ray_origin + t * ray_dir */
+--	vec3_t tmp;
+--	vec3MulS (&tmp, tmin, &ray_dir);
+--	vec3Add (&ray_origin, &tmp, &ray_origin);
+--	/* n = (ray_origin - center) / radius  */
+--	vec3_t n; /* surface normal */
+--	vec3Sub (&n, &ray_origin, &nearest_obj->center);
+--	//fix16_t rr = nearest_obj->rec_radius;
+--	vec3MulS (&n, nearest_obj->rec_radius, &n);
+--	reflect (&ray_dir, &ray_dir, &n);
+--
+--	reflect (vec3_t *r, vec3_t *v, vec3_t *n)
+--	{
 --	vec3_t tmp;
 --	fix16_t t = ALT_CI_CI_MUL_0 (fix16_one << 1, vec3Dot (v, n));
 --	vec3MulS (&tmp, t, n);
 --	vec3Sub (r, v, &tmp);
-
+--
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -325,7 +326,8 @@ begin
     result => dot_prod_res--(32 downto 1)
   );
 
-  dot_prod_input <= dot_prod_res(30 downto 0) & '0';
+  --dot_prod_input <= dot_prod_res(30 downto 0) & '0';
+  dot_prod_input <= dot_prod_res(31) & dot_prod_res(29 downto 0) & '0';
 
   scaleNormalVec_c11t12 : vecMulS
   port map(
