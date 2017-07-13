@@ -30,7 +30,7 @@ signal data : data_array(14 downto 0) := (
 	1 => "01110111", -- refl => all pseudo				r  p
 	2 => "00000001",	--					0  0
 	3 => "00000010",	--					0  0	
-	4 => "00000100", --						0  0
+	  4 => "00000100", --						0  0
 	5 => "10110000", --						nr np 
 	6 => "01110000", -- no remaining => no pseudo => no refl	nr np
 	7 => "10111010", -- 						nr np
@@ -52,7 +52,7 @@ begin
 
 
 delay1 : delay_element -- standard register delay
-  generic map (
+    generic map (
     width => 32,
     depth => 3
   )
@@ -130,7 +130,7 @@ end process;
 --counting : process(clk, res)
 --begin
 --if res = '1' then
- 
+
 --  input <= "0000000";
 --  counter <= 0;
 --els

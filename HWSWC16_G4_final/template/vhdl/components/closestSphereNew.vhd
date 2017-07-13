@@ -7,8 +7,8 @@ use work.delay_pkg.all;
 library lpm;
 use lpm.lpm_components.all;
 
-LIBRARY altera_mf;
-USE altera_mf.all;
+library altera_mf;
+use altera_mf.all;
 
 
 use work.operations_pkg.all;
@@ -28,9 +28,8 @@ end entity;
 
 architecture arch of closestSphereNew is
 
-
-COMPONENT lpm_mult
-	GENERIC (
+component lpm_mult
+	generic (
 		lpm_hint		: STRING;
 		lpm_pipeline		: NATURAL;
 		lpm_representation		: STRING;
@@ -39,36 +38,36 @@ COMPONENT lpm_mult
 		lpm_widthb		: NATURAL;
 		lpm_widthp		: NATURAL
 	);
-	PORT (
-			aclr	: IN STD_LOGIC ;
-			clken	: IN STD_LOGIC ;
-			clock	: IN STD_LOGIC ;
-			dataa	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
-			datab	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
-			result	: OUT STD_LOGIC_VECTOR (63 DOWNTO 0)
+	port (
+		aclr	: IN STD_LOGIC ;
+		clken	: IN STD_LOGIC ;
+		clock	: IN STD_LOGIC ;
+		dataa	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+		datab	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+		result	: OUT STD_LOGIC_VECTOR (63 DOWNTO 0)
 	);
-	END COMPONENT;
+end component;
 	
-COMPONENT lpm_compare
-	GENERIC (
+component lpm_compare
+	generic (
 		lpm_hint		: STRING;
 		lpm_pipeline		: NATURAL;
 		lpm_representation		: STRING;
 		lpm_type		: STRING;
 		lpm_width		: NATURAL
 	);
-	PORT (
-			aclr	: IN STD_LOGIC ;
-			clken	: IN STD_LOGIC ;
-			clock	: IN STD_LOGIC ;
-			dataa	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
-			datab	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
-			agb	: OUT STD_LOGIC 
+	port (
+		aclr	: IN STD_LOGIC ;
+		clken	: IN STD_LOGIC ;
+		clock	: IN STD_LOGIC ;
+		dataa	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+		datab	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+		agb	: OUT STD_LOGIC 
 	);
-	END COMPONENT;
+end component;
 
-COMPONENT lpm_divide
-	GENERIC (
+component lpm_divide
+	generic (
 		lpm_drepresentation		: STRING;
 		lpm_hint		: STRING;
 		lpm_nrepresentation		: STRING;
@@ -77,16 +76,16 @@ COMPONENT lpm_divide
 		lpm_widthd		: NATURAL;
 		lpm_widthn		: NATURAL
 	);
-	PORT (
-			aclr	: IN STD_LOGIC ;
-			clken	: IN STD_LOGIC ;
-			clock	: IN STD_LOGIC ;
-			denom	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
-			numer	: IN STD_LOGIC_VECTOR (47 DOWNTO 0);
-			quotient	: OUT STD_LOGIC_VECTOR (47 DOWNTO 0);
-			remain	: OUT STD_LOGIC_VECTOR (31 DOWNTO 0)
+	port (
+		aclr	: IN STD_LOGIC ;
+		clken	: IN STD_LOGIC ;
+		clock	: IN STD_LOGIC ;
+		denom	: IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+		numer	: IN STD_LOGIC_VECTOR (47 DOWNTO 0);
+		quotient	: OUT STD_LOGIC_VECTOR (47 DOWNTO 0);
+		remain	: OUT STD_LOGIC_VECTOR (31 DOWNTO 0)
 	);
-	END COMPONENT;
+end component;
 
 
 component sphereDistance is
@@ -102,7 +101,7 @@ component sphereDistance is
       origin    : in std_logic_vector(95 downto 0);
       dir       : in std_logic_vector(95 downto 0);
 
-	   a			 : in std_logic_vector(31 downto 0);
+     a			 : in std_logic_vector(31 downto 0);
 
       center    : in std_logic_vector(95 downto 0);
       radius2   : in std_logic_vector(31 downto 0);

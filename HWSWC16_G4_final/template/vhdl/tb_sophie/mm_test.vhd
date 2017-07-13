@@ -109,7 +109,7 @@ signal howoftenRightRay : bildzahltyp := (others => 0);
 
 type reflColorLookuptype is array(0 to 9) of std_logic_vector(23 downto 0);
 constant reflColorLU : reflColorLookuptype := (x"0000FF", x"00FF00", x"FF0000", x"0000FF", x"00FF00", x"FF0000", x"0000FF", 
-					       x"00FF00", x"0000FF", x"000000");
+					      x"00FF00", x"0000FF", x"000000");
 
 --signal dummy_thresh : std_logic_vector(31 downto 0) := x"00017500";
 
@@ -361,7 +361,7 @@ elsif  rising_edge(clk) then
 		for my_i in 0 to MAXWIDTH - 1 loop
 			for my_j in 0 to MAXHEIGHT - 1 loop
 				if test_bitmap(my_j*MAXWIDTH + my_i) = '1' then
-					dummy_color := bild(my_j*MAXWIDTH + my_i);
+					  dummy_color := bild(my_j*MAXWIDTH + my_i);
 					SetPixel (my_i, my_j, dummy_color);
 				end if;
 			end loop;
