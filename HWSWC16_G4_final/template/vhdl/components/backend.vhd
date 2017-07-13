@@ -41,15 +41,27 @@ end entity;
 
 architecture beh of backend is
 
-  --signal index : natural;
-  --signal valid_t_vec, valid_color_vec : std_logic_vector(0 downto 0);
-  --signal valid_ray_in_vec, valid_ray_out_vec : std_logic_vector(0 downto 0);
+  signal
+	color_shifted,
+	color_shifted_next,
+	color_accum,
+	color_accum_next,
+	color_root
+		: vector;
 
-  signal color_shifted, color_accum, color_accum_next, color_root : vector;
-  signal eob_and_valid, eob_and_valid_next : std_logic;
+  signal
+	eob_and_valid,
+	eob_and_valid_next,
+	valid_ray,
+	copy_ray,
+	startOfBundle,
+	endOfBundle,
+	next_valid
+		: std_logic;
 
-  signal valid_ray, copy_ray, startOfBundle, endOfBundle, next_valid : std_logic;
-  signal valid_shift :  std_logic_vector(17 downto 0);
+  signal
+	valid_shift
+		: std_logic_vector(18 downto 0);
 
 begin
 
@@ -60,50 +72,40 @@ begin
 
   shift : process(ray_in)
   begin
-
     if num_samples(4) = '1' then
-
-      color_shifted.x <= "0000" & ray_in.color.x(31 downto 4);
-      color_shifted.y <= "0000" & ray_in.color.y(31 downto 4);
-      color_shifted.z <= "0000" & ray_in.color.z(31 downto 4);
+      color_shifted_next.x <= "0000" & ray_in.color.x(31 downto 4);
+      color_shifted_next.y <= "0000" & ray_in.color.y(31 downto 4);
+      color_shifted_next.z <= "0000" & ray_in.color.z(31 downto 4);
     elsif num_samples(3) = '1' then
-
-      color_shifted.x <= "000" & ray_in.color.x(31 downto 3);
-      color_shifted.y <= "000" & ray_in.color.y(31 downto 3);
-      color_shifted.z <= "000" & ray_in.color.z(31 downto 3);
+      color_shifted_next.x <= "000" & ray_in.color.x(31 downto 3);
+      color_shifted_next.y <= "000" & ray_in.color.y(31 downto 3);
+      color_shifted_next.z <= "000" & ray_in.color.z(31 downto 3);
     elsif num_samples(2) = '1' then
-
-      color_shifted.x <= "00" & ray_in.color.x(31 downto 2);
-      color_shifted.y <= "00" & ray_in.color.y(31 downto 2);
-      color_shifted.z <= "00" & ray_in.color.z(31 downto 2);
+      color_shifted_next.x <= "00" & ray_in.color.x(31 downto 2);
+      color_shifted_next.y <= "00" & ray_in.color.y(31 downto 2);
+      color_shifted_next.z <= "00" & ray_in.color.z(31 downto 2);
     elsif num_samples(1) = '1' then
-
-      color_shifted.x <= "0" & ray_in.color.x(31 downto 1);
-      color_shifted.y <= "0" & ray_in.color.y(31 downto 1);
-      color_shifted.z <= "0" & ray_in.color.z(31 downto 1);
+      color_shifted_next.x <= "0" & ray_in.color.x(31 downto 1);
+      color_shifted_next.y <= "0" & ray_in.color.y(31 downto 1);
+      color_shifted_next.z <= "0" & ray_in.color.z(31 downto 1);
     else
-
-      color_shifted.x <= ray_in.color.x;
-      color_shifted.y <= ray_in.color.y;
-      color_shifted.z <= ray_in.color.z;
+      color_shifted_next.x <= ray_in.color.x;
+      color_shifted_next.y <= ray_in.color.y;
+      color_shifted_next.z <= ray_in.color.z;
     end if;
   end process;
 
--- latchen ws/vl mal schauen
 async : process(color_accum, color_shifted, startOfBundle, endOfBundle, valid_ray, copy_ray)
 begin
-if  valid_ray = '1' and copy_ray = '0' then
-  
-  eob_and_valid_next <= endOfBundle; -- oder einfach in delay Element?
+if  valid_ray = '1' and copy_ray = '0' then -- update the values of color accumulation
+  eob_and_valid_next <= endOfBundle;
   if startOfBundle = '1' then 
-    
     color_accum_next <= color_shifted;
   else 
-    
     color_accum_next <= color_accum + color_shifted;
   end if;
 
-else -- wird latchen sonst
+else -- keep the old values and make sure the current value is not used
 
   eob_and_valid_next <= '0';
   color_accum_next <= color_accum;
@@ -184,13 +186,14 @@ begin
     color_accum <= (others => (others => '0'));
     eob_and_valid <= '0';
     valid_shift <= (others => '0');
+    color_shifted <= (OTHERS => '0');
 
   elsif rising_edge(clk) and clk_en = '1' then
 
     color_accum <= color_accum_next;
     eob_and_valid <= eob_and_valid_next;
-    valid_shift(16 downto 0) <= next_valid & valid_shift(16 downto 1);
-
+    valid_shift <= eob_and_valid_next & valid_shift(17 downto 1);
+    color_shifted <= color_shifted_next;
 
   end if;
 end process;
