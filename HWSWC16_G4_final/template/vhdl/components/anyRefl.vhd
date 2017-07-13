@@ -73,132 +73,126 @@ signal
 		: std_logic_vector(31 downto 0);
 
 begin
+--########################################################################
+-- DELAYS
+--########################################################################
+-- element delaying the ray validity for 32 cycles (length of this element)
+delay_ray_validity: delay_element
+generic map(WIDTH => 1, DEPTH => 32)
+port map (
+	clk => clk, clken => clk_en, reset => reset, 
+	source(0) => valid_ray_in,
+	dest(0) => valid_ray_out
+);
 
-	--########################################################################
-	-- DELAYS
-	--########################################################################
-	-- element delaying the ray validity for 32 cycles (length of this element)
-	delay_ray_validity: delay_element
-	generic map(WIDTH => 1, DEPTH => 32)
-	port map (
-		clk => clk, clken => clk_en, reset => reset, 
-		source(0) => valid_ray_in,
-		dest(0) => valid_ray_out
-	);
+--########################################################################
+-- HELPERS
+--########################################################################
+-- a vector where each element is the current decision value for re-loop
+anyNext_vec <= (OTHERS => anyNext);
+-- a vector where each element is the value of the eob flag
+eob_vec <= (OTHERS => endOfBundle);
+-- the current ray is part of a closed bundle if it is not valid or
+-- the end of bundle flag is set
+next_bundle(31) <= endOfBundle OR NOT(valid_ray_in);
+-- earlier bundles are "closed" on reception of the eob flag set to '1'
+next_bundle(30 downto 0) <= bundle(31 downto 1) OR eob_vec(31 downto 1);
 
-	--########################################################################
-	-- HELPERS
-	--########################################################################
-	-- a vector where each element is the current decision value for re-loop
-	anyNext_vec <= (OTHERS => anyNext);
-	-- a vector where each element is the value of the eob flag
-	eob_vec <= (OTHERS => endOfBundle);
-	-- the current ray is part of a closed bundle if it is not valid or
-	-- the end of bundle flag is set
-	next_bundle(31) <= endOfBundle OR NOT(valid_ray_in);
-	-- earlier bundles are "closed" on reception of the eob flag set to '1'
-	next_bundle(30 downto 0) <= bundle(31 downto 1) OR eob_vec(31 downto 1);
-
-
-	--########################################################################
-	-- LOGIC
-	--########################################################################
-
-	-- defines the next value for whether any ray in the current bundle is to be reflected
-	-- refl_remaining <= remaining_reflects(0) or remaining_reflects(1) or remaining_reflects(2);
-	-- this_refl <= valid_t AND refl_remaining AND not(emmiting_sphere);
-	-- anyNext <= this_refl OR (not(startOfBundle) AND any)
-	anyNext <= 
-	(
-		startOfBundle
-		and valid_t
-		and (
-			remaining_reflects(0)
-			or remaining_reflects(1) 
-			or remaining_reflects(2)
-		) 
-		and not(emitting_sphere)
+--########################################################################
+-- LOGIC
+--########################################################################
+-- defines the next value for whether any ray in the current bundle is to be reflected
+-- refl_remaining <= remaining_reflects(0) or remaining_reflects(1) or remaining_reflects(2);
+-- this_refl <= valid_t AND refl_remaining AND not(emmiting_sphere);
+-- anyNext <= this_refl OR (not(startOfBundle) AND any)
+anyNext <= 
+(
+	startOfBundle
+	and valid_t
+	and (
+		remaining_reflects(0)
+		or remaining_reflects(1) 
+		or remaining_reflects(2)
 	) 
-	or (
-		not(startOfBundle)
-		and (
-			(
-				valid_t 
-				and (
-					remaining_reflects(0) 
-					or remaining_reflects(1) 
-					or remaining_reflects(2)
-				) 
-				and not emitting_sphere
-			)
-			or any
-		)
-	);
-
-	-- represents whether the current input ray is to be reflected.
-	-- '1' when a non-emmitting sphere was hit.
-	next_reflect(31) <= 
-	(
-		valid_ray_in and
+	and not(emitting_sphere)
+) 
+or (
+	not(startOfBundle)
+	and (
 		(
-			valid_t and 
-			(
+			valid_t 
+			and (
 				remaining_reflects(0) 
 				or remaining_reflects(1) 
 				or remaining_reflects(2)
 			) 
-			and not(emitting_sphere)
-	  )
-	);
-	-- the current output of reflections is shifted
-	next_reflect(30 downto 0) <= reflect(31 downto 1);
-
-	-- whether or not a ray is to be sent through the loop again
-	-- the current ray is sent through again if any ray in the
-	-- bundle is so far sent through
-	next_pseudo_reflect(31) <= anyNext;
-	-- rays that belong to an already finished bundle keep their value
-	-- while rays that belong to the current bundle are updated with the value
-	-- of the current ray.
-	next_pseudo_reflect(30 downto 0) <= 
+			and not emitting_sphere
+		)
+		or any
+	)
+);
+-- represents whether the current input ray is to be reflected.
+-- '1' when a non-emmitting sphere was hit.
+next_reflect(31) <= 
+(
+	valid_ray_in and
 	(
-		NOT(bundle(31 downto 1)) 
-		AND anyNext_vec(31 downto 1)
-	) OR
-	(
-		bundle(31 downto 1) 
-		AND pseudo_reflect(31 downto 1)
-	);
+		valid_t and 
+		(
+			remaining_reflects(0) 
+			or remaining_reflects(1) 
+			or remaining_reflects(2)
+		) 
+		and not(emitting_sphere)
+  )
+);
+-- the current output of reflections is shifted
+next_reflect(30 downto 0) <= reflect(31 downto 1);
 
-	-- process that synchronously advances the values of the internal signals
-	sync : process(clk, reset)
-	begin
-		if reset = '1' then
-			any <= '0';
-	   	reflect <= (OTHERS => '0');
-	   	pseudo_reflect <= (OTHERS => '0');
-	   	bundle <= (OTHERS => '1');
-			sob_delay <= (others => '0');
-			eob_delay <= (others => '0');
-		elsif rising_edge(clk) and clk_en = '1' then
-			any <= anyNext;
-			reflect <= next_reflect;
-			pseudo_reflect <= next_pseudo_reflect;
-			bundle <= next_bundle;
-			sob_delay <= startOfBundle & sob_delay(31 downto 1);
-			eob_delay <= endOfBundle & eob_delay(31 downto 1);
-		end if;
-	end process;
+-- whether or not a ray is to be sent through the loop again
+-- the current ray is sent through again if any ray in the
+-- bundle is so far sent through
+next_pseudo_reflect(31) <= anyNext;
+-- rays that belong to an already finished bundle keep their value
+-- while rays that belong to the current bundle are updated with the value
+-- of the current ray.
+next_pseudo_reflect(30 downto 0) <= 
+(
+	NOT(bundle(31 downto 1)) 
+	AND anyNext_vec(31 downto 1)
+) OR
+(
+	bundle(31 downto 1) 
+	AND pseudo_reflect(31 downto 1)
+);
 
-	--########################################################################
-	-- OUTPUT
-	--########################################################################
-	isReflected <= reflect(0);
-	pseudoReflect <= pseudo_reflect(0);
-	startOfBundle_out <= sob_delay(0);
-	endOfBundle_out <= eob_delay(0);
+-- process that synchronously advances the values of the internal signals
+sync : process(clk, reset)
+begin
+	if reset = '1' then
+		any <= '0';
+   	reflect <= (OTHERS => '0');
+   	pseudo_reflect <= (OTHERS => '0');
+   	bundle <= (OTHERS => '1');
+		sob_delay <= (others => '0');
+		eob_delay <= (others => '0');
+	elsif rising_edge(clk) and clk_en = '1' then
+		any <= anyNext;
+		reflect <= next_reflect;
+		pseudo_reflect <= next_pseudo_reflect;
+		bundle <= next_bundle;
+		sob_delay <= startOfBundle & sob_delay(31 downto 1);
+		eob_delay <= endOfBundle & eob_delay(31 downto 1);
+	end if;
+end process;
 
+--########################################################################
+-- OUTPUT
+--########################################################################
+isReflected <= reflect(0);
+pseudoReflect <= pseudo_reflect(0);
+startOfBundle_out <= sob_delay(0);
+endOfBundle_out <= eob_delay(0);
 	
-
 
 end architecture;

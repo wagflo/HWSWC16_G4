@@ -42,7 +42,7 @@ use ieee.numeric_std.all;
 use work.operations_pkg.all;
 use work.delay_pkg.all;
 
---COLOR NULL SETZEN *************************************************************************
+--COLOR NULL SETZEN ***********************************************************************
 --*****************************************************************************************
 --*****************************************************************************************
 --*****************************************************************************************
@@ -56,133 +56,110 @@ use work.delay_pkg.all;
 
 
 entity colorUpdate is 
-  port
-  (
-    clk : in std_logic;
-    clk_en : in std_logic;
-    reset : in std_logic;
-
-
-    color_in : vector;
-    valid_t  : std_logic;
-    sphere_i : std_logic_vector(3 downto 0);
-
-    valid_ray_in : std_logic;
-    --copy_ray_in : std_logic;
-
-    -- Kugeldaten: Farbe, ws nicht emitting
-
-    color_array : vectorArray;
-    
-    color_out : out vector;
-    valid_color : out std_logic;
-    valid_ray_out : out std_logic
-    --copy_ray_out : out std_logic
-  );
+port (
+	--########################################################################
+	-- INPUTS
+	--########################################################################
+	clk		: in std_logic;
+	clk_en		: in std_logic;
+	reset		: in std_logic;
+	color_in	: in vector;
+	valid_t		: in std_logic;
+	sphere_i	: in std_logic_vector(3 downto 0);
+	valid_ray_in	: in std_logic;
+	color_array	: in vectorArray;
+	--########################################################################
+	-- OUTPUTS
+	--########################################################################
+	color_out	: out vector;
+	valid_color	: out std_logic;
+	valid_ray_out	: out std_logic
+);
 end entity;
 
 architecture beh of colorUpdate is
 
-  signal index : natural;
-  signal hitColor : vector;
-  --signal color_out_next : vector;
-  signal validities_in_vec, validities_out_vec : std_logic_vector(1 downto 0);
-  --signal valid_ray_in_vec, valid_ray_out_vec : std_logic_vector(0 downto 0);
-  --signal valid_color_next : std_logic;
-
+  signal
+	index
+		: natural;
+  signal
+	hitColor
+		: vector;
+  signal
+	validities_in_vec,
+	validities_out_vec
+		: std_logic_vector(1 downto 0);
 begin
 
-  --sync : process(clk, reset)
+--########################################################################
+-- HELPERS
+--########################################################################
+validities_in_vec(0) <= valid_t;
+validities_in_vec(1) <= valid_ray_in;
+index <= natural(to_integer(unsigned(sphere_i)));
 
-  --begin
-
-  --if reset = '1' then 
-
-  --  color_out <= (others => (others => '0'));
-
-  --elsif rising_edge(clk) then
-
-   -- if valid_color_next = '1' then 
-
-    --  color_out <= color_out_next;
-   -- else
-
-   --   color_out <= (others => (others => '0'));
-   -- end if;
-
-   -- valid_color <= valid_color_next;
-
-  --end if;
-
---  end process;
-
-  validities_in_vec(0) <= valid_t;
-  validities_in_vec(1) <= valid_ray_in;
-  --validities_in_vec(2) <= copy_ray_in;
-
-  delay_validities: delay_element generic map(WIDTH => 2, DEPTH => 2) 
-  port map (
-    clk => clk, clken => clk_en, reset => reset, 
-    source => validities_in_vec,
-    dest => validities_out_vec
-  );
-
---  valid_color_next <= valid_color_vec(0);
-  valid_color <= validities_out_vec(0);
-  valid_ray_out <= validities_out_vec(1);
-  --copy_ray_out <= validities_out_vec(2);
+async : process(valid_t, index)
+begin
+	if valid_t = '1' then 
+		hitColor <= color_array(index);
+	else 
+		hitColor <= (others => (others => '0'));
+	end if;
+end process;
 
 
-  index <= natural(to_integer(unsigned(sphere_i)));
+--########################################################################
+-- DELAYS
+--########################################################################
+delay_validities: delay_element
+generic map(WIDTH => 2, DEPTH => 2) 
+port map (
+	clk => clk,
+	clken => clk_en,
+	reset => reset,
+	source => validities_in_vec,
+	dest => validities_out_vec
+);
 
-  async : process(valid_t, index)
+--########################################################################
+-- LOGIC
+--########################################################################
 
-  begin
+-- cycle 1-2
+mul_x : scalarMul
+port map (
+	clk => clk,
+	clk_en => clk_en,
+	reset => reset,
+	a => color_in.x,
+	b => hitColor.x,
+	result => color_out.x 
+);
 
-  if valid_t = '1' then 
-    hitColor <= color_array(index);
-  else 
-    hitColor <= (others => (others => '0'));
-  end if;
-  end process;
+mul_y : scalarMul
+port map (
+	clk => clk,
+	clk_en => clk_en,
+	reset => reset,
+	a => color_in.y,
+	b => hitColor.y,
+	result => color_out.y
+);
 
-  mul_x : scalarMul
-  port map(
+mul_z : scalarMul
+port map(
+	clk => clk,
+	clk_en => clk_en,
+	reset => reset,
+	a => color_in.z,
+	b => hitColor.z,
+	result => color_out.z --color_out_next.z
+);
 
-    clk => clk,
-    clk_en => clk_en,
-    reset => reset,
-
-    a => color_in.x,
-    b => hitColor.x,
-
-    result => color_out.x --color_out_next.x
-  );
-
-  mul_y : scalarMul
-  port map(
-
-    clk => clk,
-    clk_en => clk_en,
-    reset => reset,
-
-    a => color_in.y,
-    b => hitColor.y,
-
-    result => color_out.y -- color_out_next.y
-  );
-
-  mul_z : scalarMul
-  port map(
-
-    clk => clk,
-    clk_en => clk_en,
-    reset => reset,
-
-    a => color_in.z,
-    b => hitColor.z,
-
-    result => color_out.z --color_out_next.z
-  );
+--########################################################################
+-- OUTPUTS
+--########################################################################
+valid_color <= validities_out_vec(0);
+valid_ray_out <= validities_out_vec(1);
 
 end architecture;
