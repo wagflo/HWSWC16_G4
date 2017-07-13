@@ -439,7 +439,7 @@ compare_old_c33 : LPM_COMPARE
 		clken => clk_en,
 		clock => clk,
 		dataa => t12345678,
-		datab => t_old,
+		datab => t_res1,
 		agb => t_old_smaller
 	);
 delay_t1 : delay_element generic map(WIDTH => 33, DEPTH => 1) port map (
@@ -509,7 +509,7 @@ if t3_valid_c30 = '1' and t4_valid_c30 = '1' then
 		t34_sp <= "011";
 	else
 		t34 <= t3_c30;
-		t34_sp <= "000";
+		t34_sp <= "010"; --"000";
 	end if;
 elsif t3_valid_c30 = '1' then
 	t34_valid <= '1';
@@ -670,7 +670,7 @@ delay_t56 : delay_element generic map(WIDTH => 36, DEPTH => 1) port map (
 clk => clk, clken => clk_en, reset => reset, 
 source(35 downto 33) => t56_sp,
 source(32) => t56_valid, 
-source(31 downto 0) => t12,
+source(31 downto 0) => t56,
 dest(32) => t56_valid_c31,
 dest(31 downto 0) => t56_c31,
 dest(35 downto 33) => t56_sp_c31

@@ -175,17 +175,17 @@ rtSetCamera (vec3_t *lookfrom, vec3_t *lookat, fix16_t vfov)
 	vec3MulS(&horizontal_add, f_width_r, &camera.horizontal);
 	vec3MulS(&vertical_sub, f_height_r, &camera.vertical);
 	
-	printf("Origin: (%X, %X, %X), Horizontal: (%X, %X, %X), Vertical (%X, %X, %X), Base: (%X, %X, %X)",
+	/*printf("Origin: (%X, %X, %X), Horizontal: (%X, %X, %X), Vertical (%X, %X, %X), Base: (%X, %X, %X)",
 	  camera.origin.x[0], camera.origin.x[1], camera.origin.x[2], horizontal_add.x[0], horizontal_add.x[1], horizontal_add.x[2],
 	  vertical_sub.x[0], vertical_sub.x[1], vertical_sub.x[2], camera_base.x[0], camera_base.x[1], camera_base.x[2]
 	);
 	
-	printf("Vor camera data \n");
+	printf("Vor camera data \n");*/
 	
 	while (IORD(MM_RAYTRACING_0_BASE, 0x0000) == 0x00000000) {
 	   
 	}
-	printf("Nach camera data \n");
+	//printf("Nach camera data \n");
 	
 	//write the origin
 	IOWR(MM_RAYTRACING_0_BASE, 0x3011, camera.origin.x[0]);

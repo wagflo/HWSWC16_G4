@@ -171,9 +171,9 @@ sync : process(clk, reset)
 begin
 	if reset = '1' then
 		any <= '0';
-   	reflect <= (OTHERS => '0');
-   	pseudo_reflect <= (OTHERS => '0');
-   	bundle <= (OTHERS => '1');
+   		reflect <= (OTHERS => '0');
+   		pseudo_reflect <= (OTHERS => '0');
+   		bundle <= (OTHERS => '1');
 		sob_delay <= (others => '0');
 		eob_delay <= (others => '0');
 	elsif rising_edge(clk) and clk_en = '1' then

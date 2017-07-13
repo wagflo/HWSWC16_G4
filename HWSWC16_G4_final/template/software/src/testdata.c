@@ -4,57 +4,52 @@
 #define FIX_FROM_FLOAT(x) ((fix16_t) (x * (fix16_t)(1<<16)))
 
 sphere_t test_spheres[TEST_SCENE_SIZE] = {
-// 		{
-// 			.center = { {FIX_FROM_FLOAT (0.0), FIX_FROM_FLOAT (0.0), FIX_FROM_FLOAT (0.0)} },
-// 			.radius = FIX_FROM_FLOAT (0.0),
-// 			.color  = { {FIX_FROM_FLOAT (0.0), FIX_FROM_FLOAT (0.0), FIX_FROM_FLOAT (0.0)} },
-// 			.mat    = REFLECTING
-// 		},
-		
-		{
-			.center = { {FIX_FROM_FLOAT (0.0), FIX_FROM_FLOAT (0.0), FIX_FROM_FLOAT (0.8)} },
-			.radius = FIX_FROM_FLOAT (0.5),
-			.color  = { {FIX_FROM_FLOAT (0.3), FIX_FROM_FLOAT (1.0), FIX_FROM_FLOAT (0.3)} },
-			.mat    = REFLECTING
-		},
-		/*
-		{
-			.center = { {FIX_FROM_FLOAT (0.0), FIX_FROM_FLOAT (0.0), FIX_FROM_FLOAT (0.0)} },
-			.radius = FIX_FROM_FLOAT (0.0),
-			.color  = { {FIX_FROM_FLOAT (0.0), FIX_FROM_FLOAT (0.0), FIX_FROM_FLOAT (0.0)} },
-			.mat    = REFLECTING
-		},*/
-		{
-			.center = { {FIX_FROM_FLOAT (0.0), FIX_FROM_FLOAT (0.0), FIX_FROM_FLOAT (-0.8)} },
-			.radius = FIX_FROM_FLOAT (0.5),
-			.color  = { {FIX_FROM_FLOAT (0.3), FIX_FROM_FLOAT (0.3), FIX_FROM_FLOAT (1.0)} },
-			.mat    = REFLECTING
-		},
-// 		{
-// 			.center = { {FIX_FROM_FLOAT (0.0), FIX_FROM_FLOAT (0.0), FIX_FROM_FLOAT (0.0)} },
-// 			.radius = FIX_FROM_FLOAT (0.0),
-// 			.color  = { {FIX_FROM_FLOAT (0.0), FIX_FROM_FLOAT (0.0), FIX_FROM_FLOAT (0.0)} },
-// 			.mat    = REFLECTING
-// 		},
-		{
-			.center = { {FIX_FROM_FLOAT (0.8), FIX_FROM_FLOAT (0.0), FIX_FROM_FLOAT (0.0)} }, // 0.8 statt 0.6
-			.radius = FIX_FROM_FLOAT (0.5),
-			.color  = { {FIX_FROM_FLOAT (1.0), FIX_FROM_FLOAT (0.3), FIX_FROM_FLOAT (0.3)} },
-			.mat    = REFLECTING
-		},
-		
+
 		{
 			.center = { {FIX_FROM_FLOAT (0.0), FIX_FROM_FLOAT (60.0), FIX_FROM_FLOAT (0.0)} },
 			.radius = FIX_FROM_FLOAT (50.0),
 			.color  = { {FIX_FROM_FLOAT (1.0), FIX_FROM_FLOAT (1.0), FIX_FROM_FLOAT (1.0)} },
 			.mat    = EMITTING
-		},
+		}
+		,
+  
 		{
 			.center = { {FIX_FROM_FLOAT (0.0), FIX_FROM_FLOAT (-100.5), FIX_FROM_FLOAT (0.0)} },
 			.radius = FIX_FROM_FLOAT (100.0),
 			.color  = { {FIX_FROM_FLOAT (0.4), FIX_FROM_FLOAT (0.4), FIX_FROM_FLOAT (0.4)} },
 			.mat    = REFLECTING // EMITTING  REFLECTING
 		}
+		,
+		{
+			.center = { {FIX_FROM_FLOAT (0.4), FIX_FROM_FLOAT (0.0), FIX_FROM_FLOAT (0.8)} },
+			.radius = FIX_FROM_FLOAT (0.5),
+			.color  = { {FIX_FROM_FLOAT (0.3), FIX_FROM_FLOAT (1.0), FIX_FROM_FLOAT (0.3)} },
+			.mat    = REFLECTING
+		}
+		,
+		
+		
+		{
+			.center = { {FIX_FROM_FLOAT (0.4), FIX_FROM_FLOAT (0.0), FIX_FROM_FLOAT (-0.8)} },
+			.radius = FIX_FROM_FLOAT (0.5),
+			.color  = { {FIX_FROM_FLOAT (0.3), FIX_FROM_FLOAT (0.3), FIX_FROM_FLOAT (1.0)} },
+			.mat    = REFLECTING
+		}
+		,
+	
+		{
+			.center = { {FIX_FROM_FLOAT (1.2), FIX_FROM_FLOAT (0.0), FIX_FROM_FLOAT (0.0)} }, // 0.8 statt 0.6
+			.radius = FIX_FROM_FLOAT (0.5),
+			.color  = { {FIX_FROM_FLOAT (1.0), FIX_FROM_FLOAT (0.3), FIX_FROM_FLOAT (0.3)} },
+			.mat    = REFLECTING
+		}
+		
+		
+	
+		
+
+		
+		
 };
 
 static fix16_t phi = 0;

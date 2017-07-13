@@ -374,13 +374,13 @@ begin
 --    y2 => scaled_normal_vec.y,
 --    z2 => scaled_normal_vec.z,
 
-    x2 => dir_delay_c12.x,
-    y2 => dir_delay_c12.y,
-    z2 => dir_delay_c12.z,
+    x1 => dir_delay_c12.x,
+    y1 => dir_delay_c12.y,
+    z1 => dir_delay_c12.z,
 
-    x1 => scaled_normal_vec.x,
-    y1 => scaled_normal_vec.y,
-    z1 => scaled_normal_vec.z,
+    x2 => scaled_normal_vec.x,
+    y2 => scaled_normal_vec.y,
+    z2 => scaled_normal_vec.z,
 
     x => new_direction_next.x,
     y => new_direction_next.y,

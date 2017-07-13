@@ -644,12 +644,12 @@ output : process(t1_valid, t2_valid, t2_smaller, t1_cycle27, t2_cycle27, start_s
 begin
 	if  hit_valid_cycle27 = '1' AND start_shift(0) = '1' then
 		if t1_valid = '1' AND t2_valid = '1' then
-			if t2_smaller = '0' then
-				t_valid <= '1';
-				t <= t1_cycle27;
-			else
+			if t2_smaller = '1' then
 				t_valid <= '1';
 				t <= t2_cycle27;
+			else
+				t_valid <= '1';
+				t <= t1_cycle27;
 			end if;
 		elsif t1_valid = '1' then
 			t_valid <= '1';

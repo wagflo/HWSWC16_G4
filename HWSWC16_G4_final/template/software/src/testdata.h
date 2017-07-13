@@ -14,8 +14,8 @@ extern "C"
 {
 #endif
 
-enum {TEST_NUM_SAMPLES = 1};
-enum {TEST_NUM_REFLECTS = 5};
+enum {TEST_NUM_SAMPLES = 16};
+enum {TEST_NUM_REFLECTS = 7};
 enum {TEST_SCENE_SIZE = 5};
 
 extern sphere_t test_spheres[TEST_SCENE_SIZE];
