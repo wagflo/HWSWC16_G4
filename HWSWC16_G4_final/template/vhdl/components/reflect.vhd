@@ -31,123 +31,147 @@ use work.delay_pkg.all;
 
 
 entity reflect is 
-  port
-  (
-    clk : in std_logic;
-    clk_en : in std_logic;
-    reset : in std_logic;
-
-    valid_t  : in std_logic;
-    t : in std_logic_vector(31 downto 0);
-
-    sphere_i : std_logic_vector(3 downto 0);
-
-    valid_ray_in : std_logic;
-    copy_ray_in : std_logic;
-
-    one_over_rs : scalarArray;
-    centers     : vectorArray;
-
-    --emitters : std_logic_vector(15 downto 0); -- noch genaui schauen, wo rein => any Refl
-
-    origin : vector;
-    direction : vector;
-
-    new_origin : out vector;
-    new_direction : out vector;
-    valid_refl  : out std_logic;
-    valid_ray_out : out std_logic;
-    copy_ray_out : out std_logic
-
-  );
+port (
+	clk 		: in std_logic;
+	clk_en 		: in std_logic;
+	reset		: in std_logic;
+	valid_t		: in std_logic;
+	t		: in std_logic_vector(31 downto 0);
+	sphere_i	: in std_logic_vector(3 downto 0);
+	valid_ray_in	: in std_logic;
+	copy_ray_in	: in std_logic;
+	one_over_rs	: in scalarArray;
+	centers		: in vectorArray;
+	origin		: in vector;
+	direction	: in vector;
+	new_origin	: out vector;
+	new_direction	: out vector;
+	valid_refl	: out std_logic;
+	valid_ray_out	: out std_logic;
+	copy_ray_out	: out std_logic
+);
 end entity;
 
 architecture beh of reflect is
 
-  signal index_for_center, index_for_one_over_r : natural;
-  signal center : vector;
-  signal one_over_r, one_over_r_delayed :  std_logic_vector(31 downto 0); --scalar; --std_logic_vector(31 downto 0);
-  signal scaled_dir, hitpoint, normal_vec, unit_normal_vec, scaled_normal_vec : vector;
-  signal new_origin_next, new_direction_next : vector;
-  signal valid_refl_next : std_logic;
-  signal sphere_i_for_center, sphere_i_for_one_over_r : std_logic_vector(3 downto 0);
-  signal valid_t_for_center, valid_t_for_one_over_r : std_logic;
-  --signal valid_t_vec, valid_refl_vec : std_logic_vector(0 downto 0);
-  signal dot_prod_res, dot_prod_input : std_logic_vector(31 downto 0) := x"0000_0000"; -- one more because of factor 2
-  signal origin_delayed_std_logic, new_origin_std_logic : std_logic_vector(95 downto 0);
-  signal origin_delayed: vector;
-  signal dir_std_logic_delay_c6, dir_std_logic_delay_c12 : std_logic_vector(95 downto 0);
-  signal dir_delay_c6, dir_delay_c12 : vector;
-  signal unit_normal_vec_delayed_std_logic : std_logic_vector(95 downto 0);
-  signal unit_normal_vec_delayed : vector;
-  signal valid_ray_in_vec, valid_ray_out_vec : std_logic_vector(0 downto 0);
+signal
+	index_for_center,
+	index_for_one_over_r
+		: natural;
 
-  signal valid_other_in_vec, valid_other_out_vec : std_logic_vector(1 downto 0);
+signal
+	center,
+	new_origin_next,
+	new_direction_next,
+	scaled_dir,
+	hitpoint,
+	normal_vec,
+	unit_normal_vec,
+	scaled_normal_vec,
+	origin_delayed,
+	dir_delay_c6,
+	dir_delay_c12,
+	unit_normal_vec_delayed
+		: vector;
+
+signal
+	one_over_r,
+	one_over_r_delayed,
+	dot_prod_res,
+	dot_prod_input
+		:  std_logic_vector(31 downto 0);
+
+signal
+	valid_refl_next,
+	valid_t_for_center,
+	valid_t_for_one_over_r
+		: std_logic;
+signal
+	sphere_i_for_center,
+	sphere_i_for_one_over_r
+		: std_logic_vector(3 downto 0);
+signal
+	origin_delayed_std_logic,
+	new_origin_std_logic,
+	dir_std_logic_delay_c6,
+	dir_std_logic_delay_c12,
+	unit_normal_vec_delayed_std_logic
+		: std_logic_vector(95 downto 0);
+
+signal
+	valid_ray_in_vec,
+	valid_ray_out_vec
+		: std_logic_vector(0 downto 0);
 
 
-  constant scalar_zero : std_logic_vector(31 downto 0) := x"00000000";
-  constant vector_zero : std_logic_vector(95 downto 0) := scalar_zero & scalar_zero & scalar_zero;
+
+constant scalar_zero : std_logic_vector(31 downto 0) := x"00000000";
+constant vector_zero : std_logic_vector(95 downto 0) := scalar_zero & scalar_zero & scalar_zero;
 
 begin
 
-  --valid_t_vec(0) <= valid_t;
+index_for_center     <= natural(to_integer(unsigned(sphere_i_for_center)));
+index_for_one_over_r <= natural(to_integer(unsigned(sphere_i_for_one_over_r)));
 
-  valid_other_in_vec(0) <= valid_ray_in;
-  valid_other_in_vec(1) <= copy_ray_in;
-
-  delay_other_validities_c1t14: delay_element generic map(WIDTH => 2, DEPTH => 14) port map (
-  clk => clk, clken => clk_en, reset => reset, 
-  source => valid_other_in_vec,
-  dest => valid_other_out_vec
-  );
-
-  valid_ray_out <= valid_other_out_vec(0);
-  copy_ray_out <= valid_other_out_vec(1);
-
-  delay_sphere_i_for_center_c1t3: delay_element generic map(WIDTH => 5, DEPTH => 3) 
-  port map (
-    clk => clk, clken => clk_en, reset => reset, 
-    source(4 downto 1) => sphere_i,
-    source(0) => valid_t,
-    dest(4 downto 1) => sphere_i_for_center,
-    dest(0) => valid_t_for_center
-  );
-
-  delay_sphere_i_for_one_over_r_c4: delay_element generic map(WIDTH => 5, DEPTH => 1) 
-  port map (
-    clk => clk, clken => clk_en, reset => reset, 
-    source(4 downto 1) => sphere_i_for_center,
-    source(0) => valid_t_for_center,
-    dest(4 downto 1) => sphere_i_for_one_over_r,
-    dest(0) => valid_t_for_one_over_r
-  );
+async : process(centers, one_over_rs, index_for_center, index_for_one_over_r)
+begin
+	if valid_t_for_center = '1' then 
+		center <= centers(index_for_center);
+	else 
+		center <= tovector(vector_zero);
+	end if;
+	if valid_t_for_one_over_r = '1' then 
+		one_over_r <= to_std_logic(one_over_rs(index_for_one_over_r));
+	else 
+		one_over_r <= scalar_zero; --toscalar(scalar_zero);
+	end if;
+end process;
 
 
-  delay_validity_c5t13: delay_element generic map(WIDTH => 1, DEPTH => 9) port map (
-  clk => clk, clken => clk_en, reset => reset, 
-  source(0) => valid_t_for_one_over_r,
-  dest(0) => valid_refl_next
-  );
 
-  index_for_center     <= natural(to_integer(unsigned(sphere_i_for_center)));
-  index_for_one_over_r <= natural(to_integer(unsigned(sphere_i_for_one_over_r)));
+delay_other_validities_c1t14: delay_element
+generic map(WIDTH => 2, DEPTH => 14)
+port map (
+	clk => clk,
+	clken => clk_en,
+	reset => reset, 
+	source(0) => valid_ray_in, source(1) => copy_ray_in,
+	dest(0) => valid_ray_out, dest(1) => copy_ray_out
+);
 
-  async : process(centers, one_over_rs, index_for_center, index_for_one_over_r) -- OK, obwohl hintereinander?
+delay_sphere_i_for_center_c1t3: delay_element
+generic map(WIDTH => 5, DEPTH => 3) 
+port map (
+	clk => clk, clken => clk_en, reset => reset, 
+	source(4 downto 1) => sphere_i,
+	source(0) => valid_t,
+	dest(4 downto 1) => sphere_i_for_center,
+	dest(0) => valid_t_for_center
+);
 
-  begin
+delay_sphere_i_for_one_over_r_c4: delay_element
+generic map(WIDTH => 5, DEPTH => 1) 
+port map (
+	clk => clk,
+	clken => clk_en,
+	reset => reset, 
+	source(4 downto 1) => sphere_i_for_center,
+	source(0) => valid_t_for_center,
+	dest(4 downto 1) => sphere_i_for_one_over_r,
+	dest(0) => valid_t_for_one_over_r
+);
 
-    if valid_t_for_center = '1' then 
-      center <= centers(index_for_center);
-    else 
-      center <= tovector(vector_zero);
-    end if;
+delay_validity_c5t13: delay_element
+generic map(WIDTH => 1, DEPTH => 9)
+port map (
+	clk => clk, clken => clk_en, reset => reset, 
+	source(0) => valid_t_for_one_over_r,
+	dest(0) => valid_refl_next
+);
 
-    if valid_t_for_one_over_r = '1' then 
-      one_over_r <= to_std_logic(one_over_rs(index_for_one_over_r));
-    else 
-      one_over_r <= scalar_zero; --toscalar(scalar_zero);
-    end if;
-  end process;
+  
+
+  
 
   sync : process(clk, clk_en, reset) --************************ AM ENDE NOCHMAL GELATCHT ***********************
 
@@ -184,16 +208,12 @@ begin
 
   );
 
-  valid_ray_in_vec(0) <= valid_ray_in;
-
   delay_ray_validity_c1t14: delay_element generic map(WIDTH => 1, DEPTH => 14) 
   port map (
     clk => clk, clken => clk_en, reset => reset, 
-    source => valid_ray_in_vec,
-    dest => valid_ray_out_vec
+    source(0) => valid_ray_in,
+    dest(0) => valid_ray_out
   );
-
-  valid_ray_out <= valid_ray_out_vec(0);
 
   delay_dir_for_dot_product_c1t6: delay_element generic map(WIDTH => 96, DEPTH => 6) 
   port map (
